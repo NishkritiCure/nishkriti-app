@@ -68,17 +68,16 @@ export const CheckInScreen = () => {
       messageForDoctor: message || undefined,
     };
 
-    // FIX: use Supabase in production, mock store in demo
+    // FIX: only update local store AFTER Supabase save succeeds — prevents data inconsistency
     if (IS_DEMO) {
-      submitCheckIn(ci);
+      await submitCheckIn(ci);
     } else {
       try {
         await submitCheckInSupabase(ci);
-        // Also update local store so plan generation works
-        submitCheckIn(ci);
+        await submitCheckIn(ci);
       } catch (err: any) {
         Alert.alert('Error', err.message || 'Failed to submit check-in.');
-        return;
+        return; // FIX: don't update local store or navigate on failure
       }
     }
     nav.navigate("Plan");

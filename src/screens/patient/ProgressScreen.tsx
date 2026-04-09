@@ -96,8 +96,10 @@ export const ProgressScreen = () => {
   const daysIn = daysBetween(profile.programmeStartDate, new Date().toISOString().split("T")[0]);
   const bmi    = calcBMI(latest?.weight || profile.weightKg, profile.heightCm);
   const bmiCat = bmiCategory(bmi);
-  const avg7FBS = progress.length
-    ? Math.round(progress.slice(-7).reduce((s, p) => s + p.fbs, 0) / Math.min(7, progress.length))
+  // FIX: filter out undefined/null/0 FBS values before averaging — don't treat missing data as 0
+  const recentFBS = progress.slice(-7).filter(p => p.fbs != null && p.fbs > 0);
+  const avg7FBS = recentFBS.length
+    ? Math.round(recentFBS.reduce((s, p) => s + p.fbs, 0) / recentFBS.length)
     : 0;
 
   return (
@@ -124,7 +126,8 @@ export const ProgressScreen = () => {
             style={s.mc2}
           />
           <MetricCard
-            label="Waist" value={latest?.waist ?? 88} unit="cm"
+            // FIX: use baseline waist or "—" instead of hardcoded 88
+            label="Waist" value={latest?.waist ?? profile.baselineWaist ?? '—'} unit="cm"
             delta={first?.waist && latest?.waist ? `↓ ${first.waist - latest.waist} cm` : undefined}
             style={s.mc2}
           />

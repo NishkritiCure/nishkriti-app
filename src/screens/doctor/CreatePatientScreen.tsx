@@ -322,7 +322,10 @@ export const CreatePatientScreen = () => {
       try {
         const { data: rpcData, error: rpcErr } = await supabase.rpc('generate_uhid' as any);
         if (!rpcErr && rpcData) uhid = rpcData as unknown as string;
-      } catch {}
+      } catch (rpcError: any) {
+        // FIX: was empty catch — now logs error context (no PII) for debugging
+        console.warn('[CreatePatient] generate_uhid RPC failed, using fallback:', rpcError?.message || 'unknown');
+      }
       if (!uhid) {
         const { count } = await supabase.from('patient_profiles').select('id', { count: 'exact', head: true });
         uhid = `NK-${String((count || 0) + 1).padStart(4, '0')}`;
@@ -330,7 +333,9 @@ export const CreatePatientScreen = () => {
 
       // 2. Generate password
       const nameChars = name.trim().replace(/\s/g, '').toUpperCase().slice(0, 4);
-      const generatedPassword = `NK${nameChars}@2026`;
+      // FIX: append random 4-digit suffix to avoid collisions for same-name patients
+      const randomSuffix = String(Math.floor(1000 + Math.random() * 9000));
+      const generatedPassword = `NK${nameChars}${randomSuffix}`;
 
       // 3. Create auth user (REST to avoid signing out doctor)
       // FIX: guard against missing env vars — crashes in demo mode when SUPABASE_URL is undefined

@@ -157,18 +157,23 @@ function mapProtocolRow(row: any): TreatmentPlan {
 }
 
 export async function fetchActiveProtocol(patientId: string): Promise<TreatmentPlan | null> {
-  // Cast as any — database.types.ts doesn't include migration 003 columns yet
+  // FIX: distinguish "no rows" (normal) vs "multiple rows" (data integrity issue)
+  // Use .limit(2) + manual check instead of .single() which throws on both cases identically
   const { data, error } = await (supabase
     .from('protocols')
     .select('*')
     .eq('patient_id', patientId)
     .eq('is_active', true)
     .order('created_at', { ascending: false })
-    .limit(1)
-    .single() as any);
+    .limit(2) as any);
 
-  if (error || !data) return null;
-  return mapProtocolRow(data);
+  if (error) return null;
+  if (!data || data.length === 0) return null;
+  // FIX: warn on multiple active protocols — data integrity issue, should only have one
+  if (data.length > 1) {
+    console.warn(`[doctorService] Patient ${patientId} has ${data.length} active protocols — using newest`);
+  }
+  return mapProtocolRow(data[0]);
 }
 
 export async function createProtocol(patientId: string, plan: Partial<TreatmentPlan>): Promise<string> {

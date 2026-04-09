@@ -140,15 +140,30 @@ export const DoctorRosterScreen = () => {
 
   // Only Supabase patients — no mock data
   const [patients, setPatients] = useState<any[]>([]);
+  // FIX: live stats instead of hardcoded 0s
+  const [flagCount, setFlagCount] = useState(0);
+  const [checkinCount, setCheckinCount] = useState(0);
+  const todayISO = new Date().toISOString().split('T')[0];
 
   const fetchPatients = useCallback(async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('patient_profiles')
       .select('*')
       .order('onboarded_at', { ascending: false });
-    // FIX: removed console.log — debug logging should not be in production
     if (data) setPatients(data);
-  }, []);
+    // FIX: fetch real flag and check-in counts
+    const { count: flags } = await supabase
+      .from('daily_plans')
+      .select('id', { count: 'exact', head: true })
+      .eq('doctor_flag_raised', true)
+      .eq('flag_status', 'open');
+    setFlagCount(flags || 0);
+    const { count: checkins } = await supabase
+      .from('daily_check_ins')
+      .select('id', { count: 'exact', head: true })
+      .eq('check_in_date', todayISO);
+    setCheckinCount(checkins || 0);
+  }, [todayISO]);
 
   useFocusEffect(
     useCallback(() => {
@@ -173,9 +188,10 @@ export const DoctorRosterScreen = () => {
           </View>
           <View style={styles.statsRow}>
             <StatChip val={patients.length} lbl="Patients" />
-            <StatChip val={0} lbl="Flags" color={Colors.rose} />
+            {/* FIX: replaced hardcoded 0s with live counts from Supabase */}
+            <StatChip val={flagCount} lbl="Flags" color={Colors.rose} />
             <StatChip val={0} lbl="Pending" color={Colors.amber} />
-            <StatChip val={0} lbl="Check-ins" />
+            <StatChip val={checkinCount} lbl="Check-ins" />
           </View>
         </View>
 

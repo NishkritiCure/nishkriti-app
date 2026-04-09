@@ -145,7 +145,9 @@ export const OnboardingScreen = () => {
   const [dislikes, setDislikes] = useState("");
 
   // Step 4 — workout
-  const [equipment, setEquipment] = useState<string[]>(["dumbbells", "resistance_bands"]);
+  // FIX: use proper type matching PatientProfile.workoutEquipment instead of string[]
+  type EquipmentType = 'none' | 'dumbbells' | 'resistance_bands' | 'full_gym' | 'yoga_mat';
+  const [equipment, setEquipment] = useState<EquipmentType[]>(["dumbbells", "resistance_bands"]);
   const [workoutLocation, setWorkoutLocation] = useState("home");
   const [availableMinutes, setAvailableMinutes] = useState(45);
 
@@ -190,7 +192,8 @@ export const OnboardingScreen = () => {
       cuisinePreference: ["North Indian", "Pan-Indian"],
       cookingSetup: "home",
       activityLevel: "sedentary",
-      workoutEquipment: equipment as any, // FIX: string[] not assignable to equipment type
+      // FIX: properly typed now — no cast needed
+      workoutEquipment: equipment,
       workoutLocation: [workoutLocation as any],
       availableMinutes,
       preferredWorkoutTime: "morning",

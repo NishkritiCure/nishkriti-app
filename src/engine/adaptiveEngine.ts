@@ -9,6 +9,13 @@ import { DIET_LIBRARY, filterBySlot, filterByDietType, filterVeg } from "../data
 import { EXERCISE_LIBRARY, filterByLocation, filterByEquipment, filterByDifficulty } from "../data/exerciseLibrary";
 import { calcBMR, calcTDEE, macrosFromTDEE, getAge } from "../utils";
 
+// FIX: extracted magic numbers for carb adjustments into named constants
+const CARB_REDUCTION_HIGH_FBS_G = 20;   // grams to reduce when FBS elevated (DR002/DR003/PC002)
+const CARB_CRITICAL_FLOOR_G = 30;       // minimum carbs on critical FBS (DR004) — near-zero
+const CARB_INCREASE_HYPO_G = 20;        // grams to increase on hypoglycaemia (DR005)
+const CARB_INCREASE_FATIGUE_G = 15;     // grams to increase on fatigue pattern (DR011/PC030/HT010)
+const CARB_ABSOLUTE_MINIMUM_G = 20;     // never reduce below this
+
 // ── PROTOCOL REGISTRY ────────────────────────────────────────────────────────
 const PROTOCOLS: Record<string, any> = {
   diabetes_t2:  DIABETES_PROTOCOL,
@@ -199,18 +206,19 @@ function adjustMacros(base: ReturnType<typeof macrosFromTDEE>, rules: ReturnType
   let { carbs, protein, fat, cals } = base;
 
   for (const r of rules) {
+    // FIX: use named constants instead of magic numbers
     if (["DR002", "DR003", "PC002"].includes(r.ruleId)) {
-      carbs = Math.max(20, carbs - 20);
+      carbs = Math.max(CARB_ABSOLUTE_MINIMUM_G, carbs - CARB_REDUCTION_HIGH_FBS_G);
       cals  = Math.round(carbs * 4 + protein * 4 + fat * 9);
     }
     if (["DR004"].includes(r.ruleId)) {
-      carbs = 30; // near-zero — only essential
+      carbs = CARB_CRITICAL_FLOOR_G;
     }
     if (["DR005"].includes(r.ruleId)) {
-      carbs = carbs + 20; // hypoglycaemia — must raise carbs
+      carbs = carbs + CARB_INCREASE_HYPO_G;
     }
     if (["DR011", "PC030", "HT010"].includes(r.ruleId)) {
-      carbs = carbs + 15; // fatigue — raise carbs slightly
+      carbs = carbs + CARB_INCREASE_FATIGUE_G;
       cals  = Math.round(carbs * 4 + protein * 4 + fat * 9);
     }
   }

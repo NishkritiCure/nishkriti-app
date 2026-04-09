@@ -106,7 +106,8 @@ export const PatientProfileScreen = () => {
         }
         setLoading(false);
       });
-  }, [patientId]);
+  // FIX: added supabasePatient to deps — re-fetch if route params change without patientId changing
+  }, [patientId, supabasePatient]);
 
   // FIX: support both Supabase patient data (from Roster) and mock store data
   let patient: any;

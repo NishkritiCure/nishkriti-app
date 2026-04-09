@@ -19,7 +19,8 @@ export const NSlider: React.FC<Props> = ({
 }) => {
   const width = useRef(0);
 
-  const pct = (value - min) / (max - min);
+  // FIX: guard min === max — dividing by zero produces NaN slider width
+  const pct = max === min ? 0 : (value - min) / (max - min);
 
   const pan = PanResponder.create({
     onStartShouldSetPanResponder: () => true,

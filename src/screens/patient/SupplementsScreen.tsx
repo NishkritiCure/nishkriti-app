@@ -4,6 +4,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors, Typography, Spacing, Radii } from "../../theme";
 import { useAppStore } from "../../store/useAppStore";
 import { SectionCap } from "../../components/SectionCap";
+import { markSupplementTaken as markSupplementTakenSupabase } from "../../services/patientService";
+
+const IS_DEMO = !process.env.EXPO_PUBLIC_SUPABASE_URL;
 
 const ICONS: Record<string, string> = {
   "Vitamin D3 + K2": "🌞",
@@ -82,6 +85,17 @@ const SupplItem = ({ s, onToggle }: { s: any; onToggle: () => void }) => {
 export const SupplementsScreen = () => {
   const { patient, markSupplementTaken } = useAppStore();
   const { supplements } = patient;
+
+  // FIX: optimistic update — update local store immediately, sync to Supabase in background
+  // On failure, revert the local state
+  const handleToggle = (name: string, taken: boolean) => {
+    markSupplementTaken(name, taken); // instant UI update
+    if (!IS_DEMO) {
+      markSupplementTakenSupabase(name, taken).catch(() => {
+        markSupplementTaken(name, !taken); // revert on failure
+      });
+    }
+  };
   const taken = supplements.filter(s => s.taken).length;
   const pct = Math.round((taken / Math.max(supplements.length, 1)) * 100);
 
@@ -103,12 +117,13 @@ export const SupplementsScreen = () => {
           </View>
         </View>
 
-        {/* Refill warning */}
-        {supplements.some(s => s.name.includes("Berberine")) && (
+        {/* FIX: replaced hardcoded "Berberine" check with generic low-supply warning for any supplement
+             TODO: add a `refillDays` or `lowStock` flag to supplement data to drive this properly */}
+        {supplements.length > 0 && (
           <View style={styles.refill}>
             <Text style={{ fontSize: 18 }}>⚠️</Text>
             <Text style={styles.refillText}>
-              Berberine running low — approximately 7 days remaining. Message your team to arrange a refill.
+              Supplements running low? Message your team to arrange a refill.
             </Text>
           </View>
         )}
@@ -118,7 +133,7 @@ export const SupplementsScreen = () => {
           <>
             <SectionCap title={`Taken today · ${supplements.filter(s => s.taken).length}`} color={Colors.teal} />
             {supplements.filter(s => s.taken).map(s => (
-              <SupplItem key={s.name} s={s} onToggle={() => markSupplementTaken(s.name, false)} />
+              <SupplItem key={s.name} s={s} onToggle={() => handleToggle(s.name, false)} />
             ))}
           </>
         )}
@@ -128,7 +143,7 @@ export const SupplementsScreen = () => {
           <>
             <SectionCap title={`Still to take · ${supplements.filter(s => !s.taken).length}`} />
             {supplements.filter(s => !s.taken).map(s => (
-              <SupplItem key={s.name} s={s} onToggle={() => markSupplementTaken(s.name, true)} />
+              <SupplItem key={s.name} s={s} onToggle={() => handleToggle(s.name, true)} />
             ))}
           </>
         )}

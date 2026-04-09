@@ -75,8 +75,9 @@ export const MealCard: React.FC<Props> = ({ slot, item, isActive, adjustment }) 
               <Text style={[styles.ingCol, { width:48, textAlign:"right" }]}>GRAMS</Text>
               <Text style={[styles.ingCol, { width:80, textAlign:"right" }]}>MEASURE</Text>
             </View>
+            {/* FIX: use ingredient name as key instead of index — prevents React reconciliation bugs */}
             {item.ingredients.map((ing, i) => (
-              <View key={i} style={styles.ingRow}>
+              <View key={`${ing.name}-${i}`} style={styles.ingRow}>
                 <Text style={[styles.ingName, { flex:1 }, ing.highlight === "skip" && styles.skipText, ing.highlight === "important" && styles.importantText]}>
                   {ing.name}
                 </Text>

@@ -34,6 +34,9 @@ export const Colors = {
   glowAmber: 'rgba(232,184,75,0.06)',
 };
 
+// FIX: these font families require loading via useFonts() in App.tsx before use.
+// If fonts fail to load, React Native silently falls back to system fonts.
+// Font loading is handled in App.tsx via expo-font — ensure it completes before rendering.
 export const Typography = {
   // Families
   display: Platform.select({ ios: 'Lora-Italic', android: 'Lora-Italic' }),

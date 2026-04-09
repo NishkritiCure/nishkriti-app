@@ -23,6 +23,8 @@ export const DietPlanScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       if (IS_DEMO) return;
+      // FIX: clear stale plan before fetching so old data never shows on revisit
+      setSupabasePlan(null);
       setLoading(true);
       fetchTodayPlan().then(data => {
         setSupabasePlan(data);

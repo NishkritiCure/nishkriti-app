@@ -36,7 +36,11 @@ export async function registerForPushNotifications(): Promise<string | null> {
 
   // Get Expo push token
   const tokenData = await Notifications.getExpoPushTokenAsync({
-    // FIX: resolve projectId from EAS config instead of hardcoded placeholder
+    // FIX: resolve projectId from EAS config. Fallback 'nishkriti' is the app slug, NOT a valid
+    // Expo project ID (those are UUIDs). Push notifications will fail until this is set.
+    // TODO: run `eas project:init` to get the real project ID, then either:
+    //   1. Add "extra": { "eas": { "projectId": "<uuid>" } } to app.json
+    //   2. Or set via `eas.json` config
     projectId: Constants.expoConfig?.extra?.eas?.projectId ?? 'nishkriti',
   });
   const token = tokenData.data;

@@ -1,8 +1,9 @@
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Colors, Typography, Spacing, Radii } from "../../theme";
 import { useAppStore } from "../../store/useAppStore";
 import { SectionCap } from "../../components/SectionCap";
@@ -17,6 +18,18 @@ export const WorkoutScreen = () => {
   const [supabasePlan, setSupabasePlan] = useState<any>(null);
   const [loading, setLoading] = useState(!IS_DEMO);
   const [doneIds, setDoneIds] = useState<string[]>([]);
+
+  // FIX: persist workout doneIds to AsyncStorage so progress survives navigation
+  const STORAGE_KEY = `workout_done_${new Date().toISOString().split('T')[0]}`;
+  useEffect(() => {
+    AsyncStorage.getItem(STORAGE_KEY).then(val => {
+      if (val) setDoneIds(JSON.parse(val));
+    }).catch(() => {});
+  }, [STORAGE_KEY]);
+  const persistDoneIds = useCallback((ids: string[]) => {
+    setDoneIds(ids);
+    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(ids)).catch(() => {});
+  }, [STORAGE_KEY]);
 
   // FIX: fetch plan from Supabase in production
   useFocusEffect(
@@ -45,7 +58,11 @@ export const WorkoutScreen = () => {
   );
 
   const { workout, reasoning } = todayPlan;
-  const toggleDone = (id: string) => setDoneIds(d => d.includes(id) ? d.filter(i => i !== id) : [...d, id]);
+  // FIX: use persistDoneIds instead of setDoneIds to save progress
+  const toggleDone = (id: string) => {
+    const next = doneIds.includes(id) ? doneIds.filter(i => i !== id) : [...doneIds, id];
+    persistDoneIds(next);
+  };
   const doneCount = doneIds.length;
 
   return (

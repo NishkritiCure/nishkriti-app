@@ -124,8 +124,11 @@ export const useAppStore = create<AppState>((set, get) => ({
   // FIX: load real patient data from Supabase after login
   loadPatientFromSupabase: async () => {
     if (IS_DEMO) return;
+    // FIX: 15-second timeout so app doesn't hang forever if Supabase is down
+    const withTimeout = <T,>(promise: Promise<T>, ms: number): Promise<T> =>
+      Promise.race([promise, new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Supabase timeout')), ms))]);
     try {
-      const profile = await fetchMyProfile();
+      const profile = await withTimeout(fetchMyProfile(), 15000);
       if (!profile) return;
 
       const checkInsRaw = await fetchCheckIns(30);
@@ -236,14 +239,15 @@ export const useAppStore = create<AppState>((set, get) => ({
     },
   })),
 
-  submitCheckIn: (ci) => {
+  // FIX: made async and await generatePlan so plan saves to Supabase before proceeding
+  submitCheckIn: async (ci) => {
     set(state => ({
       patient: {
         ...state.patient,
         checkIns: [...state.patient.checkIns.filter(c => c.date !== ci.date), ci],
       },
     }));
-    get().generatePlan();
+    await get().generatePlan();
   },
 
   generatePlan: async () => {
@@ -260,8 +264,10 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
 
     const plan = generateDailyPlan(patient, todayCI, protocol);
-    // Attach supplements
-    plan.supplements = patient.supplements;
+    // FIX: pull supplements from doctor's protocol if available, not stale local patient.supplements
+    plan.supplements = (protocol?.supplements && protocol.supplements.length > 0)
+      ? protocol.supplements
+      : patient.supplements;
     set({ todayPlan: plan });
     // Save to patient plans (local)
     set(state => ({

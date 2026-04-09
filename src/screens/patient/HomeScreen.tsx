@@ -48,9 +48,10 @@ export const HomeScreen = () => {
     }, [])
   );
 
+  // FIX: added generatePlan and todayPlan to dependency array to prevent stale closure
   useEffect(() => {
     if (todayCI && !todayPlan) generatePlan();
-  }, [todayCI]);
+  }, [todayCI, todayPlan, generatePlan]);
 
   const fbs = todayCI?.fbs ?? latest?.fbs ?? 0;
   const fbsStatus = fbs > 180 ? "critical" : fbs > 130 ? "alert" : fbs > 100 ? "warn" : "ok";
