@@ -1,1 +1,54 @@
+# ─── Dependencies ────────────────────────────────────────────────────────────
+node_modules/
 
+# ─── Expo ────────────────────────────────────────────────────────────────────
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# ─── EAS / Builds ────────────────────────────────────────────────────────────
+*.ipa
+*.apk
+*.aab
+
+# ─── Environment Variables ───────────────────────────────────────────────────
+# Never commit real credentials — copy .env.example → .env locally
+.env
+.env.local
+.env.*.local
+
+# ─── Supabase ────────────────────────────────────────────────────────────────
+supabase/.temp/
+supabase/.branches/
+supabase/functions/.env
+
+# ─── macOS ───────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+
+# ─── IDEs & Editors ──────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*.suo
+
+# ─── Claude AI (local agent settings — machine-specific) ─────────────────────
+.claude/
+
+# ─── Logs ────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── TypeScript ──────────────────────────────────────────────────────────────
+*.tsbuildinfo
+
+# ─── Misc ────────────────────────────────────────────────────────────────────
+*.pem
+.env.bak
