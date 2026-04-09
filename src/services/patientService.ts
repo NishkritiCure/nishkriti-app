@@ -233,7 +233,8 @@ export async function markSupplementTaken(supplementName: string, taken: boolean
     .single();
 
   if (lookupError || !supplement) {
-    console.warn(`Supplement "${supplementName}" not found for patient — skipping log`);
+    // FIX: guarded with __DEV__ — supplement name is health data, should not appear in production logs
+    if (__DEV__) console.warn(`[patientService] Supplement not found for patient — skipping log`);
     return;
   }
 

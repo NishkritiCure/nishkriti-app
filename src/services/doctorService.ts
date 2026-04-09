@@ -171,7 +171,8 @@ export async function fetchActiveProtocol(patientId: string): Promise<TreatmentP
   if (!data || data.length === 0) return null;
   // FIX: warn on multiple active protocols — data integrity issue, should only have one
   if (data.length > 1) {
-    console.warn(`[doctorService] Patient ${patientId} has ${data.length} active protocols — using newest`);
+    // FIX: guarded with __DEV__ — patientId is linkable PII, should not appear in production logs
+    if (__DEV__) console.warn(`[doctorService] Patient has ${data.length} active protocols — using newest`);
   }
   return mapProtocolRow(data[0]);
 }

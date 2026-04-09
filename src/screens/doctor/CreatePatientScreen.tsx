@@ -324,7 +324,8 @@ export const CreatePatientScreen = () => {
         if (!rpcErr && rpcData) uhid = rpcData as unknown as string;
       } catch (rpcError: any) {
         // FIX: was empty catch — now logs error context (no PII) for debugging
-        console.warn('[CreatePatient] generate_uhid RPC failed, using fallback:', rpcError?.message || 'unknown');
+        // FIX: __DEV__ guard — error messages could leak internal API details in production
+        if (__DEV__) console.warn('[CreatePatient] generate_uhid RPC failed, using fallback:', rpcError?.message || 'unknown');
       }
       if (!uhid) {
         const { count } = await supabase.from('patient_profiles').select('id', { count: 'exact', head: true });

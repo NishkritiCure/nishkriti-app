@@ -19,7 +19,7 @@ Notifications.setNotificationHandler({
 
 export async function registerForPushNotifications(): Promise<string | null> {
   if (!Device.isDevice) {
-    console.log('Push notifications only work on physical devices.');
+    if (__DEV__) console.log('Push notifications only work on physical devices.');
     return null;
   }
 
@@ -30,7 +30,7 @@ export async function registerForPushNotifications(): Promise<string | null> {
     finalStatus = status;
   }
   if (finalStatus !== 'granted') {
-    console.log('Push notification permission denied.');
+    if (__DEV__) console.log('Push notification permission denied.');
     return null;
   }
 

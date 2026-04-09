@@ -100,7 +100,8 @@ export const PatientProfileScreen = () => {
       .then(({ data, error }) => {
         // FIX: check error object — previously ignored, leaving screen in stale state on API failure
         if (error) {
-          console.warn('[PatientProfile] fetch error:', error.message);
+          // FIX: __DEV__ guard — API error messages could leak internal details
+          if (__DEV__) console.warn('[PatientProfile] fetch error:', error.message);
         } else if (data) {
           setFullData(data);
         }
