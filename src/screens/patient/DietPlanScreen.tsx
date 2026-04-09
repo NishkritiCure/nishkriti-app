@@ -219,7 +219,8 @@ const s = StyleSheet.create({
   emptyText:     { fontFamily: Typography.sans, fontSize: 18, color: Colors.ink2, textAlign: "center", lineHeight: 28 },
 
   hero:          { padding: Spacing.xl, paddingBottom: Spacing.md, position: "relative" },
-  heroGlow:      { position: "absolute", inset: 0, backgroundColor: "rgba(27,107,84,0.18)" },
+  // FIX: replaced inset:0 with explicit edges (inset not valid in RN)
+  heroGlow:      { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(27,107,84,0.18)" },
   heroRow:       { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
   heroLabel:     { fontFamily: Typography.mono, fontSize: 12, letterSpacing: 2.5, color: Colors.teal },
   h2:            { fontFamily: Typography.display, fontSize: 28, color: Colors.ink, lineHeight: 36 },

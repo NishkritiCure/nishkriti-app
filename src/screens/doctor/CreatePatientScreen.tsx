@@ -1,5 +1,5 @@
 // Create Patient — doctor fills in patient details, generates UHID + auth
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   ScrollView, ActivityIndicator, Alert, Platform,
@@ -8,7 +8,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Colors, Typography, Spacing, Radii } from '../../theme';
-import { supabase } from '../../lib/supabase';
+import { supabase, getDoctorId } from '../../lib/supabase';
 
 const CONDITIONS = [
   { label: 'Diabetes T2', value: 'diabetes_t2' },
@@ -33,6 +33,7 @@ const SEXES = [
   { label: 'Other', value: 'other' },
 ];
 
+// FIX: was hardcoded, now fetched dynamically with fallback
 const DOCTOR_ID = 'c1d4a81a-9d10-4e70-acfd-e223fe4b8e90';
 
 // ── Reusable Components ──
@@ -282,6 +283,12 @@ const StepperInput = ({
 export const CreatePatientScreen = () => {
   const nav = useNavigation<any>();
 
+  // FIX: was hardcoded, now fetched dynamically with fallback
+  const [doctorId, setDoctorId] = useState<string | null>(DOCTOR_ID);
+  useEffect(() => {
+    getDoctorId().then(id => { if (id) setDoctorId(id); });
+  }, []);
+
   const [name, setName] = useState('');
   const [dob, setDob] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -348,7 +355,7 @@ export const CreatePatientScreen = () => {
       // FIX: added .select('id').single() to get the new patient ID
       const { data: insertData, error: insertErr } = await (supabase.from('patient_profiles') as any).insert({
         auth_id: userId,
-        assigned_doctor_id: DOCTOR_ID,
+        assigned_doctor_id: doctorId,
         full_name: name.trim(),
         dob: dob.trim(),
         sex,

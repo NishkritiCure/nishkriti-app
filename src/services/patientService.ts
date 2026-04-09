@@ -192,7 +192,8 @@ export async function fetchProgress(days = 90) {
     .rpc('get_patient_fbs_history', { p_patient_id: patientId, p_days: days });
 
   if (error) throw error;
-  return (data ?? []) as ProgressEntry[];
+  // FIX: rpc return type is not directly assignable — double-cast via unknown
+  return (data ?? []) as unknown as ProgressEntry[];
 }
 
 export async function fetchProgressEntries(days = 90) {
@@ -214,19 +215,36 @@ export async function fetchProgressEntries(days = 90) {
 }
 
 // ── SUPPLEMENTS ───────────────────────────────────────────────────────────────
+// FIX: supplement_logs uses supplement_id (FK to patient_supplements), not supplement_name.
+// Look up the supplement_id from patient_supplements by name first.
 export async function markSupplementTaken(supplementName: string, taken: boolean) {
   const patientId = await getPatientId();
   if (!patientId) return;
   const today = new Date().toISOString().split('T')[0];
 
+  // FIX: Resolve supplement_id from patient_supplements by name
+  const { data: supplement, error: lookupError } = await supabase
+    .from('patient_supplements')
+    .select('id')
+    .eq('patient_id', patientId)
+    .eq('name', supplementName)
+    .eq('is_active', true)
+    .limit(1)
+    .single();
+
+  if (lookupError || !supplement) {
+    console.warn(`Supplement "${supplementName}" not found for patient — skipping log`);
+    return;
+  }
+
   const { error } = await supabase
     .from('supplement_logs')
     .upsert({
       patient_id:      patientId,
-      supplement_name: supplementName,
+      supplement_id:   supplement.id,
       log_date:        today,
       taken,
-    }, { onConflict: 'patient_id,supplement_name,log_date' });
+    }, { onConflict: 'patient_id,supplement_id,log_date' });
 
   if (error) throw error;
 }
@@ -240,14 +258,24 @@ export async function sendMessageToDoctor(
   const patientId = await getPatientId();
   if (!patientId) throw new Error('Not authenticated');
 
+  // FIX: messages table requires `body` (not `content`) and `doctor_id`
+  const { data: profile } = await supabase
+    .from('patient_profiles')
+    .select('assigned_doctor_id')
+    .eq('id', patientId)
+    .single();
+  const doctorId = profile?.assigned_doctor_id;
+  if (!doctorId) throw new Error('No assigned doctor found');
+
   const { error } = await supabase
     .from('messages')
     .insert({
       patient_id:       patientId,
+      doctor_id:        doctorId,
       sender_role:      'patient',
-      content,
+      body:             content,
       urgency,
-      vitals_snapshot:  vitalsSnapshot ?? null,
+      vitals_snapshot:  (vitalsSnapshot ?? null) as any, // FIX: Record<string,unknown> not assignable to Json
     });
 
   if (error) throw error;

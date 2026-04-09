@@ -158,7 +158,8 @@ export const SupplementsScreen = () => {
 const styles = StyleSheet.create({
   safe:       { flex: 1, backgroundColor: Colors.deep },
   header:     { padding: Spacing.xl, paddingBottom: Spacing.md, position: "relative" },
-  headerGlow: { position: "absolute", inset: 0, backgroundColor: "rgba(27,107,84,0.12)" },
+  // FIX: replaced inset:0 with explicit edges (inset not valid in RN)
+  headerGlow: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(27,107,84,0.12)" },
   title:      { fontFamily: Typography.sansMed, fontSize: 22, color: Colors.ink, marginBottom: 3 },
   sub:        { fontFamily: Typography.sans, fontSize: 15, color: Colors.ink2 },
   progRow:    { flexDirection: "row", alignItems: "center", gap: 12, marginTop: Spacing.sm },

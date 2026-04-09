@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { View, Text, ScrollView, StyleSheet, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useFocusEffect } from "@react-navigation/native";
 import Svg, { Path, Circle, Defs, LinearGradient as SvgGrad, Stop, Rect } from "react-native-svg";
 import { Colors, Typography, Spacing, Radii } from "../../theme";
 import { useAppStore } from "../../store/useAppStore";
@@ -74,8 +75,21 @@ const WeightChart = ({ data }: { data: { weight: number; date: string }[] }) => 
   );
 };
 
+// FIX: check if running against live Supabase (not demo mode)
+const IS_DEMO = !process.env.EXPO_PUBLIC_SUPABASE_URL;
+
 export const ProgressScreen = () => {
   const { patient } = useAppStore();
+
+  // FIX: refresh patient data from Supabase when tab is focused
+  useFocusEffect(
+    useCallback(() => {
+      if (!IS_DEMO) {
+        useAppStore.getState().loadPatientFromSupabase();
+      }
+    }, [])
+  );
+
   const { profile, progress } = patient;
   const first  = progress[0];
   const latest = progress[progress.length - 1];
@@ -192,7 +206,8 @@ export const ProgressScreen = () => {
 const s = StyleSheet.create({
   safe:          { flex: 1, backgroundColor: Colors.deep },
   hero:          { padding: Spacing.xl, paddingBottom: Spacing.md, position: "relative" },
-  heroGlow:      { position: "absolute", inset: 0, backgroundColor: "rgba(27,107,84,0.14)" },
+  // FIX: replaced inset:0 with explicit edges (inset not valid in RN)
+  heroGlow:      { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(27,107,84,0.14)" },
   lbl:           { fontFamily: Typography.mono, fontSize: 12, letterSpacing: 2.5, color: Colors.teal, marginBottom: 4 },
   h2:            { fontFamily: Typography.display, fontSize: 28, color: Colors.ink, lineHeight: 38 },
   sub:           { fontFamily: Typography.sans, fontSize: 14, color: Colors.ink2, marginTop: 5 },

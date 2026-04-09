@@ -190,7 +190,7 @@ export const OnboardingScreen = () => {
       cuisinePreference: ["North Indian", "Pan-Indian"],
       cookingSetup: "home",
       activityLevel: "sedentary",
-      workoutEquipment: equipment,
+      workoutEquipment: equipment as any, // FIX: string[] not assignable to equipment type
       workoutLocation: [workoutLocation as any],
       availableMinutes,
       preferredWorkoutTime: "morning",
@@ -259,7 +259,10 @@ export const OnboardingScreen = () => {
       <MultiChip options={CONDITIONS} selected={conditions} onToggle={k => toggle(conditions, setConditions, k as Condition)} />
       {conditions.length > 1 && (
         <>
-          <Q style={{ marginTop: Spacing.lg }}>Which is your primary concern?</Q>
+          {/* FIX: Q component does not accept style prop; use View wrapper */}
+          <View style={{ marginTop: Spacing.lg }}>
+            <Q>Which is your primary concern?</Q>
+          </View>
           <SingleChip
             options={CONDITIONS.filter(c => conditions.includes(c.key))}
             selected={primaryCondition}

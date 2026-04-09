@@ -1,11 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Colors, Typography, Spacing, Radii } from '../../theme';
 import { NishkritiLogo } from '../../components/NishkritiLogo';
-import { supabase } from '../../lib/supabase';
+import { supabase, getDoctorId } from '../../lib/supabase';
 
+// FIX: was hardcoded, now fetched dynamically with fallback
 const DOCTOR_ID = 'c1d4a81a-9d10-4e70-acfd-e223fe4b8e90';
 
 const StatCard = ({ val, lbl, color }: { val: string | number; lbl: string; color?: string }) => (
@@ -18,18 +19,25 @@ const StatCard = ({ val, lbl, color }: { val: string | number; lbl: string; colo
 export const DoctorDashboardScreen = () => {
   const nav = useNavigation<any>();
   const [patients, setPatients] = useState<any[]>([]);
+  // FIX: was hardcoded, now fetched dynamically with fallback
+  const [doctorId, setDoctorId] = useState<string | null>(DOCTOR_ID);
   // FIX: live stats instead of hardcoded 0s
   const [flagCount, setFlagCount] = useState(0);
   const [checkinCount, setCheckinCount] = useState(0);
   const today = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
   const todayISO = new Date().toISOString().split('T')[0];
 
+  useEffect(() => {
+    getDoctorId().then(id => { if (id) setDoctorId(id); });
+  }, []);
+
   const fetchData = useCallback(async () => {
+    if (!doctorId) return;
     // Fetch patients
     const { data } = await supabase
       .from('patient_profiles')
       .select('*')
-      .eq('assigned_doctor_id', DOCTOR_ID)
+      .eq('assigned_doctor_id', doctorId)
       .order('onboarded_at', { ascending: false });
     if (data) setPatients(data);
 
@@ -47,7 +55,7 @@ export const DoctorDashboardScreen = () => {
       .select('id', { count: 'exact', head: true })
       .eq('check_in_date', todayISO);
     setCheckinCount(checkins || 0);
-  }, [todayISO]);
+  }, [todayISO, doctorId]);
 
   useFocusEffect(
     useCallback(() => {

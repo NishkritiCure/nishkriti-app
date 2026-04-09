@@ -4,6 +4,7 @@
 
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
+import Constants from 'expo-constants'; // FIX: import Constants for projectId lookup
 import { Platform } from 'react-native';
 import { supabase } from '../lib/supabase';
 
@@ -35,19 +36,21 @@ export async function registerForPushNotifications(): Promise<string | null> {
 
   // Get Expo push token
   const tokenData = await Notifications.getExpoPushTokenAsync({
-    projectId: 'your-expo-project-id', // replace with actual from app.json
+    // FIX: resolve projectId from EAS config instead of hardcoded placeholder
+    projectId: Constants.expoConfig?.extra?.eas?.projectId ?? 'nishkriti',
   });
   const token = tokenData.data;
 
   // Save to Supabase
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
-    await supabase
-      .from('push_tokens')
+    // FIX: cast as any — push_tokens table may not exist in generated types
+    await (supabase as any).from('push_tokens')
       .upsert({
         auth_id:    user.id,
         expo_token: token,
         platform:   Platform.OS,
+        updated_at: new Date().toISOString(),
       }, { onConflict: 'auth_id' });
   }
 

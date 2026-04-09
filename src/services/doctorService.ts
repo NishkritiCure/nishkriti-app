@@ -43,8 +43,8 @@ export async function fetchPatientFBSHistory(patientId: string, days = 30) {
 }
 
 export async function approvePlan(planId: string, note?: string) {
-  const { error } = await supabase
-    .rpc('doctor_approve_plan', {
+  // FIX: 'doctor_approve_plan' RPC not in generated types — cast as any
+  const { error } = await (supabase.rpc as any)('doctor_approve_plan', {
       p_plan_id: planId,
       p_doctor_note: note,
     });
@@ -94,12 +94,17 @@ export async function sendMessageToPatient(
   patientId: string,
   content: string
 ) {
+  // FIX: messages table requires `body` (not `content`) and `doctor_id`
+  const doctorId = await getDoctorId();
+  if (!doctorId) throw new Error('Not authenticated as doctor');
+
   const { error } = await supabase
     .from('messages')
     .insert({
       patient_id:   patientId,
+      doctor_id:    doctorId,
       sender_role:  'doctor',
-      content,
+      body:         content,
       urgency:      'update',
     });
   if (error) throw error;

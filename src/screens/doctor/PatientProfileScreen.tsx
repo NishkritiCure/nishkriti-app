@@ -161,7 +161,16 @@ export const PatientProfileScreen = () => {
           <BiomarkerCard val={`${profile.weightKg || '—'}`} lbl="Weight kg" status="ok" statusColor={`↓ ${Math.abs(Number(weightDelta))} kg`} />
           <BiomarkerCard val={latest?.waistCm || profile.baselineWaist || '—'} lbl="Waist cm" status="ok" statusColor={`↓ ${waistDelta} cm`} />
           <BiomarkerCard val={latest ? `${latest.energyLevel}/5` : '—'} lbl="Energy" status={latest?.energyLevel<=2?'warn':'ok'} statusColor={latest?.energyLevel<=2?'Low':latest?'Average':'—'} />
-          <BiomarkerCard val="—" lbl="Adherence" status="ok" statusColor="—" />
+          {/* FIX: compute adherence from check-ins in last 14 days instead of hardcoded "—" */}
+          {(() => {
+            const now = Date.now();
+            const fourteenDaysAgo = now - 14 * 86400000;
+            const recent = checkIns.filter((ci: any) => new Date(ci.date).getTime() >= fourteenDaysAgo).length;
+            const pct = Math.min(100, Math.round((recent / 14) * 100));
+            const status = pct >= 80 ? 'ok' : pct >= 50 ? 'warn' : 'bad';
+            const label = pct >= 80 ? 'Good' : pct >= 50 ? 'Fair' : 'Low';
+            return <BiomarkerCard val={`${pct}%`} lbl="Adherence" status={status} statusColor={label} />;
+          })()}
           {/* FIX: guard against division by zero when heightCm is 0 or missing */}
           <BiomarkerCard val={profile.heightCm ? (profile.weightKg/(profile.heightCm/100)**2).toFixed(1) : '—'} lbl="BMI" status="warn" statusColor={profile.heightCm ? 'Overweight' : '—'} />
         </View>

@@ -157,7 +157,8 @@ const styles = StyleSheet.create({
   safe: { flex:1, backgroundColor:Colors.deep },
   scroll: { flex:1 },
   hero: { padding:Spacing.xl, paddingBottom:Spacing.md, position:"relative" },
-  heroGlow: { position:"absolute", inset:0, backgroundColor:"rgba(27,107,84,0.18)" },
+  // FIX: replaced inset:0 with explicit edges (inset not valid in RN)
+  heroGlow: { position:"absolute", top:0, left:0, right:0, bottom:0, backgroundColor:"rgba(27,107,84,0.18)" },
   heroRow: { flexDirection:"row", justifyContent:"space-between", alignItems:"flex-start" },
   greeting: { fontFamily:Typography.mono, fontSize:13, letterSpacing:2.5, color:Colors.teal, marginBottom:3 },
   name: { fontFamily:Typography.display, fontSize:42, color:Colors.ink, lineHeight:53 },

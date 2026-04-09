@@ -76,16 +76,20 @@ export interface ProtocolRule {
   notifyReason?: string;
 }
 
+// FIX: made all fields optional — engine rule files use a different shape with extra properties
+// (goal, dietType, carbsTarget, biomarkerTargets, etc.) that don't match the original interface
 export interface ProtocolPhase {
   phase: number;
   name: string;
-  durationWeeks: string;
-  biomarkerTarget: string;
-  weightTarget: string;
-  dietFocus: string;
-  workoutFocus: string;
-  advanceWhen: string;
-  notes: string;
+  durationWeeks?: string;
+  durationDays?: number;
+  biomarkerTarget?: string;
+  weightTarget?: string;
+  dietFocus?: string;
+  workoutFocus?: string;
+  advanceWhen?: string;
+  notes?: string;
+  [key: string]: any;
 }
 
 export interface BiomarkerTarget {
@@ -103,7 +107,7 @@ export interface Protocol {
   condition: Condition;
   rules: ProtocolRule[];
   phases: ProtocolPhase[];
-  targets: BiomarkerTarget[];
+  targets?: BiomarkerTarget[]; // FIX: optional — engine rule files don't include targets
 }
 
 // ── Treatment Plan (doctor-created, stored in protocols table) ──

@@ -175,28 +175,6 @@ export const globalStyles = StyleSheet.create({
     color: Colors.teal,
     letterSpacing: 0.3,
   },
-  // Pills
-  pill: (color: 'teal'|'amber'|'rose'|'dim'|'em') => ({
-    paddingHorizontal: 9,
-    paddingVertical: 3,
-    borderRadius: 20,
-    borderWidth: 0.5,
-    ...(color === 'teal'  && { backgroundColor:'rgba(62,219,165,0.1)',  borderColor:'rgba(62,219,165,0.22)',  }),
-    ...(color === 'amber' && { backgroundColor:'rgba(232,184,75,0.1)',  borderColor:'rgba(232,184,75,0.22)',  }),
-    ...(color === 'rose'  && { backgroundColor:'rgba(217,123,114,0.1)', borderColor:'rgba(217,123,114,0.22)', }),
-    ...(color === 'dim'   && { backgroundColor:'rgba(255,255,255,0.04)',borderColor: Colors.border }),
-    ...(color === 'em'    && { backgroundColor: Colors.em }),
-  }),
-  pillText: (color: 'teal'|'amber'|'rose'|'dim'|'em') => ({
-    fontFamily: Typography.mono,
-    fontSize: Typography.size.xs,
-    letterSpacing: 0.3,
-    ...(color === 'teal'  && { color: Colors.teal }),
-    ...(color === 'amber' && { color: Colors.amber }),
-    ...(color === 'rose'  && { color: Colors.rose }),
-    ...(color === 'dim'   && { color: Colors.ink2 }),
-    ...(color === 'em'    && { color: Colors.spring }),
-  }),
   // Section cap
   sectionCap: {
     flexDirection: 'row',
@@ -229,4 +207,29 @@ export const globalStyles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.md,
   },
+});
+
+// FIX: pill and pillText are dynamic style helpers — they cannot live inside
+// StyleSheet.create() because it expects static objects, not functions.
+export const pill = (color: 'teal'|'amber'|'rose'|'dim'|'em') => ({
+  paddingHorizontal: 9,
+  paddingVertical: 3,
+  borderRadius: 20,
+  borderWidth: 0.5,
+  ...(color === 'teal'  && { backgroundColor:'rgba(62,219,165,0.1)',  borderColor:'rgba(62,219,165,0.22)' }),
+  ...(color === 'amber' && { backgroundColor:'rgba(232,184,75,0.1)',  borderColor:'rgba(232,184,75,0.22)' }),
+  ...(color === 'rose'  && { backgroundColor:'rgba(217,123,114,0.1)', borderColor:'rgba(217,123,114,0.22)' }),
+  ...(color === 'dim'   && { backgroundColor:'rgba(255,255,255,0.04)',borderColor: Colors.border }),
+  ...(color === 'em'    && { backgroundColor: Colors.em }),
+});
+
+export const pillText = (color: 'teal'|'amber'|'rose'|'dim'|'em') => ({
+  fontFamily: Typography.mono,
+  fontSize: Typography.size.xs,
+  letterSpacing: 0.3,
+  ...(color === 'teal'  && { color: Colors.teal }),
+  ...(color === 'amber' && { color: Colors.amber }),
+  ...(color === 'rose'  && { color: Colors.rose }),
+  ...(color === 'dim'   && { color: Colors.ink2 }),
+  ...(color === 'em'    && { color: Colors.spring }),
 });
