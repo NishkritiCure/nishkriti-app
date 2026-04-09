@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import type { Session } from '@supabase/supabase-js';
@@ -25,52 +26,66 @@ export const RootNavigator = () => {
   useEffect(() => {
     if (DEMO_MODE) return; // use mock store in demo mode
 
-    // Lazy import Supabase to avoid breaking demo mode
+    // FIX: wrapped entire Supabase init in try/catch with .catch() on import
+    // Any failure at any point must still set authChecked=true to avoid black screen
     import('../lib/supabase').then(({ supabase }) => {
-      // FIX: added .catch() — without it, a rejected promise hangs the app on white screen forever
+      if (!supabase) { setAuthChecked(true); return; }
+
       supabase.auth.getSession().then(async ({ data: { session } }) => {
         setSession(session);
         if (session) {
-          const { data } = await supabase
-            .from('doctors')
-            .select('id')
-            .eq('auth_id', session.user.id)
-            .single();
-          setIsDoctor(!!data);
-          if (!data) {
-            useAppStore.getState().loadPatientFromSupabase();
-          }
-        }
-        setAuthChecked(true);
-      }).catch(() => {
-        // FIX: ensure auth check completes even if getSession fails (network error, etc.)
-        setAuthChecked(true);
-      });
-
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        async (_event, session) => {
-          setSession(session);
-          if (session) {
+          try {
             const { data } = await supabase
               .from('doctors')
               .select('id')
               .eq('auth_id', session.user.id)
               .single();
             setIsDoctor(!!data);
-            // FIX: load patient profile from Supabase if not a doctor
             if (!data) {
               useAppStore.getState().loadPatientFromSupabase();
             }
-          } else {
-            setIsDoctor(false);
-          }
+          } catch {}
         }
-      );
-      return () => subscription.unsubscribe();
+        setAuthChecked(true);
+      }).catch(() => {
+        setAuthChecked(true);
+      });
+
+      try {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(
+          async (_event, session) => {
+            setSession(session);
+            if (session) {
+              try {
+                const { data } = await supabase
+                  .from('doctors')
+                  .select('id')
+                  .eq('auth_id', session.user.id)
+                  .single();
+                setIsDoctor(!!data);
+                if (!data) {
+                  useAppStore.getState().loadPatientFromSupabase();
+                }
+              } catch {}
+            } else {
+              setIsDoctor(false);
+            }
+          }
+        );
+        return () => subscription.unsubscribe();
+      } catch {}
+    }).catch(() => {
+      // FIX: if dynamic import itself fails, still show the app (splash/auth screens)
+      setAuthChecked(true);
     });
   }, []);
 
-  if (!authChecked) return null; // brief white flash before fonts loaded anyway
+  // FIX: show loading text instead of null — null causes black screen while checking auth
+  if (!authChecked) return (
+    <View style={{ flex: 1, backgroundColor: '#020604', alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ color: '#3EDBA5', fontSize: 16, fontFamily: 'System' }}>Connecting...</Text>
+    </View>
+  );
 
   const nav_theme = {
     dark: true,

@@ -16,7 +16,7 @@ import {
 import * as SplashScreen from 'expo-splash-screen';
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
-import { View, Alert } from 'react-native';
+import { View, Text, Alert } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { RootNavigator } from './src/navigation/RootNavigator';
@@ -43,7 +43,7 @@ export default function App() {
     const sub = Notifications.addNotificationResponseReceivedListener(response => {
       const data = response.notification.request.content.data;
       // Navigation handled by RootNavigator listening to notification data
-      console.log('Notification tapped:', data);
+      if (__DEV__) console.log('Notification tapped:', data);
     });
     return () => sub.remove();
   }, []);
@@ -52,7 +52,12 @@ export default function App() {
     if (fontsLoaded) await SplashScreen.hideAsync();
   }, [fontsLoaded]);
 
-  if (!fontsLoaded) return null;
+  // FIX: show minimal loading indicator instead of null — null causes black screen if fonts fail
+  if (!fontsLoaded) return (
+    <View style={{ flex: 1, backgroundColor: '#020604', alignItems: 'center', justifyContent: 'center' }}>
+      <Text style={{ color: '#3EDBA5', fontSize: 18, fontFamily: 'System' }}>Loading...</Text>
+    </View>
+  );
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
