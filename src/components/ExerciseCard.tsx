@@ -36,9 +36,11 @@ export const ExerciseCard: React.FC<Props> = ({ item, done, onToggleDone }) => (
       {item.tempoNote && <Text style={styles.tempo}>Tempo {item.tempoNote}</Text>}
     </View>
     {/* Tick */}
+    {/* FIX: hitSlop expands tappable area to 44x44 minimum without changing visual size */}
     <TouchableOpacity
       style={[styles.tick, done && styles.tickDone]}
       onPress={onToggleDone}
+      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
     >
       {done && <Text style={styles.tickCheck}>✓</Text>}
     </TouchableOpacity>
