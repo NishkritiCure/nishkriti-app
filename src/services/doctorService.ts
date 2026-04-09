@@ -25,7 +25,7 @@ export async function fetchPatientProfile(patientId: string) {
         order(daily_plans.plan_date.desc),
       progress_entries(entry_date, weight_kg, waist_cm, fbs_mg_dl)
         order(progress_entries.entry_date.asc),
-      patient_supplements(supplement_name, dose, timing, with_food, patient_reason, is_active)
+      patient_supplements(name, dose, timing, with_food, patient_reason, is_active)
     `)
     .eq('id', patientId)
     .single();

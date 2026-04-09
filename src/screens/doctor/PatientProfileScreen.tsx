@@ -58,7 +58,8 @@ const adaptSupabasePatient = (sp: any) => ({
     waistCm: ci.waist_cm,
   })),
   supplements: (sp.patient_supplements || []).map((s: any) => ({
-    name: s.supplement_name,
+    // FIX: column is `name` not `supplement_name` in patient_supplements table
+    name: s.name,
     dose: s.dose,
     timing: s.timing,
     withFood: s.with_food,
@@ -93,7 +94,7 @@ export const PatientProfileScreen = () => {
         *,
         daily_check_ins(check_in_date, fbs_mg_dl, weight_kg, energy_level, waist_cm),
         progress_entries(entry_date, weight_kg, waist_cm, fbs_mg_dl),
-        patient_supplements(supplement_name, dose, timing, with_food, patient_reason, is_active)
+        patient_supplements(name, dose, timing, with_food, patient_reason, is_active)
       `)
       .eq('id', patientId)
       .single()
