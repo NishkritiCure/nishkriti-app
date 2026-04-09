@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "Nishkriti",
+    "slug": "nishkriti",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "scheme": "nishkriti",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#020604"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nishkriti.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#020604"
+      },
+      "package": "com.nishkriti.app"
+    },
+    "plugins": [
+      "expo-font",
+      [
+        "expo-splash-screen",
+        { "backgroundColor": "#020604" }
+      ]
+    ]
+  }
+}

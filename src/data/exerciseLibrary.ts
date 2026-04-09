@@ -1,0 +1,286 @@
+
+import type { ExerciseItem } from "../types";
+
+export const EXERCISE_LIBRARY: ExerciseItem[] = [
+  // ── CARDIO ─────────────────────────────────────
+  {
+    id:"E001", name:"Brisk walking", category:"cardio",
+    muscleGroups:["full body","cardiovascular"],
+    equipment:[], location:["outdoor","home"],
+    difficulty:1, defaultSets:1, defaultReps:"20–45 min",
+    restSeconds:0, tempoNote:undefined,
+    cueText:"Maintain a pace where you can talk but feel slightly breathless. Swing arms naturally.",
+    mistakeNote:"Don't look at phone — look ahead. Wear supportive shoes.",
+    calsPer10Min:58, avoidIf:[], postMealSuitable:true,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E002", name:"Post-dinner walk", category:"cardio",
+    muscleGroups:["cardiovascular","metabolic"],
+    equipment:[], location:["outdoor"],
+    difficulty:1, defaultSets:1, defaultReps:"15–20 min",
+    restSeconds:0,
+    cueText:"Gentle pace. Start 15 min after finishing dinner. No phone scrolling — stay mindful.",
+    mistakeNote:"Do not walk immediately after — wait 15 min for initial digestion.",
+    calsPer10Min:45, avoidIf:[], postMealSuitable:true,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E003", name:"Stationary cycling", category:"cardio",
+    muscleGroups:["legs","cardiovascular"],
+    equipment:["cycle"], location:["gym","home"],
+    difficulty:2, defaultSets:1, defaultReps:"20–40 min",
+    restSeconds:0,
+    cueText:"Seat at hip height when standing. Zone 2 pace — conversational. Resistance moderate.",
+    mistakeNote:"Don't hunch forward. Keep back straight. Pedal with full foot, not toes only.",
+    calsPer10Min:90, avoidIf:[], postMealSuitable:true,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E004", name:"Calf raises (post-meal)", category:"cardio",
+    muscleGroups:["calves","circulation"],
+    equipment:[], location:["home","gym","outdoor"],
+    difficulty:1, defaultSets:3, defaultReps:"20–25 reps",
+    restSeconds:30, tempoNote:"3 sec up, 1 pause, 3 sec down",
+    cueText:"Stand tall. Rise onto toes slowly. Hold 1 sec at top. Lower with control. Even while standing at desk.",
+    mistakeNote:"Don't let heels slam down. Control the descent.",
+    calsPer10Min:25, avoidIf:[], postMealSuitable:true,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  // ── STRENGTH — LOWER BODY ──────────────────────
+  {
+    id:"E010", name:"Goblet squat (dumbbell)", category:"strength",
+    muscleGroups:["quadriceps","glutes","hamstrings"],
+    equipment:["dumbbells"], location:["home","gym"],
+    difficulty:2, defaultSets:3, defaultReps:"12–15 reps",
+    restSeconds:45, tempoNote:"3-1-2",
+    cueText:"Hold one dumbbell vertically at chest. Feet shoulder-width, toes 15° out. Squat until thighs parallel. Chest up, knees track over toes.",
+    mistakeNote:"Do not let heels rise. Do not cave knees inward. No barbell variation — use dumbbell only.",
+    calsPer10Min:55, avoidIf:["severe knee pain"], postMealSuitable:false,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E011", name:"Leg press (machine)", category:"strength",
+    muscleGroups:["quadriceps","glutes","hamstrings"],
+    equipment:["leg press machine"], location:["gym"],
+    difficulty:2, defaultSets:3, defaultReps:"12–15 reps",
+    restSeconds:60, tempoNote:"2-1-3",
+    cueText:"Feet hip-width on platform. Lower until 90° knee angle. Push through heels. Do NOT lock knees at top.",
+    mistakeNote:"Never lock out knees at extension — injury risk. Keep lower back against pad.",
+    calsPer10Min:60, avoidIf:["severe knee pain"], postMealSuitable:false,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E012", name:"Reverse lunge", category:"strength",
+    muscleGroups:["quadriceps","glutes","balance"],
+    equipment:[], location:["home","gym"],
+    difficulty:3, defaultSets:3, defaultReps:"10–12 each leg",
+    restSeconds:45, tempoNote:"2-1-3",
+    cueText:"Step back with one leg. Lower back knee toward floor. Front shin stays vertical. Push through front heel to return.",
+    mistakeNote:"Easier on knees than forward lunge. Keep torso upright. Don't let front knee pass toes.",
+    calsPer10Min:60, avoidIf:["severe knee instability"], postMealSuitable:false,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E013", name:"Glute bridge", category:"strength",
+    muscleGroups:["glutes","hamstrings","lower back"],
+    equipment:[], location:["home","gym"],
+    difficulty:1, defaultSets:3, defaultReps:"15–20 reps",
+    restSeconds:30, tempoNote:"2-2-2",
+    cueText:"Lie on back, knees bent, feet flat. Drive hips up until body is straight. Squeeze glutes at top — hold 2 sec. Lower slowly.",
+    mistakeNote:"Don't hyperextend lower back. Keep core braced. Feet hip-width.",
+    calsPer10Min:35, avoidIf:[], postMealSuitable:false,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E014", name:"Wall sit", category:"strength",
+    muscleGroups:["quadriceps","glutes"],
+    equipment:[], location:["home","gym"],
+    difficulty:2, defaultSets:3, defaultReps:"30–60 sec hold",
+    restSeconds:45, tempoNote:"isometric",
+    cueText:"Back flat against wall. Slide down until 90° knee angle. Hold. Build from 20 sec to 60 sec.",
+    mistakeNote:"Thighs should be parallel to floor. Don't let knees extend past toes.",
+    calsPer10Min:40, avoidIf:["severe knee arthritis"], postMealSuitable:false,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  // ── STRENGTH — UPPER BODY ──────────────────────
+  {
+    id:"E020", name:"Cable chest press (machine)", category:"strength",
+    muscleGroups:["chest","shoulders","triceps"],
+    equipment:["cable machine"], location:["gym"],
+    difficulty:2, defaultSets:3, defaultReps:"12 reps",
+    restSeconds:45, tempoNote:"3-1-2",
+    cueText:"Elbows at 90° at start. Push forward, bringing hands together. 3 sec push, 1 pause, 2 sec return. Feel chest — not shoulders.",
+    mistakeNote:"Do not flare elbows too wide. Keep shoulders down and back.",
+    calsPer10Min:50, avoidIf:["shoulder impingement"], postMealSuitable:false,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E021", name:"Seated cable row", category:"strength",
+    muscleGroups:["back","biceps","rear deltoid"],
+    equipment:["cable machine"], location:["gym"],
+    difficulty:2, defaultSets:3, defaultReps:"12 reps",
+    restSeconds:45, tempoNote:"2-1-3",
+    cueText:"Sit tall. Pull cable to lower chest. Shoulders DOWN throughout. Squeeze both shoulder blades together at end — hold 1 sec. 3 sec slow return.",
+    mistakeNote:"Do not round forward on the return. Feel back — not biceps. Shoulders away from ears.",
+    calsPer10Min:45, avoidIf:["lower back injury"], postMealSuitable:false,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E022", name:"Machine shoulder press", category:"strength",
+    muscleGroups:["deltoids","triceps"],
+    equipment:["shoulder press machine"], location:["gym"],
+    difficulty:2, defaultSets:3, defaultReps:"10–12 reps",
+    restSeconds:60, tempoNote:"2-1-3",
+    cueText:"Seated. Elbows at 90° at start position. Press up — do NOT lock elbows at top. 3 sec lower is where the real work happens. Sit tall.",
+    mistakeNote:"Do not shrug shoulders. Keep core engaged. Avoid arching lower back.",
+    calsPer10Min:45, avoidIf:["shoulder impingement"], postMealSuitable:false,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E023", name:"Dumbbell bicep curl", category:"strength",
+    muscleGroups:["biceps","forearms"],
+    equipment:["dumbbells"], location:["home","gym"],
+    difficulty:2, defaultSets:3, defaultReps:"12–15 reps",
+    restSeconds:45, tempoNote:"2-1-3",
+    cueText:"Arms fully extended at start. Curl slowly — supinate wrist at top (turn palm toward ceiling). 3 sec slow lower. No swinging.",
+    mistakeNote:"Keep elbows fixed — don't swing them forward. Slow eccentric is the key.",
+    calsPer10Min:35, avoidIf:["elbow pain"], postMealSuitable:false,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E024", name:"Tricep dip (chair)", category:"strength",
+    muscleGroups:["triceps","shoulders"],
+    equipment:["chair"], location:["home"],
+    difficulty:2, defaultSets:3, defaultReps:"10–12 reps",
+    restSeconds:45, tempoNote:"2-1-3",
+    cueText:"Hands on chair edge behind you, hips off chair. Lower to 90° elbow angle. Keep elbows close to body. Press through palms to return.",
+    mistakeNote:"Elbows should flare slightly backward — not out to the sides.",
+    calsPer10Min:40, avoidIf:["shoulder pain","wrist pain"], postMealSuitable:false,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E025", name:"Resistance band pull-apart", category:"resistance_band",
+    muscleGroups:["rear deltoids","upper back","rotator cuff"],
+    equipment:["resistance_bands"], location:["home","gym"],
+    difficulty:1, defaultSets:3, defaultReps:"15–20 reps",
+    restSeconds:30, tempoNote:"2-1-2",
+    cueText:"Hold band at chest width. Arms straight. Pull apart to sides until arms fully open. Slow return. Essential for posture.",
+    mistakeNote:"Keep arms at shoulder height — not drifting down. Thumbs pointing up.",
+    calsPer10Min:30, avoidIf:["shoulder injury"], postMealSuitable:false,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  // ── CORE ───────────────────────────────────────
+  {
+    id:"E030", name:"Dead bug", category:"strength",
+    muscleGroups:["deep core","transverse abdominis"],
+    equipment:[], location:["home","gym"],
+    difficulty:2, defaultSets:3, defaultReps:"10 reps each side",
+    restSeconds:30, tempoNote:"slow and controlled",
+    cueText:"Lie on back. Arms up, knees at 90°. Extend opposite arm + leg slowly while lower back stays PRESSED to floor. Return. Switch sides.",
+    mistakeNote:"Lower back must not lift off floor — this is the whole point. Move only as far as you can maintain back contact.",
+    calsPer10Min:25, avoidIf:[], postMealSuitable:false,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E031", name:"Forearm plank", category:"strength",
+    muscleGroups:["core","shoulders","glutes"],
+    equipment:[], location:["home","gym"],
+    difficulty:2, defaultSets:3, defaultReps:"20–60 sec hold",
+    restSeconds:30, tempoNote:"isometric",
+    cueText:"Elbows under shoulders. Body in straight line from head to heels. Engage core — don't let hips sag or pike up. Breathe normally.",
+    mistakeNote:"No sagging hips. No holding breath. Build from 20 sec before attempting 60 sec.",
+    calsPer10Min:30, avoidIf:["severe wrist pain"], postMealSuitable:false,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E032", name:"Bird dog", category:"strength",
+    muscleGroups:["core","glutes","lower back"],
+    equipment:[], location:["home"],
+    difficulty:1, defaultSets:3, defaultReps:"10 each side",
+    restSeconds:30, tempoNote:"slow 3-2-3",
+    cueText:"On hands and knees. Extend opposite arm and leg simultaneously. Hold 2 sec. Keep pelvis level — no rotation. Return slowly.",
+    mistakeNote:"Don't let hips rotate. Don't raise leg higher than hip height. Keep spine neutral.",
+    calsPer10Min:22, avoidIf:[], postMealSuitable:false,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  // ── YOGA / FLEXIBILITY ─────────────────────────
+  {
+    id:"E040", name:"Surya namaskar (5 rounds)", category:"yoga",
+    muscleGroups:["full body"],
+    equipment:["yoga_mat"], location:["home"],
+    difficulty:2, defaultSets:1, defaultReps:"5 rounds (10 min)",
+    restSeconds:0,
+    cueText:"12-position flow. Slow pace for beginners — 30–45 sec per round. Synchronise breath with each movement. Morning practice preferred.",
+    mistakeNote:"Do not rush. Slow sunrise pace is more beneficial than fast. Modify low lunge if knees are sensitive.",
+    calsPer10Min:55, avoidIf:["severe joint pain"], postMealSuitable:true,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E041", name:"Seated twist (Ardha Matsyendrasana)", category:"yoga",
+    muscleGroups:["spine","digestive organs"],
+    equipment:["yoga_mat"], location:["home"],
+    difficulty:1, defaultSets:2, defaultReps:"30–45 sec each side",
+    restSeconds:0,
+    cueText:"Sit cross-legged. Twist torso — hand on opposite knee. Look over shoulder. Breathe into the twist. Hold 30–45 sec each side.",
+    mistakeNote:"Twist from the abdomen — not just the shoulders. Keep spine long, don't collapse.",
+    calsPer10Min:12, avoidIf:["disc herniation"], postMealSuitable:true,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E042", name:"Child's pose (Balasana)", category:"yoga",
+    muscleGroups:["back","hips","shoulders"],
+    equipment:["yoga_mat"], location:["home"],
+    difficulty:1, defaultSets:1, defaultReps:"60–120 sec",
+    restSeconds:0,
+    cueText:"Kneel, sit back on heels, fold forward, arms extended. Breathe into lower back. Full relaxation pose — no effort.",
+    mistakeNote:"Breathe slowly. This is rest, not a stretch to force.",
+    calsPer10Min:8, avoidIf:[], postMealSuitable:true,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  {
+    id:"E043", name:"Legs up wall (Viparita Karani)", category:"yoga",
+    muscleGroups:["legs","circulation"],
+    equipment:[], location:["home"],
+    difficulty:1, defaultSets:1, defaultReps:"5–10 min",
+    restSeconds:0,
+    cueText:"Lie on back, legs resting up against wall. Arms relaxed at sides. Let gravity drain lymph from legs. Eyes closed.",
+    mistakeNote:"Not for patients with glaucoma or severely elevated BP. Modified version: feet on couch cushion.",
+    calsPer10Min:5, avoidIf:["glaucoma","severe hypertension"], postMealSuitable:true,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+  // ── HIIT ───────────────────────────────────────
+  {
+    id:"E050", name:"Bodyweight HIIT circuit", category:"hiit",
+    muscleGroups:["full body"],
+    equipment:[], location:["home","gym"],
+    difficulty:4, defaultSets:4, defaultReps:"40 sec on / 20 sec off",
+    restSeconds:60, tempoNote:"maximum effort on work intervals",
+    cueText:"Exercises: squat jumps → mountain climbers → high knees → push-ups. 40 sec max effort, 20 sec rest, 60 sec between rounds.",
+    mistakeNote:"Only prescribe Phase 2+. Warm up 5 min first. Stop if dizziness or chest discomfort.",
+    calsPer10Min:140, avoidIf:["cardiac issues","severe joint pain","beginners"], postMealSuitable:false,
+    gifUrl:undefined, videoUrl:undefined,
+  },
+];
+
+export function getExercisesByCategory(category: string): ExerciseItem[] {
+  return EXERCISE_LIBRARY.filter(e => e.category === category);
+}
+
+export function getExerciseById(id: string): ExerciseItem | undefined {
+  return EXERCISE_LIBRARY.find(e => e.id === id);
+}
+
+export function filterByLocation(items: ExerciseItem[], location: string): ExerciseItem[] {
+  return items.filter(e => e.location.includes(location as any));
+}
+
+export function filterByEquipment(items: ExerciseItem[], available: string[]): ExerciseItem[] {
+  return items.filter(e =>
+    e.equipment.length === 0 || e.equipment.some(eq => available.includes(eq))
+  );
+}
+
+export function filterByDifficulty(items: ExerciseItem[], max: number): ExerciseItem[] {
+  return items.filter(e => e.difficulty <= max);
+}
