@@ -74,8 +74,9 @@ export const ProtocolEditorScreen = () => {
   );
 
   const selectPatient = (p: any) => {
-    // FIX: navigate to full TreatmentPlanEditor instead of inline editor
-    nav.navigate('TreatmentPlanEditor', { patientId: p.id });
+    // FIX: use push() not navigate() — ensures back button returns to this patient list
+    // navigate() reuses existing screen instance, causing confusing back-navigation
+    nav.push('TreatmentPlanEditor', { patientId: p.id });
   };
 
   const handleSave = async () => {

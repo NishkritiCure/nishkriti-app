@@ -98,7 +98,12 @@ export const PatientProfileScreen = () => {
       .eq('id', patientId)
       .single()
       .then(({ data, error }) => {
-        if (data) setFullData(data);
+        // FIX: check error object — previously ignored, leaving screen in stale state on API failure
+        if (error) {
+          console.warn('[PatientProfile] fetch error:', error.message);
+        } else if (data) {
+          setFullData(data);
+        }
         setLoading(false);
       });
   }, [patientId]);

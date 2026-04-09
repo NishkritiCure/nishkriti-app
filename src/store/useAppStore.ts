@@ -216,9 +216,9 @@ export const useAppStore = create<AppState>((set, get) => ({
         todayPlan: mappedTodayPlan,
         patientLoaded: true,
       });
-      console.log('[Store] Patient loaded from Supabase:', mappedProfile.name);
+      // FIX: removed console.log that leaked patient name (PII) in production logs
     } catch (err) {
-      console.error('[Store] Failed to load patient from Supabase:', err);
+      // FIX: removed console.error that could leak error details in production
     }
   },
 
@@ -275,9 +275,9 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (!IS_DEMO) {
       try {
         await savePlan(plan);
-        console.log('[Store] Plan saved to Supabase');
+        // FIX: removed console.log — no operation logs in production
       } catch (err) {
-        console.error('[Store] Failed to save plan to Supabase:', err);
+        // FIX: removed console.error — errors handled silently, plan still saved locally
       }
     }
   },

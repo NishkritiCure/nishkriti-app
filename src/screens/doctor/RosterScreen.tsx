@@ -146,7 +146,7 @@ export const DoctorRosterScreen = () => {
       .from('patient_profiles')
       .select('*')
       .order('onboarded_at', { ascending: false });
-    console.log('[Roster] fetch patients:', { count: data?.length, error: error?.message });
+    // FIX: removed console.log — debug logging should not be in production
     if (data) setPatients(data);
   }, []);
 

@@ -333,13 +333,20 @@ export const CreatePatientScreen = () => {
       const generatedPassword = `NK${nameChars}@2026`;
 
       // 3. Create auth user (REST to avoid signing out doctor)
-      const res = await fetch(`${process.env.EXPO_PUBLIC_SUPABASE_URL}/auth/v1/signup`, {
+      // FIX: guard against missing env vars — crashes in demo mode when SUPABASE_URL is undefined
+      const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+      const supabaseKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+      if (!supabaseUrl || !supabaseKey) {
+        Alert.alert('Error', 'Supabase is not configured. Cannot create patients in demo mode.');
+        setLoading(false);
+        return;
+      }
+      const res = await fetch(`${supabaseUrl}/auth/v1/signup`, {
         method: 'POST',
-        headers: { 'apikey': process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!, 'Content-Type': 'application/json' },
+        headers: { 'apikey': supabaseKey, 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: uhid.toLowerCase() + '@nishkriti.internal', password: generatedPassword }),
       });
       const authResponse = await res.json();
-      // Handle both confirmed (returns {user:{id}}) and auto-confirmed (returns {id} or {user:{id}, access_token})
       const userId = authResponse.id || authResponse.user?.id;
       if (!userId) {
         Alert.alert('Error', 'Failed to create auth user: ' + (authResponse.msg || authResponse.error_description || 'Unknown error'));

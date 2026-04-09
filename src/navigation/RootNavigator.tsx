@@ -27,21 +27,23 @@ export const RootNavigator = () => {
 
     // Lazy import Supabase to avoid breaking demo mode
     import('../lib/supabase').then(({ supabase }) => {
+      // FIX: added .catch() — without it, a rejected promise hangs the app on white screen forever
       supabase.auth.getSession().then(async ({ data: { session } }) => {
         setSession(session);
         if (session) {
-          // Check if doctor
           const { data } = await supabase
             .from('doctors')
             .select('id')
             .eq('auth_id', session.user.id)
             .single();
           setIsDoctor(!!data);
-          // FIX: load patient profile from Supabase if not a doctor
           if (!data) {
             useAppStore.getState().loadPatientFromSupabase();
           }
         }
+        setAuthChecked(true);
+      }).catch(() => {
+        // FIX: ensure auth check completes even if getSession fails (network error, etc.)
         setAuthChecked(true);
       });
 

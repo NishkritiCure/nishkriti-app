@@ -310,7 +310,14 @@ function selectMeals(patient: Patient, checkIn: DailyCheckIn, dietType: string, 
       if (isVeg) candidates = filterVeg(candidates, true);
     }
 
-    if (candidates.length === 0) continue;
+    // FIX: never skip a meal slot — provide a generic fallback if no candidates match
+    if (candidates.length === 0) {
+      candidates = filterBySlot(DIET_LIBRARY, slot).slice(0, 1);
+      if (candidates.length === 0) {
+        // Ultimate fallback: pick any item from the library
+        candidates = [DIET_LIBRARY[0]];
+      }
+    }
 
     // Pick based on hash of date for reproducibility (same plan same day)
     const dateHash = checkIn.date.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
@@ -366,10 +373,12 @@ function selectWorkout(patient: Patient, checkIn: DailyCheckIn, rules: ReturnTyp
     exercises = exercises.filter(e => e.muscleGroups.some(m => m.includes("core") || m.includes("abs")));
   }
 
-  // Pick 3 exercises
+  // Pick up to 3 exercises
   const dateHash = checkIn.date.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  const shuffled = [...exercises].sort((a, b) => (a.id.charCodeAt(0) + dateHash) % 7 - (b.id.charCodeAt(0) + dateHash) % 7);
-  const selected = shuffled.slice(0, 3);
+  // FIX: if fewer than 3 exercises available, use all available instead of rendering incomplete workout
+  let pool = exercises.length > 0 ? exercises : EXERCISE_LIBRARY.filter(e => e.difficulty <= 2).slice(0, 3);
+  const shuffled = [...pool].sort((a, b) => (a.id.charCodeAt(0) + dateHash) % 7 - (b.id.charCodeAt(0) + dateHash) % 7);
+  const selected = shuffled.slice(0, Math.min(3, shuffled.length));
 
   const intensity = isLowEnergy ? "light" : isFbs180 ? "moderate" : checkIn.energyLevel >= 4 ? "high" : "moderate";
   const duration = isLowEnergy ? 25 : isFbs180 ? 35 : 45;

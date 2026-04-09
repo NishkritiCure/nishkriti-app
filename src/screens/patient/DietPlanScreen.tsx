@@ -79,8 +79,10 @@ export const DietPlanScreen = () => {
   const isHypo      = rules.some((r: any) => r.ruleId === "DR005");
   const isEatingOut = rules.some((r: any) => r.ruleId === "HN010");
 
-  const cPct = Math.max(5, Math.round(carbsTarget * 4 / calorieTarget * 100));
-  const pPct = Math.max(5, Math.round(proteinTarget * 4 / calorieTarget * 100));
+  // FIX: guard division by zero — if calorieTarget is 0, percentages would be NaN/Infinity
+  const safeCals = calorieTarget > 0 ? calorieTarget : 1;
+  const cPct = Math.max(5, Math.round(carbsTarget * 4 / safeCals * 100));
+  const pPct = Math.max(5, Math.round(proteinTarget * 4 / safeCals * 100));
   const fPct = Math.max(5, 100 - cPct - pPct);
 
   const dietLabel = dietType.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());

@@ -64,7 +64,8 @@ export const HomeScreen = () => {
           <View style={styles.heroRow}>
             <View>
               <Text style={styles.greeting}>Good morning,</Text>
-              <Text style={styles.name}>{profile.name.split(" ")[0]}.</Text>
+              {/* FIX: guard null/empty name — .split() crashes if name is undefined */}
+              <Text style={styles.name}>{(profile.name || 'Patient').split(" ")[0]}.</Text>
               <Text style={styles.subLabel}>DAY {daysIn} · {new Date().toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short"}).toUpperCase()}</Text>
             </View>
             <View style={styles.logoArea}>
