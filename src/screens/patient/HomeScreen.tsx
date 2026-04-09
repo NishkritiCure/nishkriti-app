@@ -1,8 +1,8 @@
 
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Colors, Typography, Spacing, Radii } from "../../theme";
 import { useAppStore } from "../../store/useAppStore";
 import { NishkritiLogo } from "../../components/NishkritiLogo";
@@ -39,6 +39,14 @@ export const HomeScreen = () => {
   const phaseProgress = Math.min((daysIn % 42) / 42, 1);
   const fbsDelta = latest && first ? `↓ ${Math.round(first.fbs - latest.fbs)}` : undefined;
   const weightDelta = latest && first ? `↓ ${(first.weight - latest.weight).toFixed(1)} kg` : undefined;
+
+  // FIX: refresh patient data from Supabase when screen is focused (production mode)
+  useFocusEffect(
+    useCallback(() => {
+      const { loadPatientFromSupabase, patientLoaded } = useAppStore.getState();
+      if (!patientLoaded) loadPatientFromSupabase();
+    }, [])
+  );
 
   useEffect(() => {
     if (todayCI && !todayPlan) generatePlan();

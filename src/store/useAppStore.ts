@@ -4,6 +4,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Patient, DailyCheckIn, GeneratedPlan, PatientProfile } from "../types";
 import { generateDailyPlan } from "../engine/adaptiveEngine";
 import { todayStr } from "../utils";
+import { fetchMyProfile, fetchCheckIns, fetchTodayPlan, fetchMyProtocol, savePlan } from "../services/patientService";
+
+// FIX: detect demo mode
+const IS_DEMO = !process.env.EXPO_PUBLIC_SUPABASE_URL;
 
 // ── MOCK DEMO PATIENT ────────────────────────────────────────────
 const DEMO_PATIENT: Patient = {
@@ -88,6 +92,9 @@ interface AppState {
   markSupplementTaken: (name: string, taken: boolean) => void;
   // Progress
   refreshProgress: () => void;
+  // Supabase integration
+  loadPatientFromSupabase: () => Promise<void>;
+  patientLoaded: boolean;
   // UI state
   splashDone: boolean;
   setSplashDone: () => void;
@@ -100,6 +107,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   mode: null,
   setMode: (mode) => set({ mode }),
   splashDone: false,
+  patientLoaded: false,
   isNewUser: false,
   setIsNewUser: (isNewUser) => set({ isNewUser }),
   setSplashDone: () => set({ splashDone: true }),
@@ -112,6 +120,107 @@ export const useAppStore = create<AppState>((set, get) => ({
       progress: [{ date: profile.programmeStartDate || new Date().toISOString().split('T')[0], weight: profile.baselineWeight || profile.weightKg, fbs: profile.baselineFbs || 0 }],
     }
   })),
+
+  // FIX: load real patient data from Supabase after login
+  loadPatientFromSupabase: async () => {
+    if (IS_DEMO) return;
+    try {
+      const profile = await fetchMyProfile();
+      if (!profile) return;
+
+      const checkInsRaw = await fetchCheckIns(30);
+      const todayPlanRaw = await fetchTodayPlan();
+
+      // Map Supabase columns → store shape
+      const mappedProfile: any = {
+        id: profile.id,
+        name: profile.full_name,
+        dob: profile.dob,
+        sex: profile.sex,
+        heightCm: profile.height_cm,
+        weightKg: profile.weight_kg,
+        primaryCondition: profile.primary_condition,
+        conditions: profile.conditions || [profile.primary_condition],
+        medications: profile.medications || [],
+        dietPreference: profile.diet_preference || 'non_veg',
+        allergies: profile.allergies || [],
+        dislikedFoods: profile.disliked_foods || [],
+        cuisinePreference: profile.cuisine_preference || [],
+        cookingSetup: profile.cooking_setup || 'home',
+        activityLevel: profile.activity_level || 'sedentary',
+        workoutEquipment: profile.workout_equipment || [],
+        workoutLocation: profile.workout_location || ['home'],
+        availableMinutes: profile.available_minutes || 45,
+        preferredWorkoutTime: profile.preferred_workout_time || 'morning',
+        goals: profile.goals || [],
+        injuries: profile.injuries || [],
+        programmeStartDate: profile.programme_start_date || new Date().toISOString().split('T')[0],
+        currentPhase: profile.current_phase || 1,
+        assignedDietType: profile.assigned_diet_type || 'low_carb',
+        baselineFbs: profile.baseline_fbs || 0,
+        baselineHba1c: profile.baseline_hba1c,
+        baselineWeight: profile.baseline_weight || profile.weight_kg,
+        baselineWaist: profile.baseline_waist || 0,
+        baselineHip: profile.baseline_hip || 0,
+      };
+
+      const mappedCheckIns = (checkInsRaw || []).map((ci: any) => ({
+        id: ci.id,
+        patientId: ci.patient_id,
+        date: ci.check_in_date,
+        fbs: ci.fbs_mg_dl || 0,
+        weight: ci.weight_kg || 0,
+        waistCm: ci.waist_cm,
+        hipCm: ci.hip_cm,
+        energyLevel: ci.energy_level || 3,
+        sleepHours: ci.sleep_hours,
+        symptoms: ci.symptoms || [],
+        adherenceYesterday: ci.adherence_yesterday || 'mostly',
+        requests: ci.requests || {},
+        messageForDoctor: ci.message_for_doctor,
+      }));
+
+      // Map today's plan from Supabase if exists
+      let mappedTodayPlan: GeneratedPlan | null = null;
+      if (todayPlanRaw) {
+        const p: any = todayPlanRaw;
+        mappedTodayPlan = {
+          patientId: p.patient_id,
+          date: p.plan_date,
+          reasoning: p.reasoning || '',
+          rulesFired: p.rules_fired || [],
+          dietType: p.diet_type,
+          calorieTarget: p.calorie_target || 0,
+          carbsTarget: p.carbs_target_g || 0,
+          proteinTarget: p.protein_target_g || 0,
+          fatTarget: p.fat_target_g || 0,
+          waterTargetMl: p.water_target_ml || 2000,
+          meals: p.meals || [],
+          workout: p.workout || { type: 'rest', durationMinutes: 0, intensity: 'light', exercises: [], postMealWalks: [] },
+          supplements: p.supplements || [],
+          doctorFlagRaised: p.doctor_flag_raised,
+          doctorFlagReason: p.doctor_flag_reason,
+          supplementNote: p.supplement_note,
+        };
+      }
+
+      set({
+        patient: {
+          profile: mappedProfile,
+          checkIns: mappedCheckIns,
+          plans: [],
+          progress: mappedCheckIns.map((ci: any) => ({ date: ci.date, weight: ci.weight, fbs: ci.fbs, waist: ci.waistCm })),
+          supplements: [], // will be populated from protocol
+          unreadMessages: 0,
+        },
+        todayPlan: mappedTodayPlan,
+        patientLoaded: true,
+      });
+      console.log('[Store] Patient loaded from Supabase:', mappedProfile.name);
+    } catch (err) {
+      console.error('[Store] Failed to load patient from Supabase:', err);
+    }
+  },
 
   patient: DEMO_PATIENT,
   doctorPatients: DEMO_DOCTOR_PATIENTS,
@@ -137,21 +246,40 @@ export const useAppStore = create<AppState>((set, get) => ({
     get().generatePlan();
   },
 
-  generatePlan: () => {
+  generatePlan: async () => {
     const { patient } = get();
     const todayCI = patient.checkIns.find(c => c.date === todayStr());
     if (!todayCI) return;
-    const plan = generateDailyPlan(patient, todayCI);
+
+    // FIX: fetch protocol from Supabase to use doctor's targets as base
+    let protocol = null;
+    if (!IS_DEMO) {
+      try {
+        protocol = await fetchMyProtocol();
+      } catch {}
+    }
+
+    const plan = generateDailyPlan(patient, todayCI, protocol);
     // Attach supplements
     plan.supplements = patient.supplements;
     set({ todayPlan: plan });
-    // Save to patient plans
+    // Save to patient plans (local)
     set(state => ({
       patient: {
         ...state.patient,
         plans: [...state.patient.plans.filter(p => p.date !== plan.date), plan],
       },
     }));
+
+    // FIX: persist plan to Supabase so doctor can see it
+    if (!IS_DEMO) {
+      try {
+        await savePlan(plan);
+        console.log('[Store] Plan saved to Supabase');
+      } catch (err) {
+        console.error('[Store] Failed to save plan to Supabase:', err);
+      }
+    }
   },
 
   selectPatient: (id) => {

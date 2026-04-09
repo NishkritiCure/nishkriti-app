@@ -37,6 +37,10 @@ export const RootNavigator = () => {
             .eq('auth_id', session.user.id)
             .single();
           setIsDoctor(!!data);
+          // FIX: load patient profile from Supabase if not a doctor
+          if (!data) {
+            useAppStore.getState().loadPatientFromSupabase();
+          }
         }
         setAuthChecked(true);
       });
@@ -51,6 +55,10 @@ export const RootNavigator = () => {
               .eq('auth_id', session.user.id)
               .single();
             setIsDoctor(!!data);
+            // FIX: load patient profile from Supabase if not a doctor
+            if (!data) {
+              useAppStore.getState().loadPatientFromSupabase();
+            }
           } else {
             setIsDoctor(false);
           }
