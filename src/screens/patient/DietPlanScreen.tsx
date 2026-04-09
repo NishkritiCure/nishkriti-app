@@ -9,8 +9,8 @@ import { ReasoningBox } from "../../components/ReasoningBox";
 import { MealCard } from "../../components/MealCard";
 import { Pill } from "../../components/Pill";
 import { fetchTodayPlan } from "../../services/patientService";
-
-const IS_DEMO = !process.env.EXPO_PUBLIC_SUPABASE_URL;
+// FIX: import shared IS_DEMO constant
+import { IS_DEMO } from "../../lib/constants";
 const HIGH_FBS_RULES = ["DR002","DR003","DR004","PC002","PC003"];
 const CRITICAL_RULES = ["DR004","PC003"];
 

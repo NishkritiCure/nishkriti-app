@@ -33,9 +33,12 @@ function evaluateRules(patient: Patient, checkIn: DailyCheckIn) {
   if (!protocol) return [];
 
   const fired: { ruleId: string; message: string; severity: string; notifyDoctor: boolean; dietAction: string; workoutAction: string }[] = [];
-  const recent = [...patient.checkIns]
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 21);
+  // FIX: check if already sorted desc before re-sorting (minor perf for large check-in arrays)
+  const isDesc = patient.checkIns.length <= 1 ||
+    patient.checkIns[0].date >= patient.checkIns[patient.checkIns.length - 1].date;
+  const recent = isDesc
+    ? patient.checkIns.slice(0, 21)
+    : [...patient.checkIns].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 21);
 
   for (const rule of protocol.rules) {
     // ── DIABETES / PRE-DIABETES ──

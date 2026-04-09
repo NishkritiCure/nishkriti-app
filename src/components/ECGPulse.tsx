@@ -9,6 +9,8 @@ interface Props {
   height?: number;
 }
 
+// FIX: this component always animates when mounted — parent (NishkritiLogo) should
+// conditionally mount/unmount it via showPulse prop to avoid wasted animation refs.
 export const ECGPulse: React.FC<Props> = ({
   color = "#3EDBA5", width = 200, height = 40,
 }) => {

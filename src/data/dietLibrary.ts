@@ -1,6 +1,12 @@
 
 import type { MealItem } from "../types";
 
+// FIX: macro validation note — for each meal item, the following should hold approximately:
+//   calories ≈ carbs*4 + protein*4 + fat*9  (±10%)
+// Discrepancies may exist due to rounding, fiber calories, or alcohol content.
+// A runtime validation function can be added if data quality becomes an issue:
+//   const validateMacros = (m: MealItem) => Math.abs(m.calories - (m.carbs*4 + m.protein*4 + m.fat*9)) < m.calories * 0.1;
+
 export const DIET_LIBRARY: MealItem[] = [
   // ── EARLY MORNING ──────────────────────────────
   {

@@ -140,12 +140,20 @@ export const DoctorRosterScreen = () => {
 
   // Only Supabase patients — no mock data
   const [patients, setPatients] = useState<any[]>([]);
+  // FIX: dynamic doctor name instead of hardcoded "Dr. Nishit"
+  const [doctorName, setDoctorName] = useState('Doctor');
   // FIX: live stats instead of hardcoded 0s
   const [flagCount, setFlagCount] = useState(0);
   const [checkinCount, setCheckinCount] = useState(0);
   const todayISO = new Date().toISOString().split('T')[0];
 
   const fetchPatients = useCallback(async () => {
+    // FIX: fetch logged-in doctor's name for greeting
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: doc } = await supabase.from('doctors').select('full_name').eq('auth_id', user.id).single();
+      if (doc?.full_name) setDoctorName(doc.full_name);
+    }
     const { data } = await supabase
       .from('patient_profiles')
       .select('*')
@@ -179,7 +187,8 @@ export const DoctorRosterScreen = () => {
           <View style={styles.heroRow}>
             <View>
               <Text style={styles.greeting}>Good morning,</Text>
-              <Text style={styles.name}>Dr. Nishit.</Text>
+              {/* FIX: was hardcoded "Dr. Nishit" — now uses logged-in doctor's name */}
+              <Text style={styles.name}>{doctorName}.</Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
               <LogoutButton />

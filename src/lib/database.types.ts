@@ -196,6 +196,8 @@ export type Database = {
         Update: { [key: string]: any }
         Relationships: []
       }
+      // TODO: DB schema has `read_at` but doctorService queries `read_by_doctor` which doesn't
+      // exist in this type. If the column exists in DB, regenerate types. If not, add a migration.
       messages: {
         Row: {
           attachments: string[] | null

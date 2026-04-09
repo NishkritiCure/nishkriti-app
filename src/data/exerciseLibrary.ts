@@ -1,6 +1,10 @@
 
 import type { ExerciseItem } from "../types";
 
+// FIX: calsPer10Min values are baseline estimates for a ~70kg adult at moderate intensity.
+// Actual calorie burn varies by body weight, fitness level, and individual metabolism.
+// These are used for approximate daily calorie planning, not precise tracking.
+
 export const EXERCISE_LIBRARY: ExerciseItem[] = [
   // ── CARDIO ─────────────────────────────────────
   {

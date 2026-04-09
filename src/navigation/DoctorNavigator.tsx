@@ -3,6 +3,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { View, Text } from "react-native";
+import { ErrorBoundary } from "../components/ErrorBoundary";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Typography } from "../theme";
 import { DoctorRosterScreen } from "../screens/doctor/RosterScreen";
@@ -50,12 +51,15 @@ const DoctorTabs = () => {
   );
 };
 
+// FIX: wrapped in ErrorBoundary so unhandled throws show fallback, not white screen
 export const DoctorNavigator = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="DoctorTabs" component={DoctorTabs} />
-    <Stack.Screen name="PatientProfile" component={PatientProfileScreen} />
-    <Stack.Screen name="ProtocolEditor" component={ProtocolEditorScreen} />
-    <Stack.Screen name="CreatePatient" component={CreatePatientScreen} />
-    <Stack.Screen name="TreatmentPlanEditor" component={TreatmentPlanEditorScreen} />
-  </Stack.Navigator>
+  <ErrorBoundary>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="DoctorTabs" component={DoctorTabs} />
+      <Stack.Screen name="PatientProfile" component={PatientProfileScreen} />
+      <Stack.Screen name="ProtocolEditor" component={ProtocolEditorScreen} />
+      <Stack.Screen name="CreatePatient" component={CreatePatientScreen} />
+      <Stack.Screen name="TreatmentPlanEditor" component={TreatmentPlanEditorScreen} />
+    </Stack.Navigator>
+  </ErrorBoundary>
 );

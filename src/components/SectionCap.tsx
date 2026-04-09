@@ -1,14 +1,15 @@
 
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Colors, Typography, Spacing } from "../theme";
+import { Colors, Typography, Spacing, Opacity } from "../theme";
 
 interface Props { title: string; color?: string; }
 
 export const SectionCap: React.FC<Props> = ({ title, color = Colors.ink3 }) => (
   <View style={styles.row}>
     <Text style={[styles.text, { color }]}>{title}</Text>
-    <View style={[styles.line, color !== Colors.ink3 && { backgroundColor: color, opacity: 0.25 }]} />
+    {/* FIX: use theme Opacity.divider instead of hardcoded 0.25 */}
+    <View style={[styles.line, color !== Colors.ink3 && { backgroundColor: color, opacity: Opacity.divider }]} />
   </View>
 );
 

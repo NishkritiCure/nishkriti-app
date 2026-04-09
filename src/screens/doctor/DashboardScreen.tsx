@@ -5,9 +5,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Colors, Typography, Spacing, Radii } from '../../theme';
 import { NishkritiLogo } from '../../components/NishkritiLogo';
 import { supabase, getDoctorId } from '../../lib/supabase';
-
-// FIX: was hardcoded, now fetched dynamically with fallback
-const DOCTOR_ID = 'c1d4a81a-9d10-4e70-acfd-e223fe4b8e90';
+import { DEFAULT_DOCTOR_ID } from '../../lib/constants';
 
 const StatCard = ({ val, lbl, color }: { val: string | number; lbl: string; color?: string }) => (
   <View style={styles.stat}>
@@ -20,7 +18,7 @@ export const DoctorDashboardScreen = () => {
   const nav = useNavigation<any>();
   const [patients, setPatients] = useState<any[]>([]);
   // FIX: was hardcoded, now fetched dynamically with fallback
-  const [doctorId, setDoctorId] = useState<string | null>(DOCTOR_ID);
+  const [doctorId, setDoctorId] = useState<string | null>(DEFAULT_DOCTOR_ID);
   // FIX: live stats instead of hardcoded 0s
   const [flagCount, setFlagCount] = useState(0);
   const [checkinCount, setCheckinCount] = useState(0);

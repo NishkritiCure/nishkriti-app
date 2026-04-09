@@ -8,10 +8,11 @@ import { NSlider } from "../../components/NSlider";
 import { todayStr } from "../../utils";
 import { submitCheckIn as submitCheckInSupabase } from "../../services/patientService";
 import type { DailyCheckIn } from "../../types";
+// FIX: import shared IS_DEMO constant
+import { IS_DEMO } from "../../lib/constants";
 
-// FIX: detect demo mode to decide which backend to use
-const IS_DEMO = !process.env.EXPO_PUBLIC_SUPABASE_URL;
-
+// FIX: STEPS must match the actual number of step sections rendered below (0-4 = 5 steps)
+// Step 0: FBS, Step 1: Weight, Step 2: Energy, Step 3: Requests, Step 4: Message
 const STEPS = 5;
 const ENERGY_OPTS = [
   { level:5 as const, icon:"⚡", label:"Full energy" },

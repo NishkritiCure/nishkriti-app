@@ -59,6 +59,13 @@ export const Radii = {
   sm:8, md:12, lg:18, xl:24, full:999,
 };
 
+// FIX: semantic opacity values for consistent use across components
+export const Opacity = {
+  divider: 0.25,    // section cap lines, subtle separators
+  disabled: 0.4,    // disabled buttons/elements
+  overlay: 0.7,     // modal overlays
+};
+
 export const Shadows = {
   card: {
     shadowColor: '#000',

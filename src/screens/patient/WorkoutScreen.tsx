@@ -10,8 +10,8 @@ import { SectionCap } from "../../components/SectionCap";
 import { ReasoningBox } from "../../components/ReasoningBox";
 import { ExerciseCard } from "../../components/ExerciseCard";
 import { fetchTodayPlan } from "../../services/patientService";
-
-const IS_DEMO = !process.env.EXPO_PUBLIC_SUPABASE_URL;
+// FIX: import shared IS_DEMO constant
+import { IS_DEMO } from "../../lib/constants";
 
 export const WorkoutScreen = () => {
   const storePlan = useAppStore(s => s.todayPlan);

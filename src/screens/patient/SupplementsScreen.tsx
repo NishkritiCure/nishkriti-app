@@ -5,8 +5,8 @@ import { Colors, Typography, Spacing, Radii } from "../../theme";
 import { useAppStore } from "../../store/useAppStore";
 import { SectionCap } from "../../components/SectionCap";
 import { markSupplementTaken as markSupplementTakenSupabase } from "../../services/patientService";
-
-const IS_DEMO = !process.env.EXPO_PUBLIC_SUPABASE_URL;
+// FIX: import shared IS_DEMO constant
+import { IS_DEMO } from "../../lib/constants";
 
 const ICONS: Record<string, string> = {
   "Vitamin D3 + K2": "🌞",
@@ -40,7 +40,13 @@ const BG_COLORS: Record<string, string> = {
   "🩸": "rgba(217,123,114,0.08)",
 };
 
-const SupplItem = ({ s, onToggle }: { s: any; onToggle: () => void }) => {
+// FIX: proper type for supplement item props instead of `any`
+interface SupplItemProps {
+  s: { name: string; dose: string; timing: string; withFood: string; patientReason: string; taken?: boolean };
+  onToggle: () => void;
+}
+
+const SupplItem = ({ s, onToggle }: SupplItemProps) => {
   const [expanded, setExpanded] = useState(false);
   const icon = ICONS[s.name] ?? "💊";
   const bg = BG_COLORS[icon] ?? "rgba(62,219,165,0.08)";

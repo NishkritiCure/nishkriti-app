@@ -123,7 +123,11 @@ const SingleChip = ({ options, selected, onSelect }: {
 export const OnboardingScreen = () => {
   const nav = useNavigation<any>();
   const { setPatientProfile } = useAppStore();
-  const [step, setStep] = useState(0);
+  // FIX: use named constants for step values instead of magic numbers
+  const STEP_BASICS = 0, STEP_CONDITIONS = 1, STEP_MEDICATIONS = 2,
+        STEP_DIET = 3, STEP_WORKOUT = 4, STEP_GOALS = 5, STEP_CONFIRM = 6;
+  const TOTAL_STEPS = 7;
+  const [step, setStep] = useState(STEP_BASICS);
 
   // Step 0 — basics
   const [name, setName]     = useState("");
@@ -163,14 +167,19 @@ export const OnboardingScreen = () => {
     return true;
   };
 
-  const toggle = (arr: any[], setArr: Function, key: string) => {
-    setArr((prev: string[]) => {
+  // FIX: generic toggle without hardcoded setConditions check
+  const toggle = <T extends string>(arr: T[], setArr: (fn: (prev: T[]) => T[]) => void, key: T) => {
+    setArr((prev: T[]) => {
+      return prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key];
+    });
+  };
+
+  // FIX: condition-specific toggle that auto-sets primary (extracted from old generic toggle)
+  const toggleCondition = (key: Condition) => {
+    setConditions(prev => {
       const next = prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key];
-      // Auto-set primary condition when exactly one condition selected
-      if (setArr === setConditions) {
-        if (next.length === 1) setPrimary(next[0] as Condition);
-        else if (next.length === 0) setPrimary("" as any);
-      }
+      if (next.length === 1) setPrimary(next[0]);
+      else if (next.length === 0) setPrimary('' as any);
       return next;
     });
   };
@@ -259,7 +268,7 @@ export const OnboardingScreen = () => {
     <>
       <Q>What condition(s) are you managing?</Q>
       <Hint>Select all that apply</Hint>
-      <MultiChip options={CONDITIONS} selected={conditions} onToggle={k => toggle(conditions, setConditions, k as Condition)} />
+      <MultiChip options={CONDITIONS} selected={conditions} onToggle={k => toggleCondition(k as Condition)} />
       {conditions.length > 1 && (
         <>
           {/* FIX: Q component does not accept style prop; use View wrapper */}
@@ -329,7 +338,7 @@ export const OnboardingScreen = () => {
         onSelect={setWorkoutLocation}
       />
       <Q>What equipment do you have?</Q>
-      <MultiChip options={EQUIPMENT} selected={equipment} onToggle={k => toggle(equipment, setEquipment, k)} />
+      <MultiChip options={EQUIPMENT} selected={equipment} onToggle={k => toggle(equipment, setEquipment as any, k)} />
       <Q>Available time for workout</Q>
       <View style={s.bigInput}>
         <Text style={s.bigVal}>{availableMinutes}</Text>

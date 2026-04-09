@@ -1,13 +1,19 @@
 
+// TODO: OFFLINE SUPPORT — This store currently requires network connectivity for all Supabase
+// operations (loadPatientFromSupabase, generatePlan → savePlan). For offline support:
+//   1. Use zustand/middleware `persist` with AsyncStorage to cache patient data locally
+//   2. Queue Supabase writes when offline, flush when connectivity returns
+//   3. Add a `isOffline` state flag and show UI indicator
+// This is a future requirement — not blocking current functionality.
+
 import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Patient, DailyCheckIn, GeneratedPlan, PatientProfile } from "../types";
 import { generateDailyPlan } from "../engine/adaptiveEngine";
 import { todayStr } from "../utils";
 import { fetchMyProfile, fetchCheckIns, fetchTodayPlan, fetchMyProtocol, savePlan } from "../services/patientService";
-
-// FIX: detect demo mode
-const IS_DEMO = !process.env.EXPO_PUBLIC_SUPABASE_URL;
+// FIX: import shared IS_DEMO constant instead of local declaration
+import { IS_DEMO } from "../lib/constants";
 
 // ── MOCK DEMO PATIENT ────────────────────────────────────────────
 const DEMO_PATIENT: Patient = {
@@ -241,6 +247,11 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   // FIX: made async and await generatePlan so plan saves to Supabase before proceeding
   submitCheckIn: async (ci) => {
+    // FIX: warn if overwriting an existing same-day check-in (dedup awareness)
+    const existing = get().patient.checkIns.find(c => c.date === ci.date);
+    if (existing && __DEV__) {
+      console.warn(`[Store] Overwriting existing check-in for ${ci.date}`);
+    }
     set(state => ({
       patient: {
         ...state.patient,

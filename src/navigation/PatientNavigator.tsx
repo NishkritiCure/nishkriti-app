@@ -2,6 +2,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { View, Text } from "react-native";
+import { ErrorBoundary } from "../components/ErrorBoundary";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Typography } from "../theme";
 import { HomeScreen }          from "../screens/patient/HomeScreen";
@@ -58,7 +59,9 @@ const PatientTabs = () => {
   );
 };
 
+// FIX: wrapped in ErrorBoundary so unhandled throws show fallback, not white screen
 export const PatientNavigator = () => (
+  <ErrorBoundary>
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="PatientTabs" component={PatientTabs} />
     <Stack.Screen
@@ -74,4 +77,5 @@ export const PatientNavigator = () => (
       options={{ presentation: "modal", gestureEnabled: false, cardStyle: { backgroundColor: Colors.deep } }}
     />
   </Stack.Navigator>
+  </ErrorBoundary>
 );

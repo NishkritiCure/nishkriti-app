@@ -75,8 +75,8 @@ const WeightChart = ({ data }: { data: { weight: number; date: string }[] }) => 
   );
 };
 
-// FIX: check if running against live Supabase (not demo mode)
-const IS_DEMO = !process.env.EXPO_PUBLIC_SUPABASE_URL;
+// FIX: import shared IS_DEMO constant
+import { IS_DEMO } from "../../lib/constants";
 
 export const ProgressScreen = () => {
   const { patient } = useAppStore();

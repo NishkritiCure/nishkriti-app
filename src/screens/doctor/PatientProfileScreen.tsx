@@ -146,7 +146,8 @@ export const PatientProfileScreen = () => {
         <View style={styles.hero}>
           <View style={styles.heroRow}>
             <View style={styles.avatar}>
-              <Text style={styles.avatarTxt}>{profile.name.split(' ').map((n:string)=>n[0]).join('').slice(0,2)}</Text>
+              {/* FIX: guard empty/single-char names — fallback to "?" */}
+              <Text style={styles.avatarTxt}>{(profile.name || '?').split(' ').filter(Boolean).map((n:string)=>n[0]).join('').slice(0,2) || '?'}</Text>
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.patName}>{profile.name}, {new Date().getFullYear() - new Date(profile.dob).getFullYear()}

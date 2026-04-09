@@ -76,8 +76,7 @@ export interface ProtocolRule {
   notifyReason?: string;
 }
 
-// FIX: made all fields optional — engine rule files use a different shape with extra properties
-// (goal, dietType, carbsTarget, biomarkerTargets, etc.) that don't match the original interface
+// FIX: explicit fields for all engine rule properties — no index signature needed
 export interface ProtocolPhase {
   phase: number;
   name: string;
@@ -89,7 +88,17 @@ export interface ProtocolPhase {
   workoutFocus?: string;
   advanceWhen?: string;
   notes?: string;
-  [key: string]: any;
+  // Engine rule fields (used by condition-specific protocols)
+  goal?: string;
+  dietType?: string;
+  calorieDeficit?: number;
+  carbsTarget?: number;
+  proteinTarget?: number;
+  fatTarget?: number;
+  workoutType?: string;
+  workoutDays?: number;
+  biomarkerTargets?: { name: string; target: string; current: any }[];
+  advancementCriteria?: string;
 }
 
 export interface BiomarkerTarget {
