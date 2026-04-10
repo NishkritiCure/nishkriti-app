@@ -34,6 +34,19 @@ const DIET_OPTIONS: { label: string; value: DietType }[] = [
 const EXERCISE_TYPES = ['Resistance', 'Cardio', 'Yoga', 'HIIT', 'Walking', 'Mixed'];
 const INTENSITY_OPTIONS = ['light', 'moderate', 'hard'] as const;
 
+const DIET_FOCUS_PRESETS = [
+  'Low Carb, High Protein', 'Keto (Very Low Carb, High Fat)', 'Balanced Macros',
+  'High Protein, Moderate Carb', 'Anti-Inflammatory', 'Calorie Deficit', 'Low Fat, High Fibre',
+];
+const EXERCISE_FOCUS_PRESETS = [
+  'Resistance Training', 'Zone 2 Cardio', 'HIIT', 'Yoga + Flexibility',
+  'Walking Only', 'Progressive Overload', 'Bodyweight Circuit',
+  'Post-meal Walks', 'Swimming / Aquatic', 'Sports / Recreational',
+];
+const DOSE_UNITS = ['mg', 'mcg', 'ml', 'IU', 'g', 'tablets', 'capsules', 'drops'];
+const FREQ_PERIODS = ['per day', 'per week', 'per month'];
+const SUPP_FREQ_PERIODS = ['per day', 'per week'];
+
 const EMPTY_PHASE: TreatmentPhase = {
   name: '', description: '', dietFocus: '', exerciseFocus: '',
   expectedDurationWeeks: 6, advancementCriteria: '',
@@ -45,25 +58,52 @@ const SectionLabel = ({ text, required }: { text: string; required?: boolean }) 
   <Text style={s.label}>{text}{required ? ' *' : ''}</Text>
 );
 
-const ChipPicker = ({ options, value, onChange }: {
+// Single-select chip picker (for intensity, dose unit, freq period)
+const ChipPicker = ({ options, value, onChange, small }: {
   options: { label: string; value: string }[];
   value: string;
   onChange: (v: string) => void;
+  small?: boolean;
 }) => (
   <View style={s.chipRow}>
     {options.map(o => (
       <TouchableOpacity
         key={o.value}
-        style={[s.chip, value === o.value && s.chipActive]}
+        style={[small ? s.chipSmall : s.chip, value === o.value && s.chipActive]}
         onPress={() => onChange(o.value)}
         activeOpacity={0.7}
       >
-        <Text style={[s.chipText, value === o.value && s.chipTextActive]}>{o.label}</Text>
+        <Text style={[small ? s.chipTextSmall : s.chipText, value === o.value && s.chipTextActive]}>{o.label}</Text>
       </TouchableOpacity>
     ))}
   </View>
 );
 
+// B1/B3: Multi-select chip picker
+const MultiChipPicker = ({ options, values, onToggle, small }: {
+  options: { label: string; value: string }[];
+  values: string[];
+  onToggle: (v: string) => void;
+  small?: boolean;
+}) => (
+  <View style={s.chipRow}>
+    {options.map(o => {
+      const active = values.includes(o.value);
+      return (
+        <TouchableOpacity
+          key={o.value}
+          style={[small ? s.chipSmall : s.chip, active && s.chipActive]}
+          onPress={() => onToggle(o.value)}
+          activeOpacity={0.7}
+        >
+          <Text style={[small ? s.chipTextSmall : s.chipText, active && s.chipTextActive]}>{o.label}</Text>
+        </TouchableOpacity>
+      );
+    })}
+  </View>
+);
+
+// B2: Stepper with NaN-safe input
 const Stepper = ({ value, onChange, step = 1, unit, min = 0, max = 9999 }: {
   value: number; onChange: (v: number) => void; step?: number; unit: string; min?: number; max?: number;
 }) => (
@@ -74,7 +114,7 @@ const Stepper = ({ value, onChange, step = 1, unit, min = 0, max = 9999 }: {
     <TextInput
       style={s.stepperInput}
       value={String(value)}
-      onChangeText={t => { const n = parseFloat(t); if (!isNaN(n)) onChange(n); }}
+      onChangeText={t => { const n = parseFloat(t); onChange(isNaN(n) ? 0 : n); }}
       keyboardType="numeric"
     />
     <TouchableOpacity style={s.stepperBtn} onPress={() => onChange(Math.min(max, Math.round((value + step) * 10) / 10))}>
@@ -84,42 +124,55 @@ const Stepper = ({ value, onChange, step = 1, unit, min = 0, max = 9999 }: {
   </View>
 );
 
-const RepeatableRow = ({ items, onChange, fields, addLabel }: {
-  items: any[]; onChange: (items: any[]) => void;
-  fields: { key: string; placeholder: string; flex?: number }[];
-  addLabel: string;
-}) => (
-  <View>
-    {items.map((item, i) => (
-      <View key={i} style={s.repeatRow}>
-        {fields.map(f => (
-          <TextInput
-            key={f.key}
-            style={[s.repeatInput, f.flex ? { flex: f.flex } : {}]}
-            placeholder={f.placeholder}
-            placeholderTextColor={Colors.ink3}
-            value={item[f.key] || ''}
-            onChangeText={t => {
-              const updated = [...items];
-              updated[i] = { ...updated[i], [f.key]: t };
-              onChange(updated);
+// B8/B9: Preset chips that fill a text input (multi-select appends)
+const PresetChips = ({ presets, value, onChange }: {
+  presets: string[]; value: string; onChange: (v: string) => void;
+}) => {
+  const current = value.split(',').map(s => s.trim()).filter(Boolean);
+  return (
+    <View style={s.chipRow}>
+      {presets.map(p => {
+        const active = current.includes(p);
+        return (
+          <TouchableOpacity
+            key={p}
+            style={[s.chipSmall, active && s.chipActive]}
+            onPress={() => {
+              if (active) {
+                onChange(current.filter(c => c !== p).join(', '));
+              } else {
+                onChange([...current, p].join(', '));
+              }
             }}
-          />
-        ))}
-        <TouchableOpacity style={s.repeatRemove} onPress={() => onChange(items.filter((_, j) => j !== i))}>
-          <Text style={s.repeatRemoveText}>✕</Text>
-        </TouchableOpacity>
-      </View>
-    ))}
-    <TouchableOpacity style={s.addBtn} onPress={() => {
-      const empty: any = {};
-      fields.forEach(f => empty[f.key] = '');
-      onChange([...items, empty]);
-    }}>
-      <Text style={s.addBtnText}>+ {addLabel}</Text>
-    </TouchableOpacity>
-  </View>
-);
+            activeOpacity={0.7}
+          >
+            <Text style={[s.chipTextSmall, active && s.chipTextActive]}>{p}</Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+};
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+const parseFreq = (raw: string): { perDay: number; perWeek: number; perMonth: number } => {
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object') return { perDay: parsed.perDay || 0, perWeek: parsed.perWeek || 0, perMonth: parsed.perMonth || 0 };
+  } catch {}
+  // Old format like "5x/week" — extract number for perWeek
+  const m = (raw || '').match(/(\d+)/);
+  return { perDay: 0, perWeek: m ? parseInt(m[1]) : 5, perMonth: 0 };
+};
+
+const composeFreqText = (d: number, w: number, m: number) => {
+  const parts: string[] = [];
+  if (d > 0) parts.push(`${d}x/day`);
+  if (w > 0) parts.push(`${w}x/week`);
+  if (m > 0) parts.push(`${m}x/month`);
+  return parts.join(', ') || '—';
+};
 
 // ── Main Screen ──────────────────────────────────────────────────────────────
 
@@ -135,21 +188,28 @@ export const TreatmentPlanEditorScreen = () => {
   const [existingPlan, setExistingPlan] = useState<TreatmentPlan | null>(null);
 
   // ── Form state ──
-  const [dietType, setDietType] = useState<DietType>('low_carb');
+  // B1: diet type is now an array (multi-select)
+  const [dietTypes, setDietTypes] = useState<string[]>(['low_carb']);
   const [calorieTarget, setCalorieTarget] = useState(1400);
   const [carbsG, setCarbsG] = useState(70);
   const [proteinG, setProteinG] = useState(100);
   const [fatG, setFatG] = useState(60);
 
-  const [exerciseType, setExerciseType] = useState('Mixed');
+  // B3: exercise type is now an array (multi-select)
+  const [exerciseTypes, setExerciseTypes] = useState<string[]>(['Mixed']);
   const [exerciseDuration, setExerciseDuration] = useState(45);
   const [exerciseIntensity, setExerciseIntensity] = useState<'light' | 'moderate' | 'hard'>('moderate');
-  const [exerciseFrequency, setExerciseFrequency] = useState('5x/week');
+  // B6: structured frequency
+  const [freqPerDay, setFreqPerDay] = useState(0);
+  const [freqPerWeek, setFreqPerWeek] = useState(5);
+  const [freqPerMonth, setFreqPerMonth] = useState(0);
   const [exerciseNotes, setExerciseNotes] = useState('');
 
   const [phases, setPhases] = useState<TreatmentPhase[]>([{ ...EMPTY_PHASE, name: 'Phase 1' }]);
-  const [medications, setMedications] = useState<{ name: string; dose: string; timing: string }[]>([]);
-  const [supplements, setSupplements] = useState<{ name: string; dose: string; timing: string; reason: string }[]>([]);
+  // B11: medications with structured dose/frequency
+  const [medications, setMedications] = useState<any[]>([]);
+  // B12: supplements with frequency
+  const [supplements, setSupplements] = useState<any[]>([]);
   const [notes, setNotes] = useState('');
 
   // ── Auto-calculated values ──
@@ -162,7 +222,6 @@ export const TreatmentPlanEditorScreen = () => {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      // Fetch patient profile
       const { data: p } = await supabase
         .from('patient_profiles')
         .select('*')
@@ -170,7 +229,6 @@ export const TreatmentPlanEditorScreen = () => {
         .single();
       if (p) {
         setPatient(p);
-        // Auto-calculate suggestions
         const age = getAge(p.dob);
         const bmr = calcBMR(p.weight_kg || 70, p.height_cm || 170, age, (p.sex || 'male') as 'male' | 'female' | 'other');
         const tdee = calcTDEE(bmr, p.activity_level || 'sedentary');
@@ -181,84 +239,82 @@ export const TreatmentPlanEditorScreen = () => {
         setAutoFatG(macros.fat);
       }
 
-      // Fetch existing active protocol
       const plan = await fetchActiveProtocol(patientId);
       if (plan) {
         setExistingPlan(plan);
-        // Populate form
-        setDietType(plan.dietType);
+        // B1: split comma-separated diet type string into array
+        setDietTypes(String(plan.dietType || 'low_carb').split(',').map(s => s.trim()).filter(Boolean));
         setCalorieTarget(plan.calorieTarget || autoCalories);
         setCarbsG(plan.carbsTargetG || autoCarbsG);
         setProteinG(plan.proteinTargetG || autoProteinG);
         setFatG(plan.fatTargetG || autoFatG);
-        setExerciseType(plan.exerciseType || 'Mixed');
+        // B3: split exercise type
+        setExerciseTypes(String(plan.exerciseType || 'Mixed').split(',').map(s => s.trim()).filter(Boolean));
         setExerciseDuration(plan.exerciseDurationMin || 45);
         setExerciseIntensity(plan.exerciseIntensity || 'moderate');
-        setExerciseFrequency(plan.exerciseFrequency || '5x/week');
+        // B6: parse structured frequency
+        const freq = parseFreq(plan.exerciseFrequency || '');
+        setFreqPerDay(freq.perDay); setFreqPerWeek(freq.perWeek); setFreqPerMonth(freq.perMonth);
         setExerciseNotes(plan.exerciseNotes || '');
         if (plan.phases.length > 0) setPhases(plan.phases);
         if (plan.medications.length > 0) setMedications(plan.medications);
         if (plan.supplements.length > 0) setSupplements(plan.supplements);
         setNotes(plan.notes || '');
       } else if (p) {
-        // New plan — pre-fill with auto-calculated values
         const age = getAge(p.dob);
         const bmr = calcBMR(p.weight_kg || 70, p.height_cm || 170, age, (p.sex || 'male') as 'male' | 'female' | 'other');
         const tdee = calcTDEE(bmr, p.activity_level || 'sedentary');
         const macros = macrosFromTDEE(tdee, p.assigned_diet_type || 'low_carb');
-        setCalorieTarget(macros.cals);
-        setCarbsG(macros.carbs);
-        setProteinG(macros.protein);
-        setFatG(macros.fat);
-        setDietType((p.assigned_diet_type || 'low_carb') as DietType);
-        // Pre-fill medications from patient profile
+        setCalorieTarget(macros.cals); setCarbsG(macros.carbs); setProteinG(macros.protein); setFatG(macros.fat);
+        setDietTypes([(p.assigned_diet_type || 'low_carb')]);
         const meds = (p as any).medications;
-        if (meds && Array.isArray(meds) && meds.length > 0) {
-          setMedications(meds);
-        }
+        if (meds && Array.isArray(meds) && meds.length > 0) setMedications(meds);
       }
       setLoading(false);
     })();
   }, [patientId]);
 
-  // ── Recalculate auto-suggestions when diet type changes ──
+  // ── Recalculate auto-suggestions (uses first selected diet type) ──
   const recalcMacros = useCallback((dt: DietType) => {
     if (!patient) return;
     const age = getAge(patient.dob);
     const bmr = calcBMR(patient.weight_kg || 70, patient.height_cm || 170, age, patient.sex || 'male');
     const tdee = calcTDEE(bmr, patient.activity_level || 'sedentary');
     const macros = macrosFromTDEE(tdee, dt);
-    setAutoCalories(macros.cals);
-    setAutoCarbsG(macros.carbs);
-    setAutoProteinG(macros.protein);
-    setAutoFatG(macros.fat);
+    setAutoCalories(macros.cals); setAutoCarbsG(macros.carbs); setAutoProteinG(macros.protein); setAutoFatG(macros.fat);
   }, [patient]);
 
-  const handleDietChange = (dt: string) => {
-    const typed = dt as DietType;
-    setDietType(typed);
-    recalcMacros(typed);
+  // B1: toggle diet type in multi-select
+  const toggleDietType = (dt: string) => {
+    setDietTypes(prev => {
+      const next = prev.includes(dt) ? prev.filter(d => d !== dt) : [...prev, dt];
+      if (next.length > 0) recalcMacros(next[0] as DietType);
+      return next.length > 0 ? next : prev; // keep at least one
+    });
+  };
+
+  // B3: toggle exercise type in multi-select
+  const toggleExerciseType = (et: string) => {
+    setExerciseTypes(prev => {
+      const next = prev.includes(et) ? prev.filter(e => e !== et) : [...prev, et];
+      return next.length > 0 ? next : prev;
+    });
   };
 
   const acceptAutoValues = () => {
-    setCalorieTarget(autoCalories);
-    setCarbsG(autoCarbsG);
-    setProteinG(autoProteinG);
-    setFatG(autoFatG);
+    setCalorieTarget(autoCalories); setCarbsG(autoCarbsG); setProteinG(autoProteinG); setFatG(autoFatG);
   };
 
-  // ── Suggested supplements based on condition ──
+  // ── Suggested supplements ──
   const suggestedSupps = patient
-    ? SUPPLEMENT_LIBRARY.filter(s => s.conditions.includes(patient.primary_condition))
+    ? SUPPLEMENT_LIBRARY.filter(sl => sl.conditions.includes(patient.primary_condition))
     : [];
 
   const addSuggestedSupplement = (supp: typeof SUPPLEMENT_LIBRARY[0]) => {
-    if (supplements.find(s => s.name === supp.name)) return; // already added
+    if (supplements.find((sl: any) => sl.name === supp.name)) return;
     setSupplements([...supplements, {
-      name: supp.name,
-      dose: supp.dose,
-      timing: supp.timing,
-      reason: supp.patientReason,
+      name: supp.name, dose: supp.dose, timing: supp.timing, reason: supp.patientReason,
+      frequencyCount: '', frequencyPeriod: 'per day',
     }]);
   };
 
@@ -268,15 +324,18 @@ export const TreatmentPlanEditorScreen = () => {
     try {
       const planData: Partial<TreatmentPlan> = {
         condition: (patient?.primary_condition || 'diabetes_t2') as Condition,
-        dietType,
+        // B1: store as comma-separated string
+        dietType: dietTypes.join(',') as any,
         calorieTarget,
         carbsTargetG: carbsG,
         proteinTargetG: proteinG,
         fatTargetG: fatG,
-        exerciseType,
+        // B3: store as comma-separated string
+        exerciseType: exerciseTypes.join(','),
         exerciseDurationMin: exerciseDuration,
         exerciseIntensity,
-        exerciseFrequency,
+        // B6: store as JSON string
+        exerciseFrequency: JSON.stringify({ perDay: freqPerDay, perWeek: freqPerWeek, perMonth: freqPerMonth }),
         exerciseNotes,
         phases,
         currentPhase: existingPlan?.currentPhase || 1,
@@ -292,11 +351,10 @@ export const TreatmentPlanEditorScreen = () => {
         await createProtocol(patientId, planData);
       }
 
-      // Also update patient_profiles with diet type and phase
       await supabase
         .from('patient_profiles')
         .update({
-          assigned_diet_type: dietType,
+          assigned_diet_type: dietTypes[0] || 'low_carb',
           current_phase: existingPlan?.currentPhase || 1,
         } as any)
         .eq('id', patientId);
@@ -312,32 +370,39 @@ export const TreatmentPlanEditorScreen = () => {
     setSaving(false);
   };
 
-  // ── Loading state ──
-  if (loading) {
-    return (
-      <SafeAreaView style={s.safe}>
-        <ActivityIndicator color={Colors.teal} size="large" style={{ marginTop: 100 }} />
-      </SafeAreaView>
-    );
-  }
-
-  if (!patient) {
-    return (
-      <SafeAreaView style={s.safe}>
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontFamily: Typography.sans, fontSize: 18, color: Colors.ink2 }}>Patient not found</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
+  // ── Loading / error states ──
+  if (loading) return (
+    <SafeAreaView style={s.safe}>
+      <ActivityIndicator color={Colors.teal} size="large" style={{ marginTop: 100 }} />
+    </SafeAreaView>
+  );
+  if (!patient) return (
+    <SafeAreaView style={s.safe}>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ fontFamily: Typography.sans, fontSize: 18, color: Colors.ink2 }}>Patient not found</Text>
+      </View>
+    </SafeAreaView>
+  );
 
   const bmi = calcBMI(patient.weight_kg || 70, patient.height_cm || 170);
   const liveCalories = macroCalsFromGrams(carbsG, proteinG, fatG);
 
+  // ── Helper to update a phase field ──
+  const updatePhase = (i: number, field: string, val: any) => {
+    const u = [...phases]; u[i] = { ...u[i], [field]: val }; setPhases(u);
+  };
+  // Helper to update a medication field
+  const updateMed = (i: number, field: string, val: any) => {
+    const u = [...medications]; u[i] = { ...u[i], [field]: val }; setMedications(u);
+  };
+  // Helper to update a supplement field
+  const updateSupp = (i: number, field: string, val: any) => {
+    const u = [...supplements]; u[i] = { ...u[i], [field]: val }; setSupplements(u);
+  };
+
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <SafeAreaView style={s.safe}>
-        {/* Header */}
         <View style={s.header}>
           <TouchableOpacity onPress={() => nav.goBack()} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
             <Text style={s.backText}>← Back</Text>
@@ -348,7 +413,7 @@ export const TreatmentPlanEditorScreen = () => {
 
         <ScrollView style={s.scroll} contentContainerStyle={s.scrollContent} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
 
-          {/* ── Patient Header ── */}
+          {/* Patient Header */}
           <View style={s.patientCard}>
             <View style={s.patAvatar}>
               <Text style={s.patAvatarText}>
@@ -381,35 +446,33 @@ export const TreatmentPlanEditorScreen = () => {
             </TouchableOpacity>
           </View>
 
-          {/* ── SECTION: Diet Type ── */}
+          {/* ── B1: Diet Type (multi-select) ── */}
           <SectionCap title="Diet type" />
-          <ChipPicker
+          <MultiChipPicker
             options={DIET_OPTIONS.map(o => ({ label: o.label, value: o.value }))}
-            value={dietType}
-            onChange={handleDietChange}
+            values={dietTypes}
+            onToggle={toggleDietType}
           />
 
-          {/* ── SECTION: Calorie & Macro Targets ── */}
+          {/* ── B2: Calorie & Macro Targets (min=0, NaN-safe) ── */}
           <SectionCap title="Calorie & macro targets" />
           <View style={s.macroSection}>
             <SectionLabel text="CALORIES" />
-            <Stepper value={calorieTarget} onChange={setCalorieTarget} step={50} unit="cal/day" min={800} max={4000} />
-
+            <Stepper value={calorieTarget} onChange={setCalorieTarget} step={50} unit="cal/day" min={0} max={5000} />
             <View style={s.macroRow}>
               <View style={s.macroCol}>
                 <SectionLabel text="CARBS" />
-                <Stepper value={carbsG} onChange={setCarbsG} step={5} unit="g" min={10} max={500} />
+                <Stepper value={carbsG} onChange={setCarbsG} step={5} unit="g" min={0} max={500} />
               </View>
               <View style={s.macroCol}>
                 <SectionLabel text="PROTEIN" />
-                <Stepper value={proteinG} onChange={setProteinG} step={5} unit="g" min={30} max={300} />
+                <Stepper value={proteinG} onChange={setProteinG} step={5} unit="g" min={0} max={500} />
               </View>
               <View style={s.macroCol}>
                 <SectionLabel text="FAT" />
-                <Stepper value={fatG} onChange={setFatG} step={5} unit="g" min={10} max={200} />
+                <Stepper value={fatG} onChange={setFatG} step={5} unit="g" min={0} max={300} />
               </View>
             </View>
-
             <View style={s.macroCalcBar}>
               <Text style={s.macroCalcText}>
                 From macros: {liveCalories} cal
@@ -420,19 +483,20 @@ export const TreatmentPlanEditorScreen = () => {
             </View>
           </View>
 
-          {/* ── SECTION: Exercise ── */}
+          {/* ── B3: Exercise Type (multi-select) ── */}
           <SectionCap title="Exercise strategy" />
           <SectionLabel text="TYPE" />
-          <ChipPicker
+          <MultiChipPicker
             options={EXERCISE_TYPES.map(t => ({ label: t, value: t }))}
-            value={exerciseType}
-            onChange={setExerciseType}
+            values={exerciseTypes}
+            onToggle={toggleExerciseType}
           />
 
+          {/* ── B4: Duration (min=0) + B5: Intensity ── */}
           <View style={s.macroRow}>
             <View style={s.macroCol}>
               <SectionLabel text="DURATION" />
-              <Stepper value={exerciseDuration} onChange={setExerciseDuration} step={5} unit="min" min={10} max={120} />
+              <Stepper value={exerciseDuration} onChange={setExerciseDuration} step={5} unit="min" min={0} max={180} />
             </View>
             <View style={s.macroCol}>
               <SectionLabel text="INTENSITY" />
@@ -444,15 +508,25 @@ export const TreatmentPlanEditorScreen = () => {
             </View>
           </View>
 
+          {/* ── B6: Exercise Frequency (structured steppers) ── */}
           <SectionLabel text="FREQUENCY" />
-          <TextInput
-            style={s.input}
-            placeholder="e.g. 5x/week"
-            placeholderTextColor={Colors.ink3}
-            value={exerciseFrequency}
-            onChangeText={setExerciseFrequency}
-          />
+          <View style={s.macroRow}>
+            <View style={s.macroCol}>
+              <Text style={s.freqLabel}>per day</Text>
+              <Stepper value={freqPerDay} onChange={setFreqPerDay} step={1} unit="" min={0} max={5} />
+            </View>
+            <View style={s.macroCol}>
+              <Text style={s.freqLabel}>per week</Text>
+              <Stepper value={freqPerWeek} onChange={setFreqPerWeek} step={1} unit="" min={0} max={14} />
+            </View>
+            <View style={s.macroCol}>
+              <Text style={s.freqLabel}>per month</Text>
+              <Stepper value={freqPerMonth} onChange={setFreqPerMonth} step={1} unit="" min={0} max={60} />
+            </View>
+          </View>
+          <Text style={s.freqSummary}>{composeFreqText(freqPerDay, freqPerWeek, freqPerMonth)}</Text>
 
+          {/* B7: Exercise Notes */}
           <SectionLabel text="EXERCISE NOTES" />
           <TextInput
             style={[s.input, s.textArea]}
@@ -463,7 +537,7 @@ export const TreatmentPlanEditorScreen = () => {
             multiline
           />
 
-          {/* ── SECTION: Phases ── */}
+          {/* ── B8/B9: Phases with preset chips ── */}
           <SectionCap title={`Phases (${phases.length})`} />
           {phases.map((phase, i) => (
             <View key={i} style={s.phaseCard}>
@@ -475,43 +549,30 @@ export const TreatmentPlanEditorScreen = () => {
                   </TouchableOpacity>
                 )}
               </View>
-              <TextInput
-                style={s.input}
-                placeholder="Phase name (e.g. Sugar Shutdown)"
-                placeholderTextColor={Colors.ink3}
-                value={phase.name}
-                onChangeText={t => { const u = [...phases]; u[i] = { ...u[i], name: t }; setPhases(u); }}
-              />
-              <TextInput
-                style={[s.input, s.textArea, { marginTop: 8 }]}
-                placeholder="Description — what this phase aims to achieve"
-                placeholderTextColor={Colors.ink3}
-                value={phase.description}
-                onChangeText={t => { const u = [...phases]; u[i] = { ...u[i], description: t }; setPhases(u); }}
-                multiline
-              />
+              <TextInput style={s.input} placeholder="Phase name" placeholderTextColor={Colors.ink3}
+                value={phase.name} onChangeText={t => updatePhase(i, 'name', t)} />
+              <TextInput style={[s.input, s.textArea, { marginTop: 8 }]} placeholder="Description" placeholderTextColor={Colors.ink3}
+                value={phase.description} onChangeText={t => updatePhase(i, 'description', t)} multiline />
+
+              {/* B8: Diet focus with presets */}
+              <SectionLabel text="DIET FOCUS" />
+              <PresetChips presets={DIET_FOCUS_PRESETS} value={phase.dietFocus || ''} onChange={v => updatePhase(i, 'dietFocus', v)} />
+              <TextInput style={[s.input, { marginTop: 6 }]} placeholder="Diet focus (edit or use presets above)" placeholderTextColor={Colors.ink3}
+                value={phase.dietFocus} onChangeText={t => updatePhase(i, 'dietFocus', t)} />
+
+              {/* B9: Exercise focus with presets */}
+              <SectionLabel text="EXERCISE FOCUS" />
+              <PresetChips presets={EXERCISE_FOCUS_PRESETS} value={phase.exerciseFocus || ''} onChange={v => updatePhase(i, 'exerciseFocus', v)} />
+              <TextInput style={[s.input, { marginTop: 6 }]} placeholder="Exercise focus (edit or use presets above)" placeholderTextColor={Colors.ink3}
+                value={phase.exerciseFocus} onChangeText={t => updatePhase(i, 'exerciseFocus', t)} />
+
               <View style={[s.macroRow, { marginTop: 8 }]}>
                 <View style={s.macroCol}>
-                  <TextInput style={s.input} placeholder="Diet focus" placeholderTextColor={Colors.ink3}
-                    value={phase.dietFocus} onChangeText={t => { const u = [...phases]; u[i] = { ...u[i], dietFocus: t }; setPhases(u); }} />
-                </View>
-                <View style={s.macroCol}>
-                  <TextInput style={s.input} placeholder="Exercise focus" placeholderTextColor={Colors.ink3}
-                    value={phase.exerciseFocus} onChangeText={t => { const u = [...phases]; u[i] = { ...u[i], exerciseFocus: t }; setPhases(u); }} />
+                  <Stepper value={phase.expectedDurationWeeks} onChange={v => updatePhase(i, 'expectedDurationWeeks', v)} step={1} unit="weeks" min={1} max={52} />
                 </View>
               </View>
-              <View style={[s.macroRow, { marginTop: 8 }]}>
-                <View style={s.macroCol}>
-                  <Stepper value={phase.expectedDurationWeeks} onChange={v => { const u = [...phases]; u[i] = { ...u[i], expectedDurationWeeks: v }; setPhases(u); }} step={1} unit="weeks" min={1} max={52} />
-                </View>
-              </View>
-              <TextInput
-                style={[s.input, { marginTop: 8 }]}
-                placeholder="Advancement criteria — when to move to next phase"
-                placeholderTextColor={Colors.ink3}
-                value={phase.advancementCriteria}
-                onChangeText={t => { const u = [...phases]; u[i] = { ...u[i], advancementCriteria: t }; setPhases(u); }}
-              />
+              <TextInput style={[s.input, { marginTop: 8 }]} placeholder="Advancement criteria" placeholderTextColor={Colors.ink3}
+                value={phase.advancementCriteria} onChangeText={t => updatePhase(i, 'advancementCriteria', t)} />
             </View>
           ))}
           {phases.length < 4 && (
@@ -520,47 +581,86 @@ export const TreatmentPlanEditorScreen = () => {
             </TouchableOpacity>
           )}
 
-          {/* ── SECTION: Medications ── */}
+          {/* ── B11: Medications (structured) ── */}
           <SectionCap title="Current medications" />
-          <RepeatableRow
-            items={medications}
-            onChange={setMedications}
-            fields={[
-              { key: 'name', placeholder: 'Medication name', flex: 2 },
-              { key: 'dose', placeholder: 'Dose', flex: 1 },
-              { key: 'timing', placeholder: 'Timing', flex: 1 },
-            ]}
-            addLabel="Add medication"
-          />
+          {medications.map((med: any, i: number) => (
+            <View key={i} style={s.medCard}>
+              {/* Row 1: Name + remove */}
+              <View style={s.medRow1}>
+                <TextInput style={[s.repeatInput, { flex: 1 }]} placeholder="Medication name" placeholderTextColor={Colors.ink3}
+                  value={med.name || ''} onChangeText={t => updateMed(i, 'name', t)} />
+                <TouchableOpacity style={s.repeatRemove} onPress={() => setMedications(medications.filter((_, j) => j !== i))}>
+                  <Text style={s.repeatRemoveText}>✕</Text>
+                </TouchableOpacity>
+              </View>
+              {/* Row 2: Dose value + unit + freq count + period + timing */}
+              <View style={s.medRow2}>
+                <TextInput style={[s.repeatInput, { width: 60 }]} placeholder="Dose" placeholderTextColor={Colors.ink3}
+                  value={med.doseValue || ''} onChangeText={t => updateMed(i, 'doseValue', t)} keyboardType="numeric" />
+                <ChipPicker small options={DOSE_UNITS.map(u => ({ label: u, value: u }))}
+                  value={med.doseUnit || 'mg'} onChange={v => updateMed(i, 'doseUnit', v)} />
+              </View>
+              <View style={s.medRow2}>
+                <TextInput style={[s.repeatInput, { width: 40 }]} placeholder="#" placeholderTextColor={Colors.ink3}
+                  value={med.frequencyCount || ''} onChangeText={t => updateMed(i, 'frequencyCount', t)} keyboardType="numeric" />
+                <ChipPicker small options={FREQ_PERIODS.map(p => ({ label: p, value: p }))}
+                  value={med.frequencyPeriod || 'per day'} onChange={v => updateMed(i, 'frequencyPeriod', v)} />
+              </View>
+              <TextInput style={[s.repeatInput, { marginTop: 4 }]} placeholder="Timing (e.g. with meals)" placeholderTextColor={Colors.ink3}
+                value={med.timing || ''} onChangeText={t => updateMed(i, 'timing', t)} />
+              {/* Composed summary */}
+              {med.name && (
+                <Text style={s.medSummary}>
+                  {med.name} {med.doseValue || ''} {med.doseUnit || ''} — {med.frequencyCount || ''}x {med.frequencyPeriod || ''} — {med.timing || ''}
+                </Text>
+              )}
+            </View>
+          ))}
+          <TouchableOpacity style={s.addBtn} onPress={() => setMedications([...medications, { name: '', doseValue: '', doseUnit: 'mg', frequencyCount: '', frequencyPeriod: 'per day', timing: '' }])}>
+            <Text style={s.addBtnText}>+ Add medication</Text>
+          </TouchableOpacity>
 
-          {/* ── SECTION: Supplements ── */}
+          {/* ── B12: Supplements (with frequency) ── */}
           <SectionCap title="Supplements" />
-          <RepeatableRow
-            items={supplements}
-            onChange={setSupplements}
-            fields={[
-              { key: 'name', placeholder: 'Name', flex: 2 },
-              { key: 'dose', placeholder: 'Dose', flex: 1 },
-              { key: 'timing', placeholder: 'Timing', flex: 1 },
-              { key: 'reason', placeholder: 'Reason', flex: 2 },
-            ]}
-            addLabel="Add supplement"
-          />
+          {supplements.map((sup: any, i: number) => (
+            <View key={i} style={s.medCard}>
+              {/* Row 1: Name + dose + remove */}
+              <View style={s.medRow1}>
+                <TextInput style={[s.repeatInput, { flex: 2 }]} placeholder="Name" placeholderTextColor={Colors.ink3}
+                  value={sup.name || ''} onChangeText={t => updateSupp(i, 'name', t)} />
+                <TextInput style={[s.repeatInput, { flex: 1 }]} placeholder="Dose" placeholderTextColor={Colors.ink3}
+                  value={sup.dose || ''} onChangeText={t => updateSupp(i, 'dose', t)} />
+                <TouchableOpacity style={s.repeatRemove} onPress={() => setSupplements(supplements.filter((_, j) => j !== i))}>
+                  <Text style={s.repeatRemoveText}>✕</Text>
+                </TouchableOpacity>
+              </View>
+              {/* Row 2: Timing + frequency */}
+              <View style={s.medRow2}>
+                <TextInput style={[s.repeatInput, { flex: 1 }]} placeholder="Timing" placeholderTextColor={Colors.ink3}
+                  value={sup.timing || ''} onChangeText={t => updateSupp(i, 'timing', t)} />
+                <TextInput style={[s.repeatInput, { width: 40 }]} placeholder="#" placeholderTextColor={Colors.ink3}
+                  value={sup.frequencyCount || ''} onChangeText={t => updateSupp(i, 'frequencyCount', t)} keyboardType="numeric" />
+                <ChipPicker small options={SUPP_FREQ_PERIODS.map(p => ({ label: p, value: p }))}
+                  value={sup.frequencyPeriod || 'per day'} onChange={v => updateSupp(i, 'frequencyPeriod', v)} />
+              </View>
+              {/* Row 3: Reason */}
+              <TextInput style={[s.repeatInput, { marginTop: 4 }]} placeholder="Reason for patient" placeholderTextColor={Colors.ink3}
+                value={sup.reason || ''} onChangeText={t => updateSupp(i, 'reason', t)} />
+            </View>
+          ))}
+          <TouchableOpacity style={s.addBtn} onPress={() => setSupplements([...supplements, { name: '', dose: '', timing: '', reason: '', frequencyCount: '', frequencyPeriod: 'per day' }])}>
+            <Text style={s.addBtnText}>+ Add supplement</Text>
+          </TouchableOpacity>
 
           {/* Suggested supplements */}
           {suggestedSupps.length > 0 && (
             <View style={s.suggestedSection}>
               <Text style={s.suggestedTitle}>Suggested for {(patient.primary_condition || '').replace(/_/g, ' ')}</Text>
               {suggestedSupps.slice(0, 6).map(supp => {
-                const alreadyAdded = supplements.some(s => s.name === supp.name);
+                const alreadyAdded = supplements.some((sl: any) => sl.name === supp.name);
                 return (
-                  <TouchableOpacity
-                    key={supp.name}
-                    style={[s.suggestedRow, alreadyAdded && s.suggestedRowAdded]}
-                    onPress={() => addSuggestedSupplement(supp)}
-                    disabled={alreadyAdded}
-                    activeOpacity={0.7}
-                  >
+                  <TouchableOpacity key={supp.name} style={[s.suggestedRow, alreadyAdded && s.suggestedRowAdded]}
+                    onPress={() => addSuggestedSupplement(supp)} disabled={alreadyAdded} activeOpacity={0.7}>
                     <View style={{ flex: 1 }}>
                       <Text style={s.suggestedName}>{supp.name}</Text>
                       <Text style={s.suggestedDose}>{supp.dose} · {supp.timing}</Text>
@@ -572,7 +672,7 @@ export const TreatmentPlanEditorScreen = () => {
             </View>
           )}
 
-          {/* ── SECTION: Doctor Notes ── */}
+          {/* ── B13: Doctor Notes (no change) ── */}
           <SectionCap title="Doctor notes" />
           <TextInput
             style={[s.input, s.textArea, { minHeight: 100 }]}
@@ -583,19 +683,12 @@ export const TreatmentPlanEditorScreen = () => {
             multiline
           />
 
-          {/* ── Save Button ── */}
-          <TouchableOpacity
-            style={[s.saveBtn, saving && s.saveBtnDisabled]}
-            onPress={handleSave}
-            disabled={saving}
-            activeOpacity={0.85}
-          >
+          {/* Save */}
+          <TouchableOpacity style={[s.saveBtn, saving && s.saveBtnDisabled]} onPress={handleSave} disabled={saving} activeOpacity={0.85}>
             {saving ? (
               <ActivityIndicator color={Colors.deep} />
             ) : (
-              <Text style={s.saveBtnText}>
-                {existingPlan ? 'Update Treatment Plan' : 'Create Treatment Plan'} →
-              </Text>
+              <Text style={s.saveBtnText}>{existingPlan ? 'Update Treatment Plan' : 'Create Treatment Plan'} →</Text>
             )}
           </TouchableOpacity>
 
@@ -610,31 +703,16 @@ export const TreatmentPlanEditorScreen = () => {
 
 const s = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.deep },
-  header: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: Spacing.lg, paddingVertical: Spacing.md,
-    borderBottomWidth: 0.5, borderBottomColor: Colors.border,
-  },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: Spacing.lg, paddingVertical: Spacing.md, borderBottomWidth: 0.5, borderBottomColor: Colors.border },
   backText: { fontFamily: Typography.sans, fontSize: 17, color: Colors.teal },
   headerTitle: { fontFamily: Typography.display, fontSize: 22, color: Colors.ink },
   scroll: { flex: 1 },
   scrollContent: { padding: Spacing.xl, paddingTop: Spacing.md },
-  label: {
-    fontFamily: Typography.mono, fontSize: 11, letterSpacing: 2,
-    color: Colors.ink2, marginBottom: 6, marginTop: Spacing.md,
-  },
-  input: {
-    backgroundColor: Colors.card2, borderRadius: Radii.md,
-    borderWidth: 0.5, borderColor: Colors.border2,
-    padding: 12, fontFamily: Typography.sans, fontSize: 16, color: Colors.ink,
-  },
+  label: { fontFamily: Typography.mono, fontSize: 11, letterSpacing: 2, color: Colors.ink2, marginBottom: 6, marginTop: Spacing.md },
+  input: { backgroundColor: Colors.card2, borderRadius: Radii.md, borderWidth: 0.5, borderColor: Colors.border2, padding: 12, fontFamily: Typography.sans, fontSize: 16, color: Colors.ink },
   textArea: { minHeight: 60, textAlignVertical: 'top' },
   // Patient card
-  patientCard: {
-    flexDirection: 'row', alignItems: 'center', gap: 12,
-    padding: Spacing.md, backgroundColor: 'rgba(27,107,84,0.12)',
-    borderRadius: Radii.lg, marginBottom: Spacing.md,
-  },
+  patientCard: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: Spacing.md, backgroundColor: 'rgba(27,107,84,0.12)', borderRadius: Radii.lg, marginBottom: Spacing.md },
   patAvatar: { width: 44, height: 44, borderRadius: 22, backgroundColor: Colors.em, alignItems: 'center', justifyContent: 'center' },
   patAvatarText: { fontFamily: Typography.sansMed, fontSize: 18, color: Colors.deep, fontWeight: '600' },
   patName: { fontFamily: Typography.sansMed, fontSize: 18, color: Colors.ink },
@@ -642,11 +720,7 @@ const s = StyleSheet.create({
   patStats: { alignItems: 'flex-end', gap: 2 },
   patStatVal: { fontFamily: Typography.mono, fontSize: 12, color: Colors.teal },
   // Suggestion banner
-  suggestionBanner: {
-    backgroundColor: Colors.card, borderRadius: Radii.md,
-    borderWidth: 0.5, borderColor: Colors.border,
-    padding: 12, marginBottom: Spacing.md, alignItems: 'center',
-  },
+  suggestionBanner: { backgroundColor: Colors.card, borderRadius: Radii.md, borderWidth: 0.5, borderColor: Colors.border, padding: 12, marginBottom: Spacing.md, alignItems: 'center' },
   suggestionTitle: { fontFamily: Typography.mono, fontSize: 11, letterSpacing: 1, color: Colors.ink3, marginBottom: 4 },
   suggestionText: { fontFamily: Typography.sansMed, fontSize: 16, color: Colors.teal, marginBottom: 8 },
   acceptBtn: { backgroundColor: 'rgba(62,219,165,0.1)', borderRadius: Radii.sm, paddingHorizontal: 14, paddingVertical: 6, borderWidth: 0.5, borderColor: Colors.teal },
@@ -654,8 +728,10 @@ const s = StyleSheet.create({
   // Chips
   chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, paddingHorizontal: Spacing.sm },
   chip: { paddingHorizontal: 13, paddingVertical: 9, borderRadius: Radii.md, backgroundColor: Colors.card2, borderWidth: 0.5, borderColor: Colors.border2 },
+  chipSmall: { paddingHorizontal: 9, paddingVertical: 5, borderRadius: Radii.sm, backgroundColor: Colors.card2, borderWidth: 0.5, borderColor: Colors.border2 },
   chipActive: { backgroundColor: Colors.em, borderColor: Colors.teal },
   chipText: { fontFamily: Typography.sans, fontSize: 14, color: Colors.ink2 },
+  chipTextSmall: { fontFamily: Typography.sans, fontSize: 12, color: Colors.ink2 },
   chipTextActive: { color: Colors.spring },
   // Stepper
   stepperWrap: { flexDirection: 'row', alignItems: 'center', gap: 6 },
@@ -663,24 +739,27 @@ const s = StyleSheet.create({
   stepperBtnText: { fontFamily: Typography.mono, fontSize: 20, color: Colors.teal },
   stepperInput: { flex: 1, backgroundColor: Colors.card2, borderRadius: Radii.md, borderWidth: 0.5, borderColor: Colors.border2, padding: 10, fontFamily: Typography.mono, fontSize: 16, color: Colors.ink, textAlign: 'center' },
   stepperUnit: { fontFamily: Typography.mono, fontSize: 13, color: Colors.ink2, minWidth: 40 },
-  // Macros section
+  // Macros
   macroSection: { paddingHorizontal: Spacing.sm },
   macroRow: { flexDirection: 'row', gap: Spacing.md },
   macroCol: { flex: 1 },
   macroCalcBar: { marginTop: 8, paddingVertical: 6, alignItems: 'center' },
   macroCalcText: { fontFamily: Typography.mono, fontSize: 13, color: Colors.ink3 },
+  // Frequency
+  freqLabel: { fontFamily: Typography.mono, fontSize: 11, color: Colors.ink3, textAlign: 'center', marginBottom: 4 },
+  freqSummary: { fontFamily: Typography.sansMed, fontSize: 15, color: Colors.teal, textAlign: 'center', marginTop: 6, marginBottom: 4 },
   // Phase card
-  phaseCard: {
-    backgroundColor: Colors.card, borderRadius: Radii.lg,
-    borderWidth: 0.5, borderColor: Colors.border,
-    padding: Spacing.md, marginBottom: 8,
-  },
+  phaseCard: { backgroundColor: Colors.card, borderRadius: Radii.lg, borderWidth: 0.5, borderColor: Colors.border, padding: Spacing.md, marginBottom: 8 },
   phaseHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
   phaseNumber: { fontFamily: Typography.sansMed, fontSize: 16, color: Colors.teal },
   removeText: { fontFamily: Typography.mono, fontSize: 13, color: Colors.rose },
-  // Repeatable rows
-  repeatRow: { flexDirection: 'row', gap: 6, marginBottom: 6, alignItems: 'center' },
-  repeatInput: { flex: 1, backgroundColor: Colors.card2, borderRadius: Radii.sm, borderWidth: 0.5, borderColor: Colors.border2, padding: 10, fontFamily: Typography.sans, fontSize: 14, color: Colors.ink },
+  // Medication / supplement cards
+  medCard: { backgroundColor: Colors.card, borderRadius: Radii.md, borderWidth: 0.5, borderColor: Colors.border, padding: 10, marginBottom: 6 },
+  medRow1: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4 },
+  medRow2: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4, flexWrap: 'wrap' },
+  medSummary: { fontFamily: Typography.mono, fontSize: 12, color: Colors.ink3, marginTop: 4, paddingTop: 4, borderTopWidth: 0.5, borderTopColor: Colors.border },
+  // Repeatable
+  repeatInput: { backgroundColor: Colors.card2, borderRadius: Radii.sm, borderWidth: 0.5, borderColor: Colors.border2, padding: 10, fontFamily: Typography.sans, fontSize: 14, color: Colors.ink },
   repeatRemove: { width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(217,123,114,0.1)', alignItems: 'center', justifyContent: 'center' },
   repeatRemoveText: { fontSize: 14, color: Colors.rose },
   addBtn: { paddingVertical: 10, alignItems: 'center' },
