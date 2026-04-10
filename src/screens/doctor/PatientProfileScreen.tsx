@@ -9,6 +9,7 @@ import { Colors, Typography, Spacing, Radii } from '../../theme';
 import { SectionCap } from '../../components/SectionCap';
 import { Pill } from '../../components/Pill';
 import { MetricCard } from '../../components/MetricCard';
+import { ReasoningBox } from '../../components/ReasoningBox';
 import { supabase } from '../../lib/supabase';
 import { fetchActiveProtocol } from '../../services/doctorService';
 import type { TreatmentPlan } from '../../types';
@@ -105,6 +106,7 @@ export const PatientProfileScreen = () => {
   const [loading, setLoading] = useState(true);
   const [protocol, setProtocol] = useState<TreatmentPlan | null>(null);
   const [protocolLoading, setProtocolLoading] = useState(true);
+  const [latestPlan, setLatestPlan] = useState<any>(null);
 
   // Expandable sections
   const [bioExpanded, setBioExpanded] = useState(true);
@@ -139,6 +141,17 @@ export const PatientProfileScreen = () => {
         .then(p => setProtocol(p))
         .catch(() => setProtocol(null))
         .finally(() => setProtocolLoading(false));
+
+      // Fetch latest daily plan (for rules fired)
+      supabase
+        .from('daily_plans')
+        .select('plan_date, rules_fired, doctor_flag_raised, doctor_flag_reason, diet_type, reasoning')
+        .eq('patient_id', patientId)
+        .order('plan_date', { ascending: false })
+        .limit(1)
+        .then(({ data }) => {
+          setLatestPlan(data?.[0] || null);
+        });
     }, [patientId])
   );
 
@@ -351,21 +364,78 @@ export const PatientProfileScreen = () => {
           </View>
         )}
 
-        {/* ── 6. Rules fired (only if critical) ── */}
-        {isCritical && (
-          <>
-            <SectionCap title="Rules fired today" />
-            <View style={styles.ruleFired}>
-              <View style={styles.ruleHead}>
-                <Text style={styles.ruleIcon}>⚡</Text>
-                <Text style={styles.ruleTitle}>DR003 — FBS {'>'}180 · Critical</Text>
+        {/* ── 6. Rules fired (from daily_plans.rules_fired) ── */}
+        {(() => {
+          if (!latestPlan) return (
+            <>
+              <SectionCap title="Engine rules" />
+              <View style={styles.emptyBox}>
+                <Text style={styles.emptyText}>No plan generated yet</Text>
               </View>
-              <Text style={styles.ruleBody}>
-                FBS {latest.fbs} mg/dL — above 180 threshold. Auto-adjustments applied. Doctor review needed.
-              </Text>
-            </View>
-          </>
-        )}
+            </>
+          );
+
+          const todayISO = new Date().toISOString().split('T')[0];
+          const planDate = latestPlan.plan_date || '';
+          const isToday = planDate === todayISO;
+          const dateLabel = isToday ? "Today's plan" : `Plan for ${planDate}`;
+
+          // Parse rules_fired — handle both parsed JSONB and string
+          let rules: { ruleId: string; message: string }[] = [];
+          try {
+            const raw = latestPlan.rules_fired;
+            if (Array.isArray(raw)) rules = raw;
+            else if (typeof raw === 'string') rules = JSON.parse(raw);
+          } catch {}
+
+          // Rule color by ID pattern
+          const ruleColor = (id: string) => {
+            if (id.includes('004') || id.includes('003') || id.includes('005')) return Colors.rose;
+            if (id.includes('006') || id.includes('007') || id.includes('008')) return Colors.teal;
+            return Colors.amber;
+          };
+          const rulePillColor = (id: string): 'rose' | 'amber' | 'teal' => {
+            if (id.includes('004') || id.includes('003') || id.includes('005')) return 'rose';
+            if (id.includes('006') || id.includes('007') || id.includes('008')) return 'teal';
+            return 'amber';
+          };
+
+          return (
+            <>
+              <SectionCap title={`Rules fired · ${dateLabel}`} />
+
+              {/* Doctor flag banner */}
+              {latestPlan.doctor_flag_raised && latestPlan.doctor_flag_reason && (
+                <View style={styles.flagBanner}>
+                  <Text style={styles.flagBannerIcon}>⚠</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.flagBannerTitle}>Doctor review needed</Text>
+                    <Text style={styles.flagBannerText}>{latestPlan.doctor_flag_reason}</Text>
+                  </View>
+                </View>
+              )}
+
+              {rules.length > 0 ? (
+                rules.map((r, i) => (
+                  <View key={`${r.ruleId}-${i}`} style={styles.ruleCard}>
+                    <View style={[styles.ruleDot, { backgroundColor: ruleColor(r.ruleId) }]} />
+                    <Pill label={r.ruleId} color={rulePillColor(r.ruleId)} />
+                    <Text style={styles.ruleMsg}>{r.message}</Text>
+                  </View>
+                ))
+              ) : (
+                <View style={styles.emptyBox}>
+                  <Text style={styles.emptyText}>No rules triggered</Text>
+                </View>
+              )}
+
+              {/* Plan reasoning */}
+              {latestPlan.reasoning ? (
+                <ReasoningBox label="Engine reasoning" text={latestPlan.reasoning} />
+              ) : null}
+            </>
+          );
+        })()}
 
         {/* ── 7. Action buttons ── */}
         <View style={{ height: Spacing.md }} />
@@ -428,11 +498,13 @@ const styles = StyleSheet.create({
   notesText:      { fontFamily: Typography.sans, fontSize: 14, color: Colors.ink2, lineHeight: 21, paddingHorizontal: 12, paddingBottom: 10 },
   updatedAt:      { fontFamily: Typography.mono, fontSize: 11, color: Colors.ink3, padding: 12, textAlign: 'right' },
   // Rules
-  ruleFired:      { marginHorizontal: Spacing.lg, marginBottom: Spacing.sm, backgroundColor: 'rgba(232,184,75,0.05)', borderWidth: 0.5, borderColor: Colors.borderAmber, borderRadius: Radii.lg, padding: 13 },
-  ruleHead:       { flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 5 },
-  ruleIcon:       { fontSize: 18 },
-  ruleTitle:      { fontFamily: Typography.sansMed, fontSize: 16, color: Colors.amber, flex: 1 },
-  ruleBody:       { fontFamily: Typography.sans, fontSize: 14, color: Colors.ink2, lineHeight: 22 },
+  flagBanner:     { marginHorizontal: Spacing.lg, marginBottom: Spacing.sm, backgroundColor: 'rgba(217,123,114,0.08)', borderWidth: 0.5, borderColor: 'rgba(217,123,114,0.3)', borderRadius: Radii.lg, padding: 13, flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
+  flagBannerIcon: { fontSize: 20 },
+  flagBannerTitle:{ fontFamily: Typography.sansMed, fontSize: 16, color: Colors.rose, marginBottom: 2 },
+  flagBannerText: { fontFamily: Typography.sans, fontSize: 14, color: 'rgba(217,123,114,0.8)', lineHeight: 21 },
+  ruleCard:       { marginHorizontal: Spacing.lg, marginBottom: 5, backgroundColor: Colors.card, borderRadius: Radii.md, padding: 11, borderWidth: 0.5, borderColor: Colors.border, flexDirection: 'row', alignItems: 'center', gap: 8 },
+  ruleDot:        { width: 8, height: 8, borderRadius: 4 },
+  ruleMsg:        { fontFamily: Typography.sans, fontSize: 14, color: Colors.ink2, flex: 1, lineHeight: 20 },
   // Buttons
   btnPri:         { marginHorizontal: Spacing.lg, backgroundColor: Colors.teal, borderRadius: Radii.lg, padding: 14, alignItems: 'center', marginBottom: 8 },
   btnPriTxt:      { fontFamily: Typography.sansMed, fontSize: 17, color: Colors.deep, fontWeight: '600' },
