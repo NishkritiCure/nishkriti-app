@@ -21,6 +21,7 @@ export const DoctorDashboardScreen = () => {
   const [patients, setPatients] = useState<any[]>([]);
   const [doctorId, setDoctorId] = useState<string | null>(DEFAULT_DOCTOR_ID);
   const [flagCount, setFlagCount] = useState(0);
+  const [pendingCount, setPendingCount] = useState(0);
   const [checkinCount, setCheckinCount] = useState(0);
   const today = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
   const todayISO = new Date().toISOString().split('T')[0];
@@ -36,8 +37,12 @@ export const DoctorDashboardScreen = () => {
     if (!doctorId) return;
     const { data } = await (supabase.from('patient_profiles').select('*, daily_check_ins(check_in_date, fbs_mg_dl, weight_kg)').eq('assigned_doctor_id', doctorId).order('onboarded_at', { ascending: false }) as any);
     if (data) setPatients(data);
-    const { count: flags } = await supabase.from('daily_plans').select('id', { count: 'exact', head: true }).eq('doctor_flag_raised', true).eq('flag_status', 'open');
+    // Flags: flagged + not resolved
+    const { count: flags } = await supabase.from('daily_plans').select('id', { count: 'exact', head: true }).eq('doctor_flag_raised', true).in('flag_status', ['open', 'reviewing']);
     setFlagCount(flags || 0);
+    // Unreviewed: not flagged + not reviewed
+    const { count: pending } = await supabase.from('daily_plans').select('id', { count: 'exact', head: true }).is('doctor_reviewed_at', null).or('doctor_flag_raised.is.null,doctor_flag_raised.eq.false');
+    setPendingCount(pending || 0);
     const { count: checkins } = await supabase.from('daily_check_ins').select('id', { count: 'exact', head: true }).eq('check_in_date', todayISO);
     setCheckinCount(checkins || 0);
   }, [todayISO, doctorId]);
@@ -51,15 +56,15 @@ export const DoctorDashboardScreen = () => {
     setModalVisible(true);
   };
   const openFlags = async () => {
-    const { data } = await (supabase.from('daily_plans').select('id, patient_id, doctor_flag_reason, plan_date, patient_profiles(id, full_name)').eq('doctor_flag_raised', true).eq('flag_status', 'open').limit(20) as any);
+    const { data } = await (supabase.from('daily_plans').select('id, patient_id, doctor_flag_reason, plan_date, patient_profiles(id, full_name)').eq('doctor_flag_raised', true).in('flag_status', ['open', 'reviewing']).limit(20) as any);
     setModalTitle('Open Flags');
     setModalItems((data || []).map((d: any) => ({ id: d.patient_profiles?.id || d.patient_id, title: d.patient_profiles?.full_name || 'Unknown', subtitle: d.doctor_flag_reason, value: d.plan_date })));
     setModalVisible(true);
   };
   const openPending = async () => {
-    const { data } = await (supabase.from('daily_plans').select('id, patient_id, doctor_flag_reason, plan_date, patient_profiles(id, full_name)').eq('doctor_flag_raised', true).is('doctor_reviewed_at', null).limit(20) as any);
-    setModalTitle('Pending Review');
-    setModalItems((data || []).map((d: any) => ({ id: d.patient_profiles?.id || d.patient_id, title: d.patient_profiles?.full_name || 'Unknown', subtitle: d.doctor_flag_reason, value: d.plan_date })));
+    const { data } = await (supabase.from('daily_plans').select('id, patient_id, plan_date, diet_type, patient_profiles(id, full_name)').is('doctor_reviewed_at', null).or('doctor_flag_raised.is.null,doctor_flag_raised.eq.false').order('plan_date', { ascending: false }).limit(20) as any);
+    setModalTitle('Unreviewed Plans');
+    setModalItems((data || []).map((d: any) => ({ id: d.patient_profiles?.id || d.patient_id, title: d.patient_profiles?.full_name || 'Unknown', subtitle: d.diet_type ? `Plan: ${d.diet_type}` : 'Unreviewed', value: d.plan_date })));
     setModalVisible(true);
   };
   const openCheckins = async () => {
@@ -95,7 +100,7 @@ export const DoctorDashboardScreen = () => {
         <View style={styles.statsGrid}>
           <StatCard val={patients.length} lbl="Total patients" onPress={openPatients} />
           <StatCard val={flagCount} lbl="Flags" color={Colors.rose} onPress={openFlags} />
-          <StatCard val={0} lbl="Pending plans" color={Colors.amber} onPress={openPending} />
+          <StatCard val={pendingCount} lbl="Unreviewed" color={Colors.amber} onPress={openPending} />
           <StatCard val={checkinCount} lbl="Check-ins today" onPress={openCheckins} />
         </View>
 

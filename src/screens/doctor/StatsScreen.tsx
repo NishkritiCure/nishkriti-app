@@ -41,7 +41,7 @@ export const StatsScreen = () => {
     const [pRes, ciRes, flagRes, resolvedRes] = await Promise.all([
       supabase.from('patient_profiles').select('id, full_name, primary_condition, current_phase, weight_kg, baseline_weight'),
       (supabase.from('daily_check_ins').select('patient_id, check_in_date, fbs_mg_dl, weight_kg').gte('check_in_date', weekAgo).order('check_in_date', { ascending: false }) as any),
-      (supabase.from('daily_plans').select('patient_id, doctor_flag_reason, plan_date, patient_profiles(id, full_name)').eq('doctor_flag_raised', true).eq('flag_status', 'open').limit(50) as any),
+      (supabase.from('daily_plans').select('patient_id, doctor_flag_reason, plan_date, patient_profiles(id, full_name)').eq('doctor_flag_raised', true).in('flag_status', ['open', 'reviewing']).limit(50) as any),
       supabase.from('daily_plans').select('id', { count: 'exact', head: true }).eq('flag_status', 'resolved').gte('doctor_reviewed_at', weekAgo),
     ]);
     if (pRes.data) setPatients(pRes.data);

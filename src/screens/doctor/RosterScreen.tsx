@@ -77,9 +77,11 @@ export const DoctorRosterScreen = () => {
     if (data) setPatients(data);
 
     // Counts
-    const { count: flags } = await supabase.from('daily_plans').select('id', { count: 'exact', head: true }).eq('doctor_flag_raised', true).eq('flag_status', 'open');
+    // Flags: flagged + not resolved (mutually exclusive with Unreviewed)
+    const { count: flags } = await supabase.from('daily_plans').select('id', { count: 'exact', head: true }).eq('doctor_flag_raised', true).in('flag_status', ['open', 'reviewing']);
     setFlagCount(flags || 0);
-    const { count: pending } = await supabase.from('daily_plans').select('id', { count: 'exact', head: true }).eq('doctor_flag_raised', true).is('doctor_reviewed_at', null);
+    // Unreviewed: not flagged + not reviewed (mutually exclusive with Flags)
+    const { count: pending } = await supabase.from('daily_plans').select('id', { count: 'exact', head: true }).is('doctor_reviewed_at', null).or('doctor_flag_raised.is.null,doctor_flag_raised.eq.false');
     setPendingCount(pending || 0);
     const { count: checkins } = await supabase.from('daily_check_ins').select('id', { count: 'exact', head: true }).eq('check_in_date', todayISO);
     setCheckinCount(checkins || 0);
@@ -89,7 +91,7 @@ export const DoctorRosterScreen = () => {
 
   // Drill-down handlers
   const openFlags = async () => {
-    const { data } = await (supabase.from('daily_plans').select('id, patient_id, doctor_flag_reason, plan_date, patient_profiles(id, full_name)').eq('doctor_flag_raised', true).eq('flag_status', 'open').order('plan_date', { ascending: false }).limit(20) as any);
+    const { data } = await (supabase.from('daily_plans').select('id, patient_id, doctor_flag_reason, plan_date, patient_profiles(id, full_name)').eq('doctor_flag_raised', true).in('flag_status', ['open', 'reviewing']).order('plan_date', { ascending: false }).limit(20) as any);
     setModalTitle('Open Flags');
     setModalItems((data || []).map((d: any) => ({
       id: d.patient_profiles?.id || d.patient_id,
@@ -101,12 +103,12 @@ export const DoctorRosterScreen = () => {
   };
 
   const openPending = async () => {
-    const { data } = await (supabase.from('daily_plans').select('id, patient_id, doctor_flag_reason, plan_date, patient_profiles(id, full_name)').eq('doctor_flag_raised', true).is('doctor_reviewed_at', null).order('plan_date', { ascending: false }).limit(20) as any);
-    setModalTitle('Pending Review');
+    const { data } = await (supabase.from('daily_plans').select('id, patient_id, plan_date, diet_type, patient_profiles(id, full_name)').is('doctor_reviewed_at', null).or('doctor_flag_raised.is.null,doctor_flag_raised.eq.false').order('plan_date', { ascending: false }).limit(20) as any);
+    setModalTitle('Unreviewed Plans');
     setModalItems((data || []).map((d: any) => ({
       id: d.patient_profiles?.id || d.patient_id,
       title: d.patient_profiles?.full_name || 'Unknown',
-      subtitle: d.doctor_flag_reason || 'Pending',
+      subtitle: d.diet_type ? `Plan: ${d.diet_type}` : 'Unreviewed',
       value: d.plan_date,
     })));
     setModalVisible(true);
@@ -155,7 +157,7 @@ export const DoctorRosterScreen = () => {
           <View style={styles.statsRow}>
             <StatChip val={patients.length} lbl="Patients" />
             <StatChip val={flagCount} lbl="Flags" color={Colors.rose} onPress={openFlags} />
-            <StatChip val={pendingCount} lbl="Pending" color={Colors.amber} onPress={openPending} />
+            <StatChip val={pendingCount} lbl="Unreviewed" color={Colors.amber} onPress={openPending} />
             <StatChip val={checkinCount} lbl="Check-ins" onPress={openCheckins} />
           </View>
         </View>
