@@ -1,37 +1,66 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import type { Session } from '@supabase/supabase-js';
 import { Colors } from '../theme';
 import { useAppStore } from '../store/useAppStore';
+import { supabase } from '../lib/supabase';
 import { SplashScreen } from '../screens/SplashScreen';
 import { PatientNavigator } from './PatientNavigator';
 import { DoctorNavigator } from './DoctorNavigator';
 import { PhoneAuthScreen } from '../screens/auth/PhoneAuthScreen';
 import { DoctorLoginScreen } from '../screens/auth/DoctorLoginScreen';
 
-// ── DEMO MODE (no Supabase) ───────────────────────────────────────────────────
-// Set to false when Supabase is configured (EXPO_PUBLIC_SUPABASE_URL is set)
-const DEMO_MODE = !process.env.EXPO_PUBLIC_SUPABASE_URL;
-
+const AUTH_TIMEOUT_MS = 10000; // 10-second hard timeout
 const Root = createStackNavigator();
 
 export const RootNavigator = () => {
-  const { mode, splashDone } = useAppStore();
   const [session, setSession] = useState<Session | null>(null);
   const [isDoctor, setIsDoctor] = useState(false);
-  const [authChecked, setAuthChecked] = useState(DEMO_MODE); // skip check in demo
+  const [authChecked, setAuthChecked] = useState(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (DEMO_MODE) return; // use mock store in demo mode
+    // Hard timeout — if auth check hasn't completed in 10s, show login screen
+    timeoutRef.current = setTimeout(() => {
+      setAuthChecked(true);
+    }, AUTH_TIMEOUT_MS);
 
-    // FIX: wrapped entire Supabase init in try/catch with .catch() on import
-    // Any failure at any point must still set authChecked=true to avoid black screen
-    import('../lib/supabase').then(({ supabase }) => {
-      if (!supabase) { setAuthChecked(true); return; }
+    const init = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setSession(session);
+        if (session) {
+          try {
+            const { data } = await supabase
+              .from('doctors')
+              .select('id')
+              .eq('auth_id', session.user.id)
+              .single();
+            setIsDoctor(!!data);
+            if (!data) {
+              // Patient — start loading their data
+              useAppStore.getState().loadPatientFromSupabase();
+            }
+          } catch {
+            // Doctor check failed — treat as patient
+            setIsDoctor(false);
+          }
+        }
+      } catch {
+        // getSession failed — will show login screen
+      } finally {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        setAuthChecked(true);
+      }
+    };
 
-      supabase.auth.getSession().then(async ({ data: { session } }) => {
+    init();
+
+    // Listen for auth state changes (login/logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
         setSession(session);
         if (session) {
           try {
@@ -44,46 +73,25 @@ export const RootNavigator = () => {
             if (!data) {
               useAppStore.getState().loadPatientFromSupabase();
             }
-          } catch {}
-        }
-        setAuthChecked(true);
-      }).catch(() => {
-        setAuthChecked(true);
-      });
-
-      try {
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-          async (_event, session) => {
-            setSession(session);
-            if (session) {
-              try {
-                const { data } = await supabase
-                  .from('doctors')
-                  .select('id')
-                  .eq('auth_id', session.user.id)
-                  .single();
-                setIsDoctor(!!data);
-                if (!data) {
-                  useAppStore.getState().loadPatientFromSupabase();
-                }
-              } catch {}
-            } else {
-              setIsDoctor(false);
-            }
+          } catch {
+            setIsDoctor(false);
           }
-        );
-        return () => subscription.unsubscribe();
-      } catch {}
-    }).catch(() => {
-      // FIX: if dynamic import itself fails, still show the app (splash/auth screens)
-      setAuthChecked(true);
-    });
+        } else {
+          setIsDoctor(false);
+        }
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, []);
 
-  // FIX: show loading text instead of null — null causes black screen while checking auth
+  // Brief loading while checking auth (max 10 seconds)
   if (!authChecked) return (
-    <View style={{ flex: 1, backgroundColor: '#020604', alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ color: '#3EDBA5', fontSize: 16, fontFamily: 'System' }}>Connecting...</Text>
+    <View style={{ flex: 1, backgroundColor: Colors.deep, alignItems: 'center', justifyContent: 'center' }}>
+      <ActivityIndicator color={Colors.teal} size="large" />
     </View>
   );
 
@@ -110,31 +118,22 @@ export const RootNavigator = () => {
           }),
         }}
       >
-        {/* ── DEMO MODE ── */}
-        {DEMO_MODE && !splashDone && (
-          <Root.Screen name="Splash" component={SplashScreen} />
-        )}
-        {DEMO_MODE && splashDone && mode === 'doctor' && (
-          <Root.Screen name="Doctor" component={DoctorNavigator} />
-        )}
-        {DEMO_MODE && splashDone && mode !== 'doctor' && (
-          <Root.Screen name="Patient" component={PatientNavigator} />
+        {/* Not logged in — show splash → auth flow */}
+        {!session && (
+          <>
+            <Root.Screen name="Splash" component={SplashScreen} />
+            <Root.Screen name="PhoneAuth" component={PhoneAuthScreen} />
+            <Root.Screen name="DoctorLogin" component={DoctorLoginScreen} />
+          </>
         )}
 
-        {/* ── PRODUCTION MODE (Supabase auth) ── */}
-        {!DEMO_MODE && !session && (
-          <Root.Screen name="Splash" component={SplashScreen} />
-        )}
-        {!DEMO_MODE && !session && (
-          <Root.Screen name="PhoneAuth" component={PhoneAuthScreen} />
-        )}
-        {!DEMO_MODE && !session && (
-          <Root.Screen name="DoctorLogin" component={DoctorLoginScreen} />
-        )}
-        {!DEMO_MODE && session && isDoctor && (
+        {/* Logged in as doctor */}
+        {session && isDoctor && (
           <Root.Screen name="Doctor" component={DoctorNavigator} />
         )}
-        {!DEMO_MODE && session && !isDoctor && (
+
+        {/* Logged in as patient */}
+        {session && !isDoctor && (
           <Root.Screen name="Patient" component={PatientNavigator} />
         )}
       </Root.Navigator>

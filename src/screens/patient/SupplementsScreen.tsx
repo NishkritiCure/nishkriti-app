@@ -5,8 +5,6 @@ import { Colors, Typography, Spacing, Radii } from "../../theme";
 import { useAppStore } from "../../store/useAppStore";
 import { SectionCap } from "../../components/SectionCap";
 import { markSupplementTaken as markSupplementTakenSupabase } from "../../services/patientService";
-// FIX: import shared IS_DEMO constant
-import { IS_DEMO } from "../../lib/constants";
 
 const ICONS: Record<string, string> = {
   "Vitamin D3 + K2": "🌞",
@@ -96,11 +94,9 @@ export const SupplementsScreen = () => {
   // On failure, revert the local state
   const handleToggle = (name: string, taken: boolean) => {
     markSupplementTaken(name, taken); // instant UI update
-    if (!IS_DEMO) {
-      markSupplementTakenSupabase(name, taken).catch(() => {
-        markSupplementTaken(name, !taken); // revert on failure
-      });
-    }
+    markSupplementTakenSupabase(name, taken).catch(() => {
+      markSupplementTaken(name, !taken); // revert on failure
+    });
   };
   const taken = supplements.filter(s => s.taken).length;
   const pct = Math.round((taken / Math.max(supplements.length, 1)) * 100);

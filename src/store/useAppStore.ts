@@ -1,81 +1,27 @@
 
-// TODO: OFFLINE SUPPORT — This store currently requires network connectivity for all Supabase
-// operations (loadPatientFromSupabase, generatePlan → savePlan). For offline support:
-//   1. Use zustand/middleware `persist` with AsyncStorage to cache patient data locally
-//   2. Queue Supabase writes when offline, flush when connectivity returns
-//   3. Add a `isOffline` state flag and show UI indicator
-// This is a future requirement — not blocking current functionality.
+// TODO: OFFLINE SUPPORT — future requirement. See previous commit for details.
 
 import { create } from "zustand";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Patient, DailyCheckIn, GeneratedPlan, PatientProfile } from "../types";
 import { generateDailyPlan } from "../engine/adaptiveEngine";
 import { todayStr } from "../utils";
 import { fetchMyProfile, fetchCheckIns, fetchTodayPlan, fetchMyProtocol, savePlan } from "../services/patientService";
-// FIX: import shared IS_DEMO constant instead of local declaration
-import { IS_DEMO } from "../lib/constants";
 
-// ── MOCK DEMO PATIENT ────────────────────────────────────────────
-const DEMO_PATIENT: Patient = {
+// ── Empty initial state (no demo data) ──────────────────────────
+const EMPTY_PATIENT: Patient = {
   profile: {
-    id:"P001", name:"Rahul Mehta", dob:"1982-04-09",
-    sex:"male", heightCm:175, weightKg:82.4,
-    conditions:["diabetes_t2"], primaryCondition:"diabetes_t2",
-    medications:[{ name:"Metformin", dose:"500mg twice daily", timing:"with meals" }],
-    dietPreference:"non_veg", allergies:[], dislikedFoods:[],
-    cuisinePreference:["North Indian","Pan-Indian"],
-    cookingSetup:"home", activityLevel:"sedentary",
-    workoutEquipment:["dumbbells","resistance_bands"],
-    workoutLocation:["home"], availableMinutes:45,
-    preferredWorkoutTime:"morning",
-    goals:["reverse diabetes","lose weight","reduce medication"],
-    injuries:[], programmeStartDate:"2026-03-09",
-    currentPhase:1, assignedDietType:"low_carb",
-    baselineFbs:220, baselineHba1c:7.8,
-    baselineWeight:84.5, baselineWaist:91, baselineHip:103,
+    id: '', name: '', dob: '', sex: 'male', heightCm: 0, weightKg: 0,
+    conditions: [], primaryCondition: 'diabetes_t2',
+    medications: [], dietPreference: 'non_veg', allergies: [],
+    dislikedFoods: [], cuisinePreference: [], cookingSetup: 'home',
+    activityLevel: 'sedentary', workoutEquipment: [], workoutLocation: ['home'],
+    availableMinutes: 45, preferredWorkoutTime: 'morning', goals: [], injuries: [],
+    programmeStartDate: new Date().toISOString().split('T')[0],
+    currentPhase: 1, assignedDietType: 'low_carb',
+    baselineFbs: 0, baselineWeight: 0, baselineWaist: 0, baselineHip: 0,
   },
-  checkIns: [
-    { id:"CI001", patientId:"P001", date:todayStr(), fbs:174, weight:82.4,
-      waistCm:88, hipCm:102, energyLevel:3, sleepHours:7,
-      symptoms:[], adherenceYesterday:"mostly",
-      requests:{ dietType:"vegetarian" },
-      messageForDoctor:undefined, photoFront:undefined, photoSide:undefined, photoBack:undefined,
-    },
-  ],
-  plans:[], progress:[
-    { date:"2026-03-09", weight:84.5, waist:91, hip:103, fbs:220 },
-    { date:"2026-03-16", weight:83.8, waist:90, hip:103, fbs:198 },
-    { date:"2026-03-23", weight:83.1, waist:89, hip:102, fbs:185 },
-    { date:"2026-03-30", weight:82.4, waist:88, hip:102, fbs:174 },
-  ],
-  supplements:[
-    { name:"Vitamin D3 + K2", dose:"1 capsule", timing:"Morning", withFood:"With fatty meal", patientReason:"Supports insulin sensitivity and hormone balance.", taken:true },
-    { name:"Berberine 500mg", dose:"1 capsule", timing:"Before lunch", withFood:"30 min before eating", patientReason:"Helps your body handle sugar — like natural Metformin.", taken:true },
-    { name:"Vitamin B12 (Methylcobalamin)", dose:"500mcg", timing:"Morning", withFood:"With or without food", patientReason:"Metformin depletes this. Protects nerves and energy.", taken:true },
-    { name:"Magnesium Glycinate 300mg", dose:"1 capsule", timing:"Bedtime", withFood:"With or without food", patientReason:"Supports sleep quality and muscle recovery.", taken:false },
-    { name:"Omega-3 (EPA+DHA) 1g", dose:"1 capsule", timing:"Dinner", withFood:"With fatty meal", patientReason:"Reduces the inflammation driving your condition.", taken:false },
-  ],
-  unreadMessages:0,
+  checkIns: [], plans: [], progress: [], supplements: [], unreadMessages: 0,
 };
-
-const DEMO_DOCTOR_PATIENTS: Patient[] = [
-  DEMO_PATIENT,
-  { ...DEMO_PATIENT, profile:{ ...DEMO_PATIENT.profile, id:"P002", name:"Priya Sharma", primaryCondition:"diabetes_t2", weightKg:71.2, currentPhase:1, assignedDietType:"low_carb" },
-    checkIns:[{ ...DEMO_PATIENT.checkIns[0], fbs:108, patientId:"P002", id:"CI002" }],
-    progress:[{ date:"2026-03-09", weight:73, waist:84, hip:98, fbs:168 }, { date:todayStr(), weight:71.2, waist:82, hip:97, fbs:108 }],
-    plans:[], supplements:[], unreadMessages:0,
-  },
-  { ...DEMO_PATIENT, profile:{ ...DEMO_PATIENT.profile, id:"P003", name:"Ananya Mishra", primaryCondition:"pcos", weightKg:68.8, currentPhase:2, assignedDietType:"carb_cycling", sex:"female" },
-    checkIns:[{ ...DEMO_PATIENT.checkIns[0], fbs:94, patientId:"P003", id:"CI003", energyLevel:4 }],
-    progress:[{ date:"2026-03-09", weight:70.5, waist:82, hip:96, fbs:102 }, { date:todayStr(), weight:68.8, waist:80, hip:95, fbs:94 }],
-    plans:[], supplements:[], unreadMessages:0,
-  },
-  { ...DEMO_PATIENT, profile:{ ...DEMO_PATIENT.profile, id:"P004", name:"Vikram Kapoor", primaryCondition:"hypothyroid", weightKg:88.1, currentPhase:1, assignedDietType:"anti_inflammatory" },
-    checkIns:[{ ...DEMO_PATIENT.checkIns[0], fbs:98, patientId:"P004", id:"CI004", energyLevel:2 }],
-    progress:[{ date:"2026-03-09", weight:90, waist:96, hip:104, fbs:100 }, { date:todayStr(), weight:88.1, waist:94, hip:103, fbs:98 }],
-    plans:[], supplements:[], unreadMessages:0,
-  },
-];
 
 // ── STORE INTERFACE ──────────────────────────────────────────────
 interface AppState {
@@ -101,6 +47,7 @@ interface AppState {
   // Supabase integration
   loadPatientFromSupabase: () => Promise<void>;
   patientLoaded: boolean;
+  patientLoadError: string | null;
   // UI state
   splashDone: boolean;
   setSplashDone: () => void;
@@ -114,6 +61,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   setMode: (mode) => set({ mode }),
   splashDone: false,
   patientLoaded: false,
+  patientLoadError: null,
   isNewUser: false,
   setIsNewUser: (isNewUser) => set({ isNewUser }),
   setSplashDone: () => set({ splashDone: true }),
@@ -127,15 +75,17 @@ export const useAppStore = create<AppState>((set, get) => ({
     }
   })),
 
-  // FIX: load real patient data from Supabase after login
+  // Load real patient data from Supabase
   loadPatientFromSupabase: async () => {
-    if (IS_DEMO) return;
-    // FIX: 15-second timeout so app doesn't hang forever if Supabase is down
+    // 15-second timeout so app doesn't hang forever
     const withTimeout = <T,>(promise: Promise<T>, ms: number): Promise<T> =>
       Promise.race([promise, new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Supabase timeout')), ms))]);
     try {
       const profile = await withTimeout(fetchMyProfile(), 15000);
-      if (!profile) return;
+      if (!profile) {
+        set({ patientLoaded: true, patientLoadError: 'No patient profile found' });
+        return;
+      }
 
       const checkInsRaw = await fetchCheckIns(30);
       const todayPlanRaw = await fetchTodayPlan();
@@ -189,7 +139,6 @@ export const useAppStore = create<AppState>((set, get) => ({
         messageForDoctor: ci.message_for_doctor,
       }));
 
-      // Map today's plan from Supabase if exists
       let mappedTodayPlan: GeneratedPlan | null = null;
       if (todayPlanRaw) {
         const p: any = todayPlanRaw;
@@ -219,20 +168,20 @@ export const useAppStore = create<AppState>((set, get) => ({
           checkIns: mappedCheckIns,
           plans: [],
           progress: mappedCheckIns.map((ci: any) => ({ date: ci.date, weight: ci.weight, fbs: ci.fbs, waist: ci.waistCm })),
-          supplements: [], // will be populated from protocol
+          supplements: [],
           unreadMessages: 0,
         },
         todayPlan: mappedTodayPlan,
         patientLoaded: true,
+        patientLoadError: null,
       });
-      // FIX: removed console.log that leaked patient name (PII) in production logs
-    } catch (err) {
-      // FIX: removed console.error that could leak error details in production
+    } catch (err: any) {
+      set({ patientLoaded: true, patientLoadError: err?.message || 'Failed to load patient data' });
     }
   },
 
-  patient: DEMO_PATIENT,
-  doctorPatients: DEMO_DOCTOR_PATIENTS,
+  patient: EMPTY_PATIENT,
+  doctorPatients: [],
   selectedPatient: null,
   todayPlan: null,
 
@@ -245,12 +194,10 @@ export const useAppStore = create<AppState>((set, get) => ({
     },
   })),
 
-  // FIX: made async and await generatePlan so plan saves to Supabase before proceeding
   submitCheckIn: async (ci) => {
-    // FIX: warn if overwriting an existing same-day check-in (dedup awareness)
-    const existing = get().patient.checkIns.find(c => c.date === ci.date);
-    if (existing && __DEV__) {
-      console.warn(`[Store] Overwriting existing check-in for ${ci.date}`);
+    if (__DEV__) {
+      const existing = get().patient.checkIns.find(c => c.date === ci.date);
+      if (existing) console.warn(`[Store] Overwriting existing check-in for ${ci.date}`);
     }
     set(state => ({
       patient: {
@@ -266,21 +213,17 @@ export const useAppStore = create<AppState>((set, get) => ({
     const todayCI = patient.checkIns.find(c => c.date === todayStr());
     if (!todayCI) return;
 
-    // FIX: fetch protocol from Supabase to use doctor's targets as base
+    // Always fetch protocol from Supabase
     let protocol = null;
-    if (!IS_DEMO) {
-      try {
-        protocol = await fetchMyProtocol();
-      } catch {}
-    }
+    try {
+      protocol = await fetchMyProtocol();
+    } catch {}
 
     const plan = generateDailyPlan(patient, todayCI, protocol);
-    // FIX: pull supplements from doctor's protocol if available, not stale local patient.supplements
     plan.supplements = (protocol?.supplements && protocol.supplements.length > 0)
       ? protocol.supplements
       : patient.supplements;
     set({ todayPlan: plan });
-    // Save to patient plans (local)
     set(state => ({
       patient: {
         ...state.patient,
@@ -288,15 +231,10 @@ export const useAppStore = create<AppState>((set, get) => ({
       },
     }));
 
-    // FIX: persist plan to Supabase so doctor can see it
-    if (!IS_DEMO) {
-      try {
-        await savePlan(plan);
-        // FIX: removed console.log — no operation logs in production
-      } catch (err) {
-        // FIX: removed console.error — errors handled silently, plan still saved locally
-      }
-    }
+    // Always persist plan to Supabase
+    try {
+      await savePlan(plan);
+    } catch {}
   },
 
   selectPatient: (id) => {
@@ -336,7 +274,6 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   refreshProgress: () => {
-    // Re-read from patient check-ins to update progress
     const { patient } = get();
     const progress = patient.checkIns.map(ci => ({
       date: ci.date,

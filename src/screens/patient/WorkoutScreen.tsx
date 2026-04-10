@@ -5,18 +5,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Colors, Typography, Spacing, Radii } from "../../theme";
-import { useAppStore } from "../../store/useAppStore";
 import { SectionCap } from "../../components/SectionCap";
 import { ReasoningBox } from "../../components/ReasoningBox";
 import { ExerciseCard } from "../../components/ExerciseCard";
 import { fetchTodayPlan } from "../../services/patientService";
-// FIX: import shared IS_DEMO constant
-import { IS_DEMO } from "../../lib/constants";
 
 export const WorkoutScreen = () => {
-  const storePlan = useAppStore(s => s.todayPlan);
   const [supabasePlan, setSupabasePlan] = useState<any>(null);
-  const [loading, setLoading] = useState(!IS_DEMO);
+  const [loading, setLoading] = useState(true);
   const [doneIds, setDoneIds] = useState<string[]>([]);
 
   // FIX: persist workout doneIds to AsyncStorage so progress survives navigation
@@ -31,10 +27,9 @@ export const WorkoutScreen = () => {
     AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(ids)).catch(() => {});
   }, [STORAGE_KEY]);
 
-  // FIX: fetch plan from Supabase in production
+  // Always fetch plan from Supabase
   useFocusEffect(
     React.useCallback(() => {
-      if (IS_DEMO) return;
       setLoading(true);
       fetchTodayPlan().then(data => {
         setSupabasePlan(data);
@@ -43,7 +38,7 @@ export const WorkoutScreen = () => {
     }, [])
   );
 
-  const todayPlan = IS_DEMO ? storePlan : supabasePlan;
+  const todayPlan = supabasePlan;
 
   if (loading) return (
     <SafeAreaView style={{ flex:1, backgroundColor:Colors.deep, alignItems:"center", justifyContent:"center" }}>

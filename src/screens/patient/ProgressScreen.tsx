@@ -75,8 +75,6 @@ const WeightChart = ({ data }: { data: { weight: number; date: string }[] }) => 
   );
 };
 
-// FIX: import shared IS_DEMO constant
-import { IS_DEMO } from "../../lib/constants";
 
 export const ProgressScreen = () => {
   const { patient } = useAppStore();
@@ -84,9 +82,7 @@ export const ProgressScreen = () => {
   // FIX: refresh patient data from Supabase when tab is focused
   useFocusEffect(
     useCallback(() => {
-      if (!IS_DEMO) {
-        useAppStore.getState().loadPatientFromSupabase();
-      }
+      useAppStore.getState().loadPatientFromSupabase();
     }, [])
   );
 

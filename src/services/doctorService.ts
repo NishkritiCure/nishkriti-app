@@ -115,7 +115,7 @@ export async function fetchUnreadMessages(patientId: string) {
     .from('messages')
     .select('*')
     .eq('patient_id', patientId)
-    .eq('read_by_doctor', false)
+    .is('read_at', null) // unread = read_at is null (was incorrectly querying read_by_doctor)
     .order('created_at', { ascending: false });
 
   if (error) throw error;

@@ -36,19 +36,14 @@ export const SplashScreen = () => {
   }, []);
 
   const navigation = useNavigation<any>();
-  const DEMO = !process.env.EXPO_PUBLIC_SUPABASE_URL;
 
   const enter = (m: "patient"|"doctor") => {
     setMode(m);
-    if (DEMO) {
-      setSplashDone();
+    // Navigate to the appropriate auth screen
+    if (m === "doctor") {
+      navigation.navigate("DoctorLogin");
     } else {
-      // In production: navigate to auth screen
-      if (m === "doctor") {
-        navigation.navigate("DoctorLogin");
-      } else {
-        navigation.navigate("PhoneAuth");
-      }
+      navigation.navigate("PhoneAuth");
     }
   };
 

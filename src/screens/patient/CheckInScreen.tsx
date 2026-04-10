@@ -8,8 +8,6 @@ import { NSlider } from "../../components/NSlider";
 import { todayStr } from "../../utils";
 import { submitCheckIn as submitCheckInSupabase } from "../../services/patientService";
 import type { DailyCheckIn } from "../../types";
-// FIX: import shared IS_DEMO constant
-import { IS_DEMO } from "../../lib/constants";
 
 // FIX: STEPS must match the actual number of step sections rendered below (0-4 = 5 steps)
 // Step 0: FBS, Step 1: Weight, Step 2: Energy, Step 3: Requests, Step 4: Message
@@ -69,17 +67,13 @@ export const CheckInScreen = () => {
       messageForDoctor: message || undefined,
     };
 
-    // FIX: only update local store AFTER Supabase save succeeds — prevents data inconsistency
-    if (IS_DEMO) {
+    // Save to Supabase first, then update local store
+    try {
+      await submitCheckInSupabase(ci);
       await submitCheckIn(ci);
-    } else {
-      try {
-        await submitCheckInSupabase(ci);
-        await submitCheckIn(ci);
-      } catch (err: any) {
-        Alert.alert('Error', err.message || 'Failed to submit check-in.');
-        return; // FIX: don't update local store or navigate on failure
-      }
+    } catch (err: any) {
+      Alert.alert('Error', err.message || 'Failed to submit check-in.');
+      return;
     }
     nav.navigate("Plan");
   };

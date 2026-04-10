@@ -3,27 +3,22 @@ import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from "react-nat
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import { Colors, Typography, Spacing, Radii } from "../../theme";
-import { useAppStore } from "../../store/useAppStore";
 import { SectionCap } from "../../components/SectionCap";
 import { ReasoningBox } from "../../components/ReasoningBox";
 import { MealCard } from "../../components/MealCard";
 import { Pill } from "../../components/Pill";
 import { fetchTodayPlan } from "../../services/patientService";
-// FIX: import shared IS_DEMO constant
-import { IS_DEMO } from "../../lib/constants";
+
 const HIGH_FBS_RULES = ["DR002","DR003","DR004","PC002","PC003"];
 const CRITICAL_RULES = ["DR004","PC003"];
 
 export const DietPlanScreen = () => {
-  const storePlan = useAppStore(s => s.todayPlan);
   const [supabasePlan, setSupabasePlan] = useState<any>(null);
-  const [loading, setLoading] = useState(!IS_DEMO);
+  const [loading, setLoading] = useState(true);
 
-  // FIX: fetch plan from Supabase in production mode
+  // Always fetch plan from Supabase on focus
   useFocusEffect(
     React.useCallback(() => {
-      if (IS_DEMO) return;
-      // FIX: clear stale plan before fetching so old data never shows on revisit
       setSupabasePlan(null);
       setLoading(true);
       fetchTodayPlan().then(data => {
@@ -33,24 +28,22 @@ export const DietPlanScreen = () => {
     }, [])
   );
 
-  // Use Supabase plan if available, otherwise fall back to store
-  const rawPlan = IS_DEMO ? storePlan : supabasePlan;
-  // Map Supabase column names to camelCase if needed
-  const todayPlan = rawPlan ? {
-    reasoning: rawPlan.reasoning,
-    dietType: rawPlan.dietType || rawPlan.diet_type,
-    carbsTarget: rawPlan.carbsTarget || rawPlan.carbs_target_g,
-    proteinTarget: rawPlan.proteinTarget || rawPlan.protein_target_g,
-    fatTarget: rawPlan.fatTarget || rawPlan.fat_target_g,
-    calorieTarget: rawPlan.calorieTarget || rawPlan.calorie_target,
-    waterTargetMl: rawPlan.waterTargetMl || rawPlan.water_target_ml,
-    meals: rawPlan.meals || [],
-    rulesFired: rawPlan.rulesFired || rawPlan.rules_fired || [],
-    doctorFlagRaised: rawPlan.doctorFlagRaised ?? rawPlan.doctor_flag_raised,
-    doctorFlagReason: rawPlan.doctorFlagReason || rawPlan.doctor_flag_reason,
-    supplementNote: rawPlan.supplementNote || rawPlan.supplement_note,
-    supplements: rawPlan.supplements || [],
-    workout: rawPlan.workout || {},
+  // Map Supabase column names to camelCase
+  const todayPlan = supabasePlan ? {
+    reasoning: supabasePlan.reasoning,
+    dietType: supabasePlan.diet_type,
+    carbsTarget: supabasePlan.carbs_target_g,
+    proteinTarget: supabasePlan.protein_target_g,
+    fatTarget: supabasePlan.fat_target_g,
+    calorieTarget: supabasePlan.calorie_target,
+    waterTargetMl: supabasePlan.water_target_ml,
+    meals: supabasePlan.meals || [],
+    rulesFired: supabasePlan.rules_fired || [],
+    doctorFlagRaised: supabasePlan.doctor_flag_raised,
+    doctorFlagReason: supabasePlan.doctor_flag_reason,
+    supplementNote: supabasePlan.supplement_note,
+    supplements: supabasePlan.supplements || [],
+    workout: supabasePlan.workout || {},
   } : null;
 
   if (loading) return (

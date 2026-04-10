@@ -7,9 +7,13 @@ import type { DailyCheckIn, GeneratedPlan, ProgressEntry, TreatmentPlan } from '
 
 // ── PROFILE ──────────────────────────────────────────────────────────────────
 export async function fetchMyProfile() {
+  // Explicitly filter by current user's patient ID (don't rely on RLS alone)
+  const patientId = await getPatientId();
+  if (!patientId) return null;
   const { data, error } = await supabase
     .from('patient_profiles')
     .select('*')
+    .eq('id', patientId)
     .single();
   if (error) throw error;
   return data;
@@ -81,7 +85,8 @@ export async function savePlan(plan: GeneratedPlan) {
   const patientId = await getPatientId();
   if (!patientId) throw new Error('Not authenticated');
 
-  const { data, error } = await supabase
+  // Column names must match database schema exactly
+  const { data, error } = await (supabase
     .from('daily_plans')
     .upsert({
       patient_id:          patientId,
@@ -90,16 +95,16 @@ export async function savePlan(plan: GeneratedPlan) {
       rules_fired:         plan.rulesFired as any,
       diet_type:           plan.dietType,
       calorie_target:      plan.calorieTarget,
-      carbs_target:        plan.carbsTarget,
-      protein_target:      plan.proteinTarget,
-      fat_target:          plan.fatTarget,
+      carbs_target_g:      plan.carbsTarget,
+      protein_target_g:    plan.proteinTarget,
+      fat_target_g:        plan.fatTarget,
       water_target_ml:     plan.waterTargetMl,
-      meals_json:          plan.meals as any,
-      workout_json:        plan.workout as any,
-      supplements_json:    plan.supplements as any,
+      meals:               plan.meals as any,
+      workout:             plan.workout as any,
+      supplements:         plan.supplements as any,
       doctor_flag_raised:  plan.doctorFlagRaised ?? false,
       doctor_flag_reason:  plan.doctorFlagReason,
-    }, { onConflict: 'patient_id,plan_date' })
+    }, { onConflict: 'patient_id,plan_date' }) as any)
     .select()
     .single();
 

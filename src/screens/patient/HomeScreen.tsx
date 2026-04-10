@@ -1,6 +1,6 @@
 
 import React, { useCallback, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Colors, Typography, Spacing, Radii } from "../../theme";
@@ -28,7 +28,7 @@ const LogoutButton = () => {
 
 export const HomeScreen = () => {
   const nav = useNavigation<any>();
-  const { patient, generatePlan, todayPlan } = useAppStore();
+  const { patient, generatePlan, todayPlan, patientLoaded } = useAppStore();
   const { profile, checkIns, progress } = patient;
   const todayCI = checkIns.find(c => c.date === todayStr());
   const latest = progress[progress.length - 1];
@@ -55,6 +55,16 @@ export const HomeScreen = () => {
 
   const fbs = todayCI?.fbs ?? latest?.fbs ?? 0;
   const fbsStatus = fbs > 180 ? "critical" : fbs > 130 ? "alert" : fbs > 100 ? "warn" : "ok";
+
+  // Show loading while patient data hasn't loaded yet
+  if (!patientLoaded || !profile.id) return (
+    <SafeAreaView style={styles.safe}>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator color={Colors.teal} size="large" />
+        <Text style={{ fontFamily: Typography.sans, fontSize: 16, color: Colors.ink2, marginTop: 12 }}>Loading your data...</Text>
+      </View>
+    </SafeAreaView>
+  );
 
   return (
     <SafeAreaView style={styles.safe}>
