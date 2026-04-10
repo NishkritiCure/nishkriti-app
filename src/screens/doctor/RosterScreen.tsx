@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet, Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Colors, Typography, Spacing, Radii } from '../../theme';
-import { useAppStore } from '../../store/useAppStore';
 import { SectionCap } from '../../components/SectionCap';
 import { NishkritiLogo } from '../../components/NishkritiLogo';
 import { Pill } from '../../components/Pill';
+import { DrillDownModal } from '../../components/DrillDownModal';
 import { supabase } from '../../lib/supabase';
 
 const LogoutButton = () => {
@@ -31,153 +31,111 @@ const Avatar = ({ initials, size = 36 }: { initials: string; size?: number }) =>
   </View>
 );
 
-const StatChip = ({ val, lbl, color }: { val: string | number; lbl: string; color?: string }) => (
-  <View style={styles.statChip}>
+// Tappable stat chip
+const StatChip = ({ val, lbl, color, onPress }: { val: string | number; lbl: string; color?: string; onPress?: () => void }) => (
+  <TouchableOpacity style={styles.statChip} onPress={onPress} activeOpacity={onPress ? 0.7 : 1}>
     <Text style={[styles.statVal, color ? { color } : {}]}>{val}</Text>
     <Text style={styles.statLbl}>{lbl}</Text>
-  </View>
+  </TouchableOpacity>
 );
 
-const FlagCard = ({ patient, onPress }: any) => {
-  const latest = patient.checkIns[patient.checkIns.length - 1];
-  const isRed = latest?.fbs > 180;
-  const borderColor = isRed ? Colors.borderRose : Colors.borderAmber;
-  const bg = isRed ? Colors.glowRose : Colors.glowAmber;
-  const dotColor = isRed ? Colors.rose : Colors.amber;
-  const pillColor = isRed ? 'rose' : 'amber';
-  const pillLabel = isRed ? 'FBS Critical' : 'Phase Advance';
-  const message = isRed
-    ? `FBS ${latest?.fbs} mg/dL — above 180 threshold. Rule DR003 fired. Auto-adjusted. Your review needed.`
-    : `FBS averaged ${latest?.fbs} mg/dL consistently. Phase advancement ready. Your approval needed.`;
-  return (
-    <TouchableOpacity style={[styles.flagCard, { borderColor, backgroundColor: bg }]} onPress={onPress} activeOpacity={0.8}>
-      <View style={styles.flagHead}>
-        <View style={[styles.flagDot, { backgroundColor: dotColor }]} />
-        <Text style={styles.flagName}>{patient.profile.name}</Text>
-        <View style={{ marginLeft: 'auto' }}>
-          <Pill label={pillLabel} color={pillColor as any} />
-        </View>
-      </View>
-      <Text style={styles.flagText}>{message}</Text>
-      <View style={styles.flagActions}>
-        <TouchableOpacity style={[styles.flagBtn, { backgroundColor: dotColor }]} onPress={onPress}>
-          <Text style={[styles.flagBtnText, { color: Colors.deep }]}>Review plan</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.flagBtnSec} onPress={onPress}>
-          <Text style={styles.flagBtnSecText}>View profile</Text>
-        </TouchableOpacity>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
-const PatientRow = ({ patient, onPress }: any) => {
-  const latest = patient.checkIns[patient.checkIns.length - 1];
-  const initials = patient.profile.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
-  const metricColor = latest?.fbs > 180 ? Colors.rose : latest?.fbs > 130 ? Colors.amber : Colors.spring;
-  const metricLabel = patient.profile.primaryCondition === 'pcos'
-    ? 'Cycle'
-    : patient.profile.primaryCondition === 'hypothyroid'
-    ? `TSH`
-    : `FBS ${latest?.fbs}`;
-  return (
-    <TouchableOpacity style={styles.patRow} onPress={onPress} activeOpacity={0.8}>
-      <Avatar initials={initials} />
-      <View style={styles.patInfo}>
-        <Text style={styles.patName}>{patient.profile.name}</Text>
-        <Text style={styles.patCond}>
-          {patient.profile.primaryCondition.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())}
-          {' · '}Phase {patient.profile.currentPhase}
-        </Text>
-      </View>
-      <View style={{ alignItems: 'flex-end' }}>
-        <Text style={[styles.patMetric, { color: metricColor }]}>{metricLabel}</Text>
-        <Text style={styles.patMetricLbl}>today</Text>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
-// Row for Supabase-sourced patients (with UHID + credential reveal)
-const SupabasePatientRow = ({ patient, onPress }: { patient: any; onPress: () => void }) => {
-  const initials = (patient.full_name || '')
-    .split(' ')
-    .map((n: string) => n[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
-
-  const showCredentials = () => {
-    Alert.alert(
-      'Patient Credentials',
-      `UHID: ${patient.uhid}\nPassword: ${patient.initial_password || 'N/A'}`,
-      [{ text: 'OK' }],
-    );
-  };
-
-  return (
-    <TouchableOpacity style={styles.patRow} onPress={onPress} onLongPress={showCredentials} activeOpacity={0.8}>
-      <Avatar initials={initials} />
-      <View style={styles.patInfo}>
-        <Text style={styles.patName}>{patient.full_name}</Text>
-        <Text style={styles.patCond}>
-          {(patient.primary_condition || '').replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())}
-          {' · '}Phase {patient.current_phase || 1}
-        </Text>
-      </View>
-      <View style={{ alignItems: 'flex-end' }}>
-        <Text style={[styles.patMetric, { color: Colors.teal }]}>{patient.uhid}</Text>
-        <TouchableOpacity onPress={showCredentials} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-          <Text style={[styles.patMetricLbl, { color: Colors.ink2 }]}>credentials</Text>
-        </TouchableOpacity>
-      </View>
-    </TouchableOpacity>
-  );
+// Helper: relative date label
+const relativeDate = (dateStr: string) => {
+  if (!dateStr) return '';
+  const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000);
+  if (diff === 0) return 'today';
+  if (diff === 1) return 'yesterday';
+  return `${diff}d ago`;
 };
 
 export const DoctorRosterScreen = () => {
   const nav = useNavigation<any>();
-
-  // Only Supabase patients — no mock data
   const [patients, setPatients] = useState<any[]>([]);
-  // FIX: dynamic doctor name instead of hardcoded "Dr. Nishit"
   const [doctorName, setDoctorName] = useState('Doctor');
-  // FIX: live stats instead of hardcoded 0s
   const [flagCount, setFlagCount] = useState(0);
+  const [pendingCount, setPendingCount] = useState(0);
   const [checkinCount, setCheckinCount] = useState(0);
   const todayISO = new Date().toISOString().split('T')[0];
 
-  const fetchPatients = useCallback(async () => {
-    // FIX: fetch logged-in doctor's name for greeting
+  // Drill-down modal state
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalItems, setModalItems] = useState<any[]>([]);
+
+  const fetchData = useCallback(async () => {
+    // Doctor name
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       const { data: doc } = await supabase.from('doctors').select('full_name').eq('auth_id', user.id).single();
       if (doc?.full_name) setDoctorName(doc.full_name);
     }
-    const { data } = await supabase
+    // Patients with latest check-in
+    const { data } = await (supabase
       .from('patient_profiles')
-      .select('*')
-      .order('onboarded_at', { ascending: false });
+      .select('*, daily_check_ins(check_in_date, fbs_mg_dl, weight_kg)')
+      .order('onboarded_at', { ascending: false }) as any);
     if (data) setPatients(data);
-    // FIX: fetch real flag and check-in counts
-    const { count: flags } = await supabase
-      .from('daily_plans')
-      .select('id', { count: 'exact', head: true })
-      .eq('doctor_flag_raised', true)
-      .eq('flag_status', 'open');
+
+    // Counts
+    const { count: flags } = await supabase.from('daily_plans').select('id', { count: 'exact', head: true }).eq('doctor_flag_raised', true).eq('flag_status', 'open');
     setFlagCount(flags || 0);
-    const { count: checkins } = await supabase
-      .from('daily_check_ins')
-      .select('id', { count: 'exact', head: true })
-      .eq('check_in_date', todayISO);
+    const { count: pending } = await supabase.from('daily_plans').select('id', { count: 'exact', head: true }).eq('doctor_flag_raised', true).is('doctor_reviewed_at', null);
+    setPendingCount(pending || 0);
+    const { count: checkins } = await supabase.from('daily_check_ins').select('id', { count: 'exact', head: true }).eq('check_in_date', todayISO);
     setCheckinCount(checkins || 0);
   }, [todayISO]);
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchPatients();
-    }, [fetchPatients])
-  );
+  useFocusEffect(useCallback(() => { fetchData(); }, [fetchData]));
+
+  // Drill-down handlers
+  const openFlags = async () => {
+    const { data } = await (supabase.from('daily_plans').select('id, patient_id, doctor_flag_reason, plan_date, patient_profiles(id, full_name)').eq('doctor_flag_raised', true).eq('flag_status', 'open').order('plan_date', { ascending: false }).limit(20) as any);
+    setModalTitle('Open Flags');
+    setModalItems((data || []).map((d: any) => ({
+      id: d.patient_profiles?.id || d.patient_id,
+      title: d.patient_profiles?.full_name || 'Unknown',
+      subtitle: d.doctor_flag_reason || 'Flag raised',
+      value: d.plan_date,
+    })));
+    setModalVisible(true);
+  };
+
+  const openPending = async () => {
+    const { data } = await (supabase.from('daily_plans').select('id, patient_id, doctor_flag_reason, plan_date, patient_profiles(id, full_name)').eq('doctor_flag_raised', true).is('doctor_reviewed_at', null).order('plan_date', { ascending: false }).limit(20) as any);
+    setModalTitle('Pending Review');
+    setModalItems((data || []).map((d: any) => ({
+      id: d.patient_profiles?.id || d.patient_id,
+      title: d.patient_profiles?.full_name || 'Unknown',
+      subtitle: d.doctor_flag_reason || 'Pending',
+      value: d.plan_date,
+    })));
+    setModalVisible(true);
+  };
+
+  const openCheckins = async () => {
+    const { data } = await (supabase.from('daily_check_ins').select('id, patient_id, fbs_mg_dl, weight_kg, patient_profiles(id, full_name)').eq('check_in_date', todayISO).limit(20) as any);
+    setModalTitle("Today's Check-ins");
+    setModalItems((data || []).map((d: any) => ({
+      id: d.patient_profiles?.id || d.patient_id,
+      title: d.patient_profiles?.full_name || 'Unknown',
+      subtitle: `Weight: ${d.weight_kg || '—'} kg`,
+      value: `FBS ${d.fbs_mg_dl || '—'}`,
+      valueColor: (d.fbs_mg_dl || 0) > 180 ? Colors.rose : (d.fbs_mg_dl || 0) > 130 ? Colors.amber : Colors.teal,
+    })));
+    setModalVisible(true);
+  };
+
+  const handleModalItem = (patientId: string) => {
+    setModalVisible(false);
+    nav.navigate('PatientProfile', { patientId });
+  };
+
+  // Get latest check-in for a patient from joined data
+  const getLatestCI = (p: any) => {
+    const cis = p.daily_check_ins || [];
+    if (cis.length === 0) return null;
+    return cis.sort((a: any, b: any) => (b.check_in_date || '').localeCompare(a.check_in_date || ''))[0];
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -187,7 +145,6 @@ export const DoctorRosterScreen = () => {
           <View style={styles.heroRow}>
             <View>
               <Text style={styles.greeting}>Good morning,</Text>
-              {/* FIX: was hardcoded "Dr. Nishit" — now uses logged-in doctor's name */}
               <Text style={styles.name}>{doctorName}.</Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
@@ -197,24 +154,45 @@ export const DoctorRosterScreen = () => {
           </View>
           <View style={styles.statsRow}>
             <StatChip val={patients.length} lbl="Patients" />
-            {/* FIX: replaced hardcoded 0s with live counts from Supabase */}
-            <StatChip val={flagCount} lbl="Flags" color={Colors.rose} />
-            <StatChip val={0} lbl="Pending" color={Colors.amber} />
-            <StatChip val={checkinCount} lbl="Check-ins" />
+            <StatChip val={flagCount} lbl="Flags" color={Colors.rose} onPress={openFlags} />
+            <StatChip val={pendingCount} lbl="Pending" color={Colors.amber} onPress={openPending} />
+            <StatChip val={checkinCount} lbl="Check-ins" onPress={openCheckins} />
           </View>
         </View>
 
         {patients.length > 0 ? (
           <>
             <SectionCap title="All patients" />
-            {patients.map(p => (
-              <SupabasePatientRow
-                key={p.id || p.auth_id}
-                patient={p}
-                // FIX: was onPress={() => {}} — no-op handler prevented patient navigation
-                onPress={() => nav.navigate('PatientProfile', { patientId: p.id, supabasePatient: p })}
-              />
-            ))}
+            {patients.map(p => {
+              const ci = getLatestCI(p);
+              const initials = (p.full_name || '').split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
+              const fbsColor = ci ? ((ci.fbs_mg_dl || 0) > 180 ? Colors.rose : (ci.fbs_mg_dl || 0) > 130 ? Colors.amber : Colors.teal) : Colors.ink3;
+              return (
+                <TouchableOpacity key={p.id} style={styles.patRow}
+                  onPress={() => nav.navigate('PatientProfile', { patientId: p.id, supabasePatient: p })}
+                  onLongPress={() => Alert.alert('Credentials', `UHID: ${p.uhid}\nPassword: ${p.initial_password || 'N/A'}`)}
+                  activeOpacity={0.8}>
+                  <Avatar initials={initials} />
+                  <View style={styles.patInfo}>
+                    <Text style={styles.patName}>{p.full_name}</Text>
+                    <Text style={styles.patCond}>
+                      {(p.primary_condition || '').replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())}
+                      {' · '}Phase {p.current_phase || 1}
+                    </Text>
+                  </View>
+                  <View style={{ alignItems: 'flex-end' }}>
+                    {ci ? (
+                      <>
+                        <Text style={[styles.patMetric, { color: fbsColor }]}>FBS {ci.fbs_mg_dl || '—'}</Text>
+                        <Text style={styles.patMetricLbl}>{relativeDate(ci.check_in_date)}</Text>
+                      </>
+                    ) : (
+                      <Text style={[styles.patMetricLbl, { color: Colors.ink3 }]}>No check-ins</Text>
+                    )}
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
           </>
         ) : (
           <View style={{ alignItems: 'center', paddingVertical: 60 }}>
@@ -222,18 +200,20 @@ export const DoctorRosterScreen = () => {
             <Text style={{ fontFamily: Typography.sans, fontSize: 15, color: Colors.ink3, marginTop: 4 }}>Tap + to create your first patient</Text>
           </View>
         )}
-
         <View style={{ height: 80 }} />
       </ScrollView>
 
-      {/* Floating Action Button */}
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={() => nav.navigate('CreatePatient')}
-        activeOpacity={0.85}
-      >
+      <TouchableOpacity style={styles.fab} onPress={() => nav.navigate('CreatePatient')} activeOpacity={0.85}>
         <Text style={styles.fabText}>+</Text>
       </TouchableOpacity>
+
+      <DrillDownModal
+        visible={modalVisible}
+        title={modalTitle}
+        items={modalItems}
+        onClose={() => setModalVisible(false)}
+        onItemPress={handleModalItem}
+      />
     </SafeAreaView>
   );
 };
@@ -248,16 +228,6 @@ const styles = StyleSheet.create({
   statChip:     { flex: 1, backgroundColor: Colors.card, borderRadius: Radii.md, padding: 9, borderWidth: 0.5, borderColor: Colors.border, alignItems: 'center' },
   statVal:      { fontFamily: Typography.mono, fontSize: 22, color: Colors.spring },
   statLbl:      { fontFamily: Typography.sans, fontSize: 13, color: Colors.ink2, marginTop: 2 },
-  flagCard:     { marginHorizontal: Spacing.lg, marginBottom: 8, borderRadius: 17, borderWidth: 0.5, overflow: 'hidden' },
-  flagHead:     { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 12, paddingBottom: 10, borderBottomWidth: 0.5, borderBottomColor: 'rgba(217,123,114,0.1)' },
-  flagDot:      { width: 7, height: 7, borderRadius: 4 },
-  flagName:     { fontFamily: Typography.sansMed, fontSize: 17, color: Colors.ink },
-  flagText:     { fontFamily: Typography.sans, fontSize: 14, color: Colors.ink2, lineHeight: 22, padding: 12, paddingBottom: 0 },
-  flagActions:  { flexDirection: 'row', gap: 7, padding: 12, paddingTop: 10 },
-  flagBtn:      { flex: 1, padding: 9, borderRadius: 10, alignItems: 'center' },
-  flagBtnText:  { fontFamily: Typography.sansMed, fontSize: 15 },
-  flagBtnSec:   { flex: 1, padding: 9, borderRadius: 10, alignItems: 'center', backgroundColor: Colors.card2, borderWidth: 0.5, borderColor: Colors.border },
-  flagBtnSecText: { fontFamily: Typography.sansMed, fontSize: 15, color: Colors.ink2 },
   patRow:       { marginHorizontal: Spacing.lg, marginBottom: 6, backgroundColor: Colors.card, borderRadius: Radii.lg, padding: 12, borderWidth: 0.5, borderColor: Colors.border, flexDirection: 'row', alignItems: 'center', gap: 11 },
   avatar:       { backgroundColor: Colors.em, alignItems: 'center', justifyContent: 'center' },
   avatarText:   { fontFamily: Typography.sansMed, color: Colors.deep, fontWeight: '600' },

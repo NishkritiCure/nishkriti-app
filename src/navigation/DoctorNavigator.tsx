@@ -12,6 +12,7 @@ import { ProtocolEditorScreen } from "../screens/doctor/ProtocolEditorScreen";
 import { DoctorDashboardScreen } from "../screens/doctor/DashboardScreen";
 import { CreatePatientScreen } from "../screens/doctor/CreatePatientScreen";
 import { TreatmentPlanEditorScreen } from "../screens/doctor/TreatmentPlanEditorScreen";
+import { StatsScreen } from "../screens/doctor/StatsScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -46,7 +47,7 @@ const DoctorTabs = () => {
       <Tab.Screen name="Roster" component={DoctorRosterScreen} />
       <Tab.Screen name="Flags" component={DoctorDashboardScreen} />
       <Tab.Screen name="Proto" component={ProtocolEditorScreen} />
-      <Tab.Screen name="Stats" component={DoctorDashboardScreen} />
+      <Tab.Screen name="Stats" component={StatsScreen} />
     </Tab.Navigator>
   );
 };

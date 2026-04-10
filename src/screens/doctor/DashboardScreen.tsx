@@ -4,62 +4,80 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Colors, Typography, Spacing, Radii } from '../../theme';
 import { NishkritiLogo } from '../../components/NishkritiLogo';
+import { Pill } from '../../components/Pill';
+import { DrillDownModal } from '../../components/DrillDownModal';
 import { supabase, getDoctorId } from '../../lib/supabase';
 import { DEFAULT_DOCTOR_ID } from '../../lib/constants';
 
-const StatCard = ({ val, lbl, color }: { val: string | number; lbl: string; color?: string }) => (
-  <View style={styles.stat}>
+const StatCard = ({ val, lbl, color, onPress }: { val: string | number; lbl: string; color?: string; onPress?: () => void }) => (
+  <TouchableOpacity style={styles.stat} onPress={onPress} activeOpacity={onPress ? 0.7 : 1}>
     <Text style={[styles.statVal, color ? { color } : {}]}>{val}</Text>
     <Text style={styles.statLbl}>{lbl}</Text>
-  </View>
+  </TouchableOpacity>
 );
 
 export const DoctorDashboardScreen = () => {
   const nav = useNavigation<any>();
   const [patients, setPatients] = useState<any[]>([]);
-  // FIX: was hardcoded, now fetched dynamically with fallback
   const [doctorId, setDoctorId] = useState<string | null>(DEFAULT_DOCTOR_ID);
-  // FIX: live stats instead of hardcoded 0s
   const [flagCount, setFlagCount] = useState(0);
   const [checkinCount, setCheckinCount] = useState(0);
   const today = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
   const todayISO = new Date().toISOString().split('T')[0];
 
-  useEffect(() => {
-    getDoctorId().then(id => { if (id) setDoctorId(id); });
-  }, []);
+  // Modal state
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalItems, setModalItems] = useState<any[]>([]);
+
+  useEffect(() => { getDoctorId().then(id => { if (id) setDoctorId(id); }); }, []);
 
   const fetchData = useCallback(async () => {
     if (!doctorId) return;
-    // Fetch patients
-    const { data } = await supabase
-      .from('patient_profiles')
-      .select('*')
-      .eq('assigned_doctor_id', doctorId)
-      .order('onboarded_at', { ascending: false });
+    const { data } = await (supabase.from('patient_profiles').select('*, daily_check_ins(check_in_date, fbs_mg_dl, weight_kg)').eq('assigned_doctor_id', doctorId).order('onboarded_at', { ascending: false }) as any);
     if (data) setPatients(data);
-
-    // FIX: fetch live flag count
-    const { count: flags } = await supabase
-      .from('daily_plans')
-      .select('id', { count: 'exact', head: true })
-      .eq('doctor_flag_raised', true)
-      .eq('flag_status', 'open');
+    const { count: flags } = await supabase.from('daily_plans').select('id', { count: 'exact', head: true }).eq('doctor_flag_raised', true).eq('flag_status', 'open');
     setFlagCount(flags || 0);
-
-    // FIX: fetch today's check-in count
-    const { count: checkins } = await supabase
-      .from('daily_check_ins')
-      .select('id', { count: 'exact', head: true })
-      .eq('check_in_date', todayISO);
+    const { count: checkins } = await supabase.from('daily_check_ins').select('id', { count: 'exact', head: true }).eq('check_in_date', todayISO);
     setCheckinCount(checkins || 0);
   }, [todayISO, doctorId]);
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchData();
-    }, [fetchData])
-  );
+  useFocusEffect(useCallback(() => { fetchData(); }, [fetchData]));
+
+  // Drill-down handlers
+  const openPatients = () => {
+    setModalTitle('All Patients');
+    setModalItems(patients.map(p => ({ id: p.id, title: p.full_name, subtitle: (p.primary_condition || '').replace(/_/g, ' ') })));
+    setModalVisible(true);
+  };
+  const openFlags = async () => {
+    const { data } = await (supabase.from('daily_plans').select('id, patient_id, doctor_flag_reason, plan_date, patient_profiles(id, full_name)').eq('doctor_flag_raised', true).eq('flag_status', 'open').limit(20) as any);
+    setModalTitle('Open Flags');
+    setModalItems((data || []).map((d: any) => ({ id: d.patient_profiles?.id || d.patient_id, title: d.patient_profiles?.full_name || 'Unknown', subtitle: d.doctor_flag_reason, value: d.plan_date })));
+    setModalVisible(true);
+  };
+  const openPending = async () => {
+    const { data } = await (supabase.from('daily_plans').select('id, patient_id, doctor_flag_reason, plan_date, patient_profiles(id, full_name)').eq('doctor_flag_raised', true).is('doctor_reviewed_at', null).limit(20) as any);
+    setModalTitle('Pending Review');
+    setModalItems((data || []).map((d: any) => ({ id: d.patient_profiles?.id || d.patient_id, title: d.patient_profiles?.full_name || 'Unknown', subtitle: d.doctor_flag_reason, value: d.plan_date })));
+    setModalVisible(true);
+  };
+  const openCheckins = async () => {
+    const { data } = await (supabase.from('daily_check_ins').select('id, patient_id, fbs_mg_dl, weight_kg, patient_profiles(id, full_name)').eq('check_in_date', todayISO).limit(20) as any);
+    setModalTitle("Today's Check-ins");
+    setModalItems((data || []).map((d: any) => ({ id: d.patient_profiles?.id || d.patient_id, title: d.patient_profiles?.full_name || 'Unknown', value: `FBS ${d.fbs_mg_dl || '—'}`, valueColor: (d.fbs_mg_dl || 0) > 180 ? Colors.rose : Colors.teal })));
+    setModalVisible(true);
+  };
+
+  const handleModalItem = (patientId: string) => {
+    setModalVisible(false);
+    nav.navigate('PatientProfile', { patientId });
+  };
+
+  const getLatestCI = (p: any) => {
+    const cis = p.daily_check_ins || [];
+    return cis.length ? cis.sort((a: any, b: any) => (b.check_in_date || '').localeCompare(a.check_in_date || ''))[0] : null;
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -75,10 +93,10 @@ export const DoctorDashboardScreen = () => {
         </View>
 
         <View style={styles.statsGrid}>
-          <StatCard val={patients.length} lbl="Total patients" />
-          <StatCard val={flagCount} lbl="Flags" color={Colors.rose} />
-          <StatCard val={0} lbl="Pending plans" color={Colors.amber} />
-          <StatCard val={checkinCount} lbl="Check-ins today" />
+          <StatCard val={patients.length} lbl="Total patients" onPress={openPatients} />
+          <StatCard val={flagCount} lbl="Flags" color={Colors.rose} onPress={openFlags} />
+          <StatCard val={0} lbl="Pending plans" color={Colors.amber} onPress={openPending} />
+          <StatCard val={checkinCount} lbl="Check-ins today" onPress={openCheckins} />
         </View>
 
         {patients.length > 0 ? (
@@ -88,15 +106,11 @@ export const DoctorDashboardScreen = () => {
               <View style={styles.sectionCapLine} />
             </View>
             {patients.map(p => {
-              const initials = (p.full_name || '')
-                .split(' ')
-                .map((n: string) => n[0])
-                .join('')
-                .slice(0, 2)
-                .toUpperCase();
+              const ci = getLatestCI(p);
+              const initials = (p.full_name || '').split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
               const condition = (p.primary_condition || '').replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
+              const fbsColor = ci ? ((ci.fbs_mg_dl || 0) > 180 ? Colors.rose : (ci.fbs_mg_dl || 0) > 130 ? Colors.amber : Colors.teal) : Colors.ink3;
               return (
-                // FIX: was a non-interactive View — now tappable to open patient profile
                 <TouchableOpacity key={p.id} style={styles.patRow} onPress={() => nav.navigate('PatientProfile', { patientId: p.id, supabasePatient: p })} activeOpacity={0.8}>
                   <View style={styles.patAvatar}>
                     <Text style={styles.patAvatarTxt}>{initials}</Text>
@@ -105,7 +119,11 @@ export const DoctorDashboardScreen = () => {
                     <Text style={styles.patName}>{p.full_name}</Text>
                     <Text style={styles.patCond}>{condition} · Phase {p.current_phase || 1}</Text>
                   </View>
-                  <Text style={styles.uhid}>{p.uhid}</Text>
+                  {ci ? (
+                    <Text style={[styles.uhid, { color: fbsColor }]}>FBS {ci.fbs_mg_dl || '—'}</Text>
+                  ) : (
+                    <Text style={styles.uhid}>{p.uhid}</Text>
+                  )}
                 </TouchableOpacity>
               );
             })}
@@ -113,12 +131,12 @@ export const DoctorDashboardScreen = () => {
         ) : (
           <View style={{ alignItems: 'center', paddingVertical: 60 }}>
             <Text style={{ fontFamily: Typography.sans, fontSize: 18, color: Colors.ink2 }}>No patients yet</Text>
-            <Text style={{ fontFamily: Typography.sans, fontSize: 15, color: Colors.ink3, marginTop: 4 }}>Create patients from the Roster tab</Text>
           </View>
         )}
-
         <View style={{ height: 32 }} />
       </ScrollView>
+
+      <DrillDownModal visible={modalVisible} title={modalTitle} items={modalItems} onClose={() => setModalVisible(false)} onItemPress={handleModalItem} />
     </SafeAreaView>
   );
 };
