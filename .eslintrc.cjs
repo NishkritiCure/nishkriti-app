@@ -88,6 +88,9 @@ module.exports = {
     {
       files: ['src/stores/useAuthStore.ts'],
       rules: {
+        // Override replaces (not merges) the base no-restricted-imports rule,
+        // so we re-list the supabase-js ban here for defense-in-depth. The
+        // store has no business reaching into the supabase client directly.
         'no-restricted-imports': [
           'error',
           {
@@ -95,6 +98,11 @@ module.exports = {
               {
                 name: '@react-native-async-storage/async-storage',
                 message: 'Auth state must live in expo-secure-store, not AsyncStorage.',
+              },
+              {
+                name: '@supabase/supabase-js',
+                message:
+                  'Import the configured client from @/services/supabase. Direct imports outside the service layer are forbidden.',
               },
             ],
           },

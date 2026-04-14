@@ -11,14 +11,23 @@ async function authHeader(): Promise<Record<string, string>> {
   return { Authorization: `Bearer ${session.access_token}` }
 }
 
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+
 interface RequestOptions {
-  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  method?: HttpMethod
   body?: unknown
   signal?: AbortSignal
+  // Override idempotency detection. Defaults: GET/PUT/DELETE are idempotent.
+  // POST/PATCH are not (per ARCHITECTURE §6.3 — non-idempotent writes get
+  // 1 attempt, the user retries manually).
+  idempotent?: boolean
 }
+
+const DEFAULT_IDEMPOTENT: ReadonlySet<HttpMethod> = new Set(['GET', 'PUT', 'DELETE'])
 
 export async function request<T>(path: string, opts: RequestOptions = {}): Promise<T> {
   const method = opts.method ?? 'GET'
+  const isIdempotent = opts.idempotent ?? DEFAULT_IDEMPOTENT.has(method)
   return withRetry(
     async () => {
       const auth = await authHeader()
@@ -37,6 +46,6 @@ export async function request<T>(path: string, opts: RequestOptions = {}): Promi
       if (!res.ok) throw new ServerError(`Request failed: ${res.status}`, res.status)
       return (await res.json()) as T
     },
-    { attempts: method === 'GET' ? 3 : 1 }
+    { attempts: isIdempotent ? 3 : 1 }
   )
 }

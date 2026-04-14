@@ -82,9 +82,13 @@ export interface ErrorContext {
 }
 
 export function reportError(err: unknown, context?: ErrorContext): void {
+  // Only NishkritiError messages are curated and PHI-safe by construction.
+  // Raw Postgrest/network/JS errors may embed column values (e.g.
+  // "duplicate key (fbs)=(250)"), so we log only the error name + code for
+  // those — never their message body. See SECURITY-SPEC.md §3.4.
   const safe = {
     name: err instanceof Error ? err.name : 'unknown',
-    message: err instanceof Error ? err.message : String(err),
+    message: err instanceof NishkritiError ? err.message : '[redacted non-curated error message]',
     code: err instanceof NishkritiError ? err.code : undefined,
     context: scrubForLogging(context),
   }
