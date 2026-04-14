@@ -1,0 +1,7 @@
+node_modules
+.expo
+dist
+coverage
+.build-check
+pnpm-lock.yaml
+src/types/database.types.ts
