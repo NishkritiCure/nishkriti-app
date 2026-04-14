@@ -109,13 +109,5 @@ module.exports = {
       },
     },
   ],
-  ignorePatterns: [
-    'node_modules/',
-    '.expo/',
-    'coverage/',
-    '.build-check/',
-    'dist/',
-    'src/types/database.types.ts',
-    '**/*.d.ts',
-  ],
+  ignorePatterns: ['node_modules/', '.expo/', 'coverage/', '.build-check/', 'dist/', '**/*.d.ts'],
 }
