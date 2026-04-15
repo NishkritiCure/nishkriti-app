@@ -1,7 +1,7 @@
 {
   "name": "nishkriti-app",
   "version": "0.1.0",
-  "main": "./src/app/index.tsx",
+  "main": "./index.ts",
   "private": true,
   "scripts": {
     "start": "expo start",
