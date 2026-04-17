@@ -1,0 +1,30 @@
+{
+  "name": "multi_condition_diabetes_plus_pcos_fbs_145",
+  "description": "Patient with both diabetes and PCOS, FBS 145 — DR002 and PC002 both fire, low_carb",
+  "inputs": {
+    "patient": { "primary_condition": "diabetes_t2", "conditions": ["diabetes_t2", "pcos"] },
+    "protocol": { "diet_type": "maintenance", "calorie_target": 1750 },
+    "check_in": { "fbs_mg_dl": 145, "energy_level": 3 },
+    "recent_check_ins": [
+      {
+        "id": "ci-prev-1",
+        "check_in_date": "2026-04-16",
+        "fbs_mg_dl": 145,
+        "patient_id": "p-1",
+        "weight_kg": null,
+        "waist_cm": null,
+        "hip_cm": null,
+        "energy_level": 3,
+        "sleep_hours": 7,
+        "symptoms": [],
+        "adherence_yesterday": "high",
+        "requests": null,
+        "message_for_doctor": null
+      }
+    ]
+  },
+  "expected": {
+    "diet_type": "low_carb",
+    "rules_fired_ids": ["DR002", "PC002"]
+  }
+}

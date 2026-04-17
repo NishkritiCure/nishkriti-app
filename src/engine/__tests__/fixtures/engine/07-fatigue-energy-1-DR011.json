@@ -1,0 +1,45 @@
+{
+  "name": "fatigue_energy_1_DR011",
+  "description": "Three consecutive days of energy 1 — DR011 fires, +15g carbs",
+  "inputs": {
+    "patient": { "primary_condition": "diabetes_t2", "conditions": ["diabetes_t2"] },
+    "protocol": { "diet_type": "low_carb", "calorie_target": 1800 },
+    "check_in": { "fbs_mg_dl": 95, "energy_level": 1, "symptoms": ["fatigue"] },
+    "recent_check_ins": [
+      {
+        "id": "ci-prev-1",
+        "check_in_date": "2026-04-16",
+        "fbs_mg_dl": 100,
+        "patient_id": "p-1",
+        "weight_kg": null,
+        "waist_cm": null,
+        "hip_cm": null,
+        "energy_level": 1,
+        "sleep_hours": 6,
+        "symptoms": [],
+        "adherence_yesterday": "high",
+        "requests": null,
+        "message_for_doctor": null
+      },
+      {
+        "id": "ci-prev-2",
+        "check_in_date": "2026-04-15",
+        "fbs_mg_dl": 100,
+        "patient_id": "p-1",
+        "weight_kg": null,
+        "waist_cm": null,
+        "hip_cm": null,
+        "energy_level": 1,
+        "sleep_hours": 6,
+        "symptoms": [],
+        "adherence_yesterday": "high",
+        "requests": null,
+        "message_for_doctor": null
+      }
+    ]
+  },
+  "expected": {
+    "rules_fired_ids": ["DR011"],
+    "workout_intensity": "rest"
+  }
+}

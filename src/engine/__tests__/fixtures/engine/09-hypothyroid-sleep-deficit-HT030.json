@@ -1,0 +1,44 @@
+{
+  "name": "hypothyroid_sleep_under_6h_HT030",
+  "description": "Hypothyroid with sleep < 6 hours for 3 days — HT030 fires",
+  "inputs": {
+    "patient": { "primary_condition": "hypothyroid", "conditions": ["hypothyroid"] },
+    "protocol": { "diet_type": "maintenance", "calorie_target": 1700, "condition": "hypothyroid" },
+    "check_in": { "fbs_mg_dl": 95, "energy_level": 3, "sleep_hours": 5 },
+    "recent_check_ins": [
+      {
+        "id": "ci-prev-1",
+        "check_in_date": "2026-04-16",
+        "fbs_mg_dl": 95,
+        "patient_id": "p-1",
+        "weight_kg": null,
+        "waist_cm": null,
+        "hip_cm": null,
+        "energy_level": 3,
+        "sleep_hours": 5,
+        "symptoms": [],
+        "adherence_yesterday": "high",
+        "requests": null,
+        "message_for_doctor": null
+      },
+      {
+        "id": "ci-prev-2",
+        "check_in_date": "2026-04-15",
+        "fbs_mg_dl": 95,
+        "patient_id": "p-1",
+        "weight_kg": null,
+        "waist_cm": null,
+        "hip_cm": null,
+        "energy_level": 3,
+        "sleep_hours": 5,
+        "symptoms": [],
+        "adherence_yesterday": "high",
+        "requests": null,
+        "message_for_doctor": null
+      }
+    ]
+  },
+  "expected": {
+    "rules_fired_ids": ["HT030"]
+  }
+}

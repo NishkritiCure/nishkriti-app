@@ -1,0 +1,14 @@
+{
+  "name": "diabetic_high_fbs_200_DR003",
+  "description": "FBS 200 — DR003 fires, keto override, doctor-flagged",
+  "inputs": {
+    "patient": { "primary_condition": "diabetes_t2", "conditions": ["diabetes_t2"] },
+    "protocol": { "diet_type": "low_carb", "calorie_target": 1800 },
+    "check_in": { "fbs_mg_dl": 200, "energy_level": 3 }
+  },
+  "expected": {
+    "diet_type": "keto",
+    "rules_fired_ids": ["DR003"],
+    "doctor_flag_raised": true
+  }
+}

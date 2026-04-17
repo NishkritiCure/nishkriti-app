@@ -1,0 +1,17 @@
+{
+  "name": "diabetic_critical_fbs_260_DR004",
+  "description": "FBS 260 — DR004 critical fires, keto, rest day, DKA floor applied",
+  "inputs": {
+    "patient": { "primary_condition": "diabetes_t2", "conditions": ["diabetes_t2"] },
+    "protocol": { "diet_type": "low_carb", "calorie_target": 1800 },
+    "check_in": { "fbs_mg_dl": 260, "energy_level": 3 }
+  },
+  "expected": {
+    "diet_type": "keto",
+    "rules_fired_ids": ["DR004"],
+    "doctor_flag_raised": true,
+    "workout_intensity": "rest",
+    "carbs_target_g_min": 30,
+    "water_target_ml": 2500
+  }
+}

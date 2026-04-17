@@ -1,0 +1,13 @@
+{
+  "name": "travel_day_portable_meals_only",
+  "description": "Travel day request — meal selector filters to high-portability meals",
+  "inputs": {
+    "patient": { "primary_condition": "diabetes_t2", "conditions": ["diabetes_t2"] },
+    "protocol": { "diet_type": "maintenance", "calorie_target": 1800 },
+    "check_in": { "fbs_mg_dl": 100, "energy_level": 4, "requests": { "travelDay": true } }
+  },
+  "expected": {
+    "rules_fired_ids": [],
+    "meal_count": 6
+  }
+}

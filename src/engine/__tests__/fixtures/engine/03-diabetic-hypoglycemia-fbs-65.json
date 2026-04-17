@@ -1,0 +1,14 @@
+{
+  "name": "diabetic_hypoglycemia_fbs_65_DR005",
+  "description": "FBS 65 — DR005 critical fires, rest day, +20g carbs",
+  "inputs": {
+    "patient": { "primary_condition": "diabetes_t2", "conditions": ["diabetes_t2"] },
+    "protocol": { "diet_type": "low_carb", "calorie_target": 1800 },
+    "check_in": { "fbs_mg_dl": 65, "energy_level": 3 }
+  },
+  "expected": {
+    "rules_fired_ids": ["DR005"],
+    "doctor_flag_raised": true,
+    "workout_intensity": "rest"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "vegan_patient_stable_fbs",
+  "description": "Vegan patient — meal selector enforces no-dairy",
+  "inputs": {
+    "patient": {
+      "primary_condition": "diabetes_t2",
+      "conditions": ["diabetes_t2"],
+      "diet_preference": "vegan"
+    },
+    "protocol": { "diet_type": "low_carb", "calorie_target": 1700 },
+    "check_in": { "fbs_mg_dl": 95, "energy_level": 3 }
+  },
+  "expected": {
+    "meal_count": 6,
+    "diet_type": "low_carb"
+  }
+}
