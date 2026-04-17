@@ -1,0 +1,97 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ProgressTimelineRow > matches light + dark snapshots > dark 1`] = `
+<div
+  aria-label="Apr 18: Snap. snap"
+  class="css-view-g5y9jx"
+  style="flex-direction: row; gap: 12px;"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="align-items: center; width: 16px;"
+  >
+    <div
+      class="css-view-g5y9jx"
+      style="width: 12px; height: 12px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; margin-top: 6px; background-color: rgb(62, 219, 165); border-top-color: rgb(13, 31, 26); border-right-color: rgb(13, 31, 26); border-bottom-color: rgb(13, 31, 26); border-left-color: rgb(13, 31, 26);"
+    />
+    <div
+      class="css-view-g5y9jx"
+      style="flex: 1 1 0%; width: 2px; margin-top: 4px; background-color: rgba(62, 219, 165, 0.09);"
+    />
+  </div>
+  <div
+    class="css-view-g5y9jx"
+    style="flex: 1 1 0%; gap: 4px; padding-bottom: 16px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;"
+    >
+      Apr 18
+    </div>
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(221, 232, 226); font-family: DMSans_600SemiBold; font-size: 18px; line-height: 26px; font-weight: 600; letter-spacing: 0px;"
+    >
+      Snap
+    </div>
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(138, 170, 152); font-family: DMSans_400Regular; font-size: 14px; line-height: 22px; font-weight: 400; letter-spacing: 0px;"
+    >
+      snap
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ProgressTimelineRow > matches light + dark snapshots > light 1`] = `
+<div
+  aria-label="Apr 18: Snap. snap"
+  class="css-view-g5y9jx"
+  style="flex-direction: row; gap: 12px;"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="align-items: center; width: 16px;"
+  >
+    <div
+      class="css-view-g5y9jx"
+      style="width: 12px; height: 12px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; margin-top: 6px; background-color: rgb(62, 219, 165); border-top-color: rgb(13, 31, 26); border-right-color: rgb(13, 31, 26); border-bottom-color: rgb(13, 31, 26); border-left-color: rgb(13, 31, 26);"
+    />
+    <div
+      class="css-view-g5y9jx"
+      style="flex: 1 1 0%; width: 2px; margin-top: 4px; background-color: rgba(62, 219, 165, 0.09);"
+    />
+  </div>
+  <div
+    class="css-view-g5y9jx"
+    style="flex: 1 1 0%; gap: 4px; padding-bottom: 16px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;"
+    >
+      Apr 18
+    </div>
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(221, 232, 226); font-family: DMSans_600SemiBold; font-size: 18px; line-height: 26px; font-weight: 600; letter-spacing: 0px;"
+    >
+      Snap
+    </div>
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(138, 170, 152); font-family: DMSans_400Regular; font-size: 14px; line-height: 22px; font-weight: 400; letter-spacing: 0px;"
+    >
+      snap
+    </div>
+  </div>
+</div>
+`;

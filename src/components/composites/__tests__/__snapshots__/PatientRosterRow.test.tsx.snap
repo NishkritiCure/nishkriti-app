@@ -1,0 +1,139 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`PatientRosterRow > matches light + dark snapshots > dark 1`] = `
+<button
+  aria-label="Snap, c, day 5"
+  class="css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73"
+  role="button"
+  style="border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; padding: 16px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-color: rgba(62, 219, 165, 0.09); border-right-color: rgba(62, 219, 165, 0.09); border-bottom-color: rgba(62, 219, 165, 0.09); border-left-color: rgba(62, 219, 165, 0.09); background-color: rgb(23, 40, 32); opacity: 1;"
+  tabindex="0"
+  type="button"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; align-items: center; gap: 12px;"
+  >
+    <div
+      aria-label="Avatar SN"
+      class="css-view-g5y9jx"
+      role="img"
+      style="align-items: center; justify-content: center; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; overflow-x: hidden; overflow-y: hidden; width: 40px; height: 40px; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; background-color: rgb(29, 53, 48); border-top-color: rgba(62, 219, 165, 0.18); border-right-color: rgba(62, 219, 165, 0.18); border-bottom-color: rgba(62, 219, 165, 0.18); border-left-color: rgba(62, 219, 165, 0.18);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(221, 232, 226); font-family: DMSans_600SemiBold; font-weight: 600; letter-spacing: 0px; font-size: 15px; line-height: 18px;"
+      >
+        SN
+      </div>
+    </div>
+    <div
+      class="css-view-g5y9jx"
+      style="flex: 1 1 0%; gap: 2px;"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(221, 232, 226); font-family: DMSans_600SemiBold; font-size: 18px; line-height: 26px; font-weight: 600; letter-spacing: 0px;"
+      >
+        Snap
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(138, 170, 152); font-family: DMSans_400Regular; font-size: 14px; line-height: 22px; font-weight: 400; letter-spacing: 0px;"
+      >
+        c
+      </div>
+    </div>
+    <div
+      class="css-view-g5y9jx"
+      style="align-items: center;"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;"
+      >
+        Day
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(168, 245, 213); font-family: Lora_500Medium; font-size: 20px; line-height: 28px; font-weight: 500; letter-spacing: 0px;"
+      >
+        5
+      </div>
+    </div>
+  </div>
+</button>
+`;
+
+exports[`PatientRosterRow > matches light + dark snapshots > light 1`] = `
+<button
+  aria-label="Snap, c, day 5"
+  class="css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73"
+  role="button"
+  style="border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; padding: 16px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-color: rgba(62, 219, 165, 0.09); border-right-color: rgba(62, 219, 165, 0.09); border-bottom-color: rgba(62, 219, 165, 0.09); border-left-color: rgba(62, 219, 165, 0.09); background-color: rgb(23, 40, 32); opacity: 1;"
+  tabindex="0"
+  type="button"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; align-items: center; gap: 12px;"
+  >
+    <div
+      aria-label="Avatar SN"
+      class="css-view-g5y9jx"
+      role="img"
+      style="align-items: center; justify-content: center; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; overflow-x: hidden; overflow-y: hidden; width: 40px; height: 40px; border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px; background-color: rgb(29, 53, 48); border-top-color: rgba(62, 219, 165, 0.18); border-right-color: rgba(62, 219, 165, 0.18); border-bottom-color: rgba(62, 219, 165, 0.18); border-left-color: rgba(62, 219, 165, 0.18);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(221, 232, 226); font-family: DMSans_600SemiBold; font-weight: 600; letter-spacing: 0px; font-size: 15px; line-height: 18px;"
+      >
+        SN
+      </div>
+    </div>
+    <div
+      class="css-view-g5y9jx"
+      style="flex: 1 1 0%; gap: 2px;"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(221, 232, 226); font-family: DMSans_600SemiBold; font-size: 18px; line-height: 26px; font-weight: 600; letter-spacing: 0px;"
+      >
+        Snap
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(138, 170, 152); font-family: DMSans_400Regular; font-size: 14px; line-height: 22px; font-weight: 400; letter-spacing: 0px;"
+      >
+        c
+      </div>
+    </div>
+    <div
+      class="css-view-g5y9jx"
+      style="align-items: center;"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;"
+      >
+        Day
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(168, 245, 213); font-family: Lora_500Medium; font-size: 20px; line-height: 28px; font-weight: 500; letter-spacing: 0px;"
+      >
+        5
+      </div>
+    </div>
+  </div>
+</button>
+`;
