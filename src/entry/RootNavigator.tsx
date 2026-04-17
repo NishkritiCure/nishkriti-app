@@ -1,30 +1,24 @@
-import { StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { useTheme } from '@/theme/ThemeContext'
+import { KitchenSinkScreen } from '@/screens/dev/KitchenSinkScreen'
 
+/**
+ * Root navigator placeholder. In dev builds this mounts the
+ * KitchenSinkScreen so reviewers can eyeball the Phase-C component
+ * library. Production builds receive a minimal holding screen until the
+ * real navigator lands in phase-d / phase-e.
+ */
 export function RootNavigator() {
-  const theme = useTheme()
+  if (__DEV__) {
+    return <KitchenSinkScreen />
+  }
+  return <HoldingScreen />
+}
+
+function HoldingScreen() {
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.palette.bg }]}>
-      <View style={styles.inner}>
-        <Text style={[styles.title, { color: theme.palette.ink }]}>Nishkriti</Text>
-      </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      {/* Production shell lands in phase-d (patient) / phase-e (doctor). */}
     </SafeAreaView>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  inner: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: '600',
-  },
-})
