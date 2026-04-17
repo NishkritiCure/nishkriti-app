@@ -1,0 +1,14 @@
+{
+  "name": "hypertension_no_fbs_trigger_adds_dinner_walk",
+  "description": "Hypertension patient with FBS in target range — dinner walk added for BP support",
+  "inputs": {
+    "patient": { "primary_condition": "hypertension", "conditions": ["hypertension"] },
+    "protocol": { "diet_type": "maintenance", "calorie_target": 1800, "condition": "hypertension" },
+    "check_in": { "fbs_mg_dl": 95, "energy_level": 3 }
+  },
+  "expected": {
+    "water_target_ml": 2250,
+    "post_meal_walks_count": 1,
+    "workout_intensity": "moderate"
+  }
+}

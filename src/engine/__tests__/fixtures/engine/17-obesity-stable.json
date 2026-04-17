@@ -1,0 +1,13 @@
+{
+  "name": "obesity_stable_day",
+  "description": "Obesity patient, stable markers — no rule triggers",
+  "inputs": {
+    "patient": { "primary_condition": "obesity", "conditions": ["obesity"] },
+    "protocol": { "diet_type": "calorie_deficit", "calorie_target": 1600, "condition": "obesity" },
+    "check_in": { "fbs_mg_dl": 90, "energy_level": 3, "weight_kg": 80 }
+  },
+  "expected": {
+    "diet_type": "calorie_deficit",
+    "rules_fired_ids": []
+  }
+}

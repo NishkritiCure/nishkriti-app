@@ -1,0 +1,16 @@
+{
+  "name": "non_veg_patient_stable",
+  "description": "Non-veg preference keeps all library meals eligible",
+  "inputs": {
+    "patient": {
+      "primary_condition": "diabetes_t2",
+      "conditions": ["diabetes_t2"],
+      "diet_preference": "non_veg"
+    },
+    "protocol": { "diet_type": "low_carb", "calorie_target": 1800 },
+    "check_in": { "fbs_mg_dl": 95, "energy_level": 3 }
+  },
+  "expected": {
+    "meal_count": 6
+  }
+}

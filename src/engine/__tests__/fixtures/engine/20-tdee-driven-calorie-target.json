@@ -1,0 +1,21 @@
+{
+  "name": "tdee_driven_when_protocol_calorie_null",
+  "description": "Protocol has no calorie_target — engine falls back to TDEE − 350",
+  "inputs": {
+    "patient": {
+      "primary_condition": "diabetes_t2",
+      "conditions": ["diabetes_t2"],
+      "sex": "male",
+      "weight_kg": 80,
+      "height_cm": 180,
+      "activity_level": "moderate"
+    },
+    "protocol": { "diet_type": "maintenance", "calorie_target": null },
+    "check_in": { "fbs_mg_dl": 95, "energy_level": 3 }
+  },
+  "expected": {
+    "diet_type": "maintenance",
+    "calorie_target_min": 2300,
+    "calorie_target_max": 2400
+  }
+}

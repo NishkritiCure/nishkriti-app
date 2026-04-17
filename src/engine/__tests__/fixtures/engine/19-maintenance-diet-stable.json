@@ -1,0 +1,15 @@
+{
+  "name": "maintenance_diet_stable_no_rules",
+  "description": "Maintenance diet, all markers green — steady plan",
+  "inputs": {
+    "patient": { "primary_condition": "diabetes_t2", "conditions": ["diabetes_t2"] },
+    "protocol": { "diet_type": "maintenance", "calorie_target": 2000 },
+    "check_in": { "fbs_mg_dl": 85, "energy_level": 3 }
+  },
+  "expected": {
+    "diet_type": "maintenance",
+    "rules_fired_ids": [],
+    "carbs_target_g_min": 240,
+    "carbs_target_g_max": 260
+  }
+}

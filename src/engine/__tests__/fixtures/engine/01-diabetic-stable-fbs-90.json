@@ -1,0 +1,17 @@
+{
+  "name": "diabetic_stable_fbs_90_no_rules_fire",
+  "description": "Stable diabetic, FBS 90 — no rules fire, keeps protocol diet type",
+  "inputs": {
+    "patient": { "primary_condition": "diabetes_t2", "conditions": ["diabetes_t2"] },
+    "protocol": { "diet_type": "low_carb", "calorie_target": 1800 },
+    "check_in": { "fbs_mg_dl": 90, "energy_level": 3 }
+  },
+  "expected": {
+    "diet_type": "low_carb",
+    "rules_fired_ids": [],
+    "doctor_flag_raised": false,
+    "workout_intensity": "moderate",
+    "meal_count": 6,
+    "water_target_ml": 2000
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "high_energy_day_bonus_water",
+  "description": "Energy 5 day — extra 250 mL water, high-intensity workout",
+  "inputs": {
+    "patient": { "primary_condition": "diabetes_t2", "conditions": ["diabetes_t2"] },
+    "protocol": { "diet_type": "low_carb", "calorie_target": 1800 },
+    "check_in": { "fbs_mg_dl": 95, "energy_level": 5 }
+  },
+  "expected": {
+    "water_target_ml": 2250,
+    "workout_intensity": "high"
+  }
+}
