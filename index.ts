@@ -1,8 +1,8 @@
-import { registerRootComponent } from 'expo';
+import { registerRootComponent } from 'expo'
 
-import App from './App';
+import App from './src/entry'
 
-// registerRootComponent calls AppRegistry.registerComponent('main', () => App);
-// It also ensures that whether you load the app in Expo Go or in a native build,
-// the environment is set up appropriately
-registerRootComponent(App);
+// Registers the root component per Expo's canonical non-router entry pattern.
+// Keeping this at repo root (rather than inside src/entry/index.tsx) prevents
+// Expo SDK 54 from treating src/app/ or src/entry/ as an Expo Router scan root.
+registerRootComponent(App)

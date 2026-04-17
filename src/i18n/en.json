@@ -1,0 +1,10 @@
+{
+  "error.network": "You're offline — changes will sync when you reconnect.",
+  "error.server": "Something went wrong on our end. Please try again.",
+  "error.validation": "Please check your entries and try again.",
+  "error.auth": "Your session has expired. Please sign in again.",
+  "error.rls": "This item is no longer available.",
+  "error.generic": "Something went wrong. Please try again.",
+  "app.name": "Nishkriti",
+  "app.plan_pending_review": "Plan pending review"
+}
