@@ -78,7 +78,12 @@ module.exports = {
     ],
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
-    'no-console': ['warn', { allow: ['warn', 'error'] }],
+    // Medical-app invariant: no console output from app code. PHI can
+    // land in props at runtime; any `console.*` call in a render path
+    // would leak it to Logcat on Android. Services that need structured
+    // logging go through `@/services/errorService.ts` — that file gets
+    // the narrow override below. (Security review PR #3 tightening.)
+    'no-console': 'error',
     'no-restricted-imports': ['error', { paths: [SUPABASE_JS_BAN] }],
     'no-restricted-syntax': ['error', FETCH_BAN, SERVICE_ROLE_BAN, COLOR_LITERAL_BAN],
   },
@@ -123,6 +128,14 @@ module.exports = {
             ],
           },
         ],
+      },
+    },
+    {
+      // errorService is the structured-logging entry point; phase-g wires
+      // Sentry here and removes these console calls. Intentional exception.
+      files: ['src/services/errorService.ts'],
+      rules: {
+        'no-console': 'off',
       },
     },
     {

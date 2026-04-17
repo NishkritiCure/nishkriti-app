@@ -29,17 +29,15 @@ export function PatientRosterRow({
 }: PatientRosterRowProps) {
   const theme = useTheme()
   const styles = useStyles()
-  const composed =
-    accessibilityLabel ??
-    `${name}, ${condition}, day ${daysInProgramme}${
-      statusPillLabel ? `, status ${statusPillLabel}` : ''
-    }`
-
+  // Default a11y label is PHI-free — see SECURITY-SPEC.md §3 and the
+  // ApprovalQueueCard rationale. Screens must override with a scrubbed
+  // label (e.g. "Patient N") when a more descriptive announcement is
+  // needed for the screen reader.
   return (
     <Card
       surface="card"
       onPress={onPress}
-      accessibilityLabel={composed}
+      accessibilityLabel={accessibilityLabel ?? 'Patient row'}
       accessibilityHint="Double tap to open patient profile"
       testID={testID}
     >

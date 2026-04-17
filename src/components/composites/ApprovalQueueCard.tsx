@@ -49,14 +49,17 @@ export function ApprovalQueueCard({
     .filter(Boolean)
     .join(' · ')
 
+  // Default a11y label is deliberately PHI-free. Screens in phase-d/e that
+  // render this card must pass an explicit `accessibilityLabel` scrubbed
+  // per SECURITY-SPEC.md §3 (e.g. first initial + "patient N of M").
+  // The composed visible content is kept (the card *shows* PHI) but we do
+  // not echo it into the accessibility tree by default, because the tree
+  // is the most common vector for PHI reaching crash reports.
   return (
     <Card
       surface="card"
       onPress={onPress}
-      accessibilityLabel={
-        accessibilityLabel ??
-        `Approve ${patient.name}, ${patient.condition}. ${vitalsString}. ${aiReasoningPreview}`
-      }
+      accessibilityLabel={accessibilityLabel ?? 'Approval queue item'}
       accessibilityHint="Double tap to review and approve"
       testID={testID}
     >

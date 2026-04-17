@@ -2,7 +2,7 @@
 
 exports[`PatientRosterRow > matches light + dark snapshots > dark 1`] = `
 <button
-  aria-label="Snap, c, day 5"
+  aria-label="Patient row"
   class="css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73"
   role="button"
   style="border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; padding: 16px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-color: rgba(62, 219, 165, 0.09); border-right-color: rgba(62, 219, 165, 0.09); border-bottom-color: rgba(62, 219, 165, 0.09); border-left-color: rgba(62, 219, 165, 0.09); background-color: rgb(23, 40, 32); opacity: 1;"
@@ -71,7 +71,7 @@ exports[`PatientRosterRow > matches light + dark snapshots > dark 1`] = `
 
 exports[`PatientRosterRow > matches light + dark snapshots > light 1`] = `
 <button
-  aria-label="Snap, c, day 5"
+  aria-label="Patient row"
   class="css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73"
   role="button"
   style="border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; padding: 16px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-color: rgba(62, 219, 165, 0.09); border-right-color: rgba(62, 219, 165, 0.09); border-bottom-color: rgba(62, 219, 165, 0.09); border-left-color: rgba(62, 219, 165, 0.09); background-color: rgb(23, 40, 32); opacity: 1;"

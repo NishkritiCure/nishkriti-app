@@ -1,15 +1,20 @@
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { KitchenSinkScreen } from '@/screens/dev/KitchenSinkScreen'
-
 /**
- * Root navigator placeholder. In dev builds this mounts the
- * KitchenSinkScreen so reviewers can eyeball the Phase-C component
- * library. Production builds receive a minimal holding screen until the
- * real navigator lands in phase-d / phase-e.
+ * Root navigator placeholder.
+ *
+ * In dev builds this mounts the `KitchenSinkScreen` (dynamic-require'd so
+ * Metro's production dead-code elimination drops the entire dev-only
+ * module graph — including its fixture strings). Production builds receive
+ * a minimal holding shell until the real navigator lands in phase-d /
+ * phase-e.
  */
 export function RootNavigator() {
   if (__DEV__) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+    const { KitchenSinkScreen } = require('@/screens/dev/KitchenSinkScreen') as {
+      readonly KitchenSinkScreen: React.ComponentType
+    }
     return <KitchenSinkScreen />
   }
   return <HoldingScreen />

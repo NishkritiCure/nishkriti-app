@@ -68,7 +68,9 @@ describe('ApprovalQueueCard', () => {
         onPress={onPress}
       />
     )
-    const cards = screen.getAllByRole('button', { name: /Approve Ravi K/ })
+    // Default a11y label is PHI-free ("Approval queue item"); callers
+    // override with scrubbed content in Phase D.
+    const cards = screen.getAllByRole('button', { name: /Approval queue item/ })
     fireEvent.click(cards[cards.length - 1]!)
     expect(onPress).toHaveBeenCalled()
   })

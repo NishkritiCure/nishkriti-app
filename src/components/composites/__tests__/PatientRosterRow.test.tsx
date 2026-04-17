@@ -33,7 +33,9 @@ describe('PatientRosterRow', () => {
         onPress={onPress}
       />
     )
-    const rows = screen.getAllByRole('button', { name: /Anu/ })
+    // Default a11y label is PHI-free ("Patient row"); callers override
+    // with a scrubbed label in Phase D.
+    const rows = screen.getAllByRole('button', { name: /Patient row/ })
     fireEvent.click(rows[rows.length - 1]!)
     expect(onPress).toHaveBeenCalled()
   })
