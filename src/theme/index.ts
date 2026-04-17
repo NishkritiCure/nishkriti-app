@@ -13,3 +13,11 @@ export { shadows, type ShadowKey } from './shadows'
 export { motion, type DurationKey, type EasingKey } from './motion'
 export { ThemeProvider, useTheme, type Theme } from './ThemeContext'
 export { createStyles, type NamedStyles } from './createStyles'
+export {
+  LOGO_GRADIENT,
+  LOGO_SHINE_GRADIENT,
+  LOGO_N_PATH,
+  LOGO_INLINE_ECG_PATH,
+  LOGO_ASPECT_RATIO,
+  LOGO_VIEWBOX,
+} from './brand'

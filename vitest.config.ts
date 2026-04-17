@@ -5,9 +5,24 @@ export default defineConfig({
   test: {
     environment: 'node',
     globals: false,
-    setupFiles: ['__tests__/setup.ts'],
+    setupFiles: ['__tests__/setup.ts', '__tests__/setup.rn.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}', '__tests__/**/*.{test,spec}.{ts,tsx}'],
     exclude: ['node_modules', '.expo', 'dist', '.build-check', '__tests__/e2e/**'],
+    // Per-file `// @vitest-environment jsdom` directive opts component tests
+    // into jsdom without forcing the whole file tree. Pure-logic suites stay
+    // on `node` for speed.
+    server: {
+      deps: {
+        // RN's ESM/CJS interop needs vitest to transform these instead of
+        // externalising them so the jsdom-env tests can import them.
+        inline: [
+          'react-native',
+          'react-native-svg',
+          'react-native-reanimated',
+          '@testing-library/react-native',
+        ],
+      },
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'json-summary'],
@@ -37,8 +52,12 @@ export default defineConfig({
     },
   },
   resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'src'),
-    },
+    alias: [
+      // Resolve react-native to react-native-web for unit tests. The actual
+      // native build uses react-native proper via babel-preset-expo. This
+      // alias only applies to vitest's module graph.
+      { find: /^react-native$/, replacement: 'react-native-web' },
+      { find: '@', replacement: path.resolve(__dirname, 'src') },
+    ],
   },
 })

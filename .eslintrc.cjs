@@ -144,6 +144,7 @@ module.exports = {
       // Components are pure view elements. No engine, service, query, or
       // store imports — data arrives through props. Enforced by EB-C §4.2.
       files: ['src/components/**/*.{ts,tsx}'],
+      excludedFiles: ['src/components/**/__tests__/**', 'src/components/**/*.test.{ts,tsx}'],
       rules: {
         'no-restricted-imports': [
           'error',

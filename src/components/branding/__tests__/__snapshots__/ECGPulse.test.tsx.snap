@@ -1,0 +1,59 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ECGPulse > matches light + dark snapshots > dark 1`] = `
+<div
+  aria-label="snap-pulse"
+  class="css-view-g5y9jx r-overflow-1udh08x"
+  role="img"
+  style="width: 200px; height: 40px;"
+>
+  <div
+    class="css-view-g5y9jx r-flex-13awgt0"
+    style="opacity: 0; transform: translateX(-200px);"
+  >
+    <svg
+      height="40"
+      viewbox="0 0 200 40"
+      width="200"
+    >
+      <path
+        d="M0,20 L40,20 L56.00000000000001,16 L60,24 L64,20 L74,8 L80,34 L86,2 L92,36 L98,8 L104,20 L140,20 L200,20"
+        fill="none"
+        stroke="#3EDBA5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.5"
+      />
+    </svg>
+  </div>
+</div>
+`;
+
+exports[`ECGPulse > matches light + dark snapshots > light 1`] = `
+<div
+  aria-label="snap-pulse"
+  class="css-view-g5y9jx r-overflow-1udh08x"
+  role="img"
+  style="width: 200px; height: 40px;"
+>
+  <div
+    class="css-view-g5y9jx r-flex-13awgt0"
+    style="opacity: 0; transform: translateX(-200px);"
+  >
+    <svg
+      height="40"
+      viewbox="0 0 200 40"
+      width="200"
+    >
+      <path
+        d="M0,20 L40,20 L56.00000000000001,16 L60,24 L64,20 L74,8 L80,34 L86,2 L92,36 L98,8 L104,20 L140,20 L200,20"
+        fill="none"
+        stroke="#3EDBA5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.5"
+      />
+    </svg>
+  </div>
+</div>
+`;
