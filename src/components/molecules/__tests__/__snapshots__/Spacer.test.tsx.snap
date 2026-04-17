@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Spacer > matches snapshot 1`] = `
+<div
+  aria-hidden="true"
+  class="css-view-g5y9jx"
+  data-testid="sp"
+  style="height: 24px;"
+/>
+`;

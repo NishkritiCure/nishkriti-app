@@ -1,0 +1,59 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`BannerAlert > matches light + dark snapshots per variant > dark 1`] = `
+<div
+  aria-label="success: Snap. snap"
+  class="css-view-g5y9jx"
+  role="alert"
+  style="flex-direction: row; align-items: flex-start; gap: 12px; padding: 16px; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; background-color: rgba(62, 219, 165, 0.08); border-top-color: rgba(62, 219, 165, 0.22); border-right-color: rgba(62, 219, 165, 0.22); border-bottom-color: rgba(62, 219, 165, 0.22); border-left-color: rgba(62, 219, 165, 0.22);"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="flex: 1 1 0%; gap: 4px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(62, 219, 165); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;"
+    >
+      Snap
+    </div>
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(138, 170, 152); font-family: DMSans_400Regular; font-size: 14px; line-height: 22px; font-weight: 400; letter-spacing: 0px;"
+    >
+      snap
+    </div>
+  </div>
+</div>
+`;
+
+exports[`BannerAlert > matches light + dark snapshots per variant > light 1`] = `
+<div
+  aria-label="success: Snap. snap"
+  class="css-view-g5y9jx"
+  role="alert"
+  style="flex-direction: row; align-items: flex-start; gap: 12px; padding: 16px; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; background-color: rgba(62, 219, 165, 0.08); border-top-color: rgba(62, 219, 165, 0.22); border-right-color: rgba(62, 219, 165, 0.22); border-bottom-color: rgba(62, 219, 165, 0.22); border-left-color: rgba(62, 219, 165, 0.22);"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="flex: 1 1 0%; gap: 4px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(62, 219, 165); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;"
+    >
+      Snap
+    </div>
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(138, 170, 152); font-family: DMSans_400Regular; font-size: 14px; line-height: 22px; font-weight: 400; letter-spacing: 0px;"
+    >
+      snap
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,47 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`FieldRow > matches light + dark snapshots > dark 1`] = `
+<div
+  aria-label="Snap: 1"
+  class="css-view-g5y9jx"
+  style="flex-direction: row; justify-content: space-between; align-items: center; padding-top: 12px; padding-bottom: 12px; gap: 12px; min-height: 44px;"
+>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;"
+  >
+    Snap
+  </div>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(221, 232, 226); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px;"
+  >
+    1
+  </div>
+</div>
+`;
+
+exports[`FieldRow > matches light + dark snapshots > light 1`] = `
+<div
+  aria-label="Snap: 1"
+  class="css-view-g5y9jx"
+  style="flex-direction: row; justify-content: space-between; align-items: center; padding-top: 12px; padding-bottom: 12px; gap: 12px; min-height: 44px;"
+>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;"
+  >
+    Snap
+  </div>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(221, 232, 226); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px;"
+  >
+    1
+  </div>
+</div>
+`;

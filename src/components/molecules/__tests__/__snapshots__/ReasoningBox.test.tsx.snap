@@ -1,0 +1,65 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ReasoningBox > matches light + dark snapshots > dark 1`] = `
+<div
+  aria-label="Snap"
+  class="css-view-g5y9jx"
+  style="flex-direction: row; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; overflow-x: hidden; overflow-y: hidden; min-height: 48px; background-color: rgba(27, 107, 84, 0.18);"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="width: 4px; background-color: rgba(62, 219, 165, 0.22);"
+  />
+  <div
+    class="css-view-g5y9jx"
+    style="flex: 1 1 0%; padding: 16px; gap: 4px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(138, 170, 152); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; text-transform: uppercase; letter-spacing: 2px;"
+    >
+      Snap
+    </div>
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(221, 232, 226); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px;"
+    >
+      body
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ReasoningBox > matches light + dark snapshots > light 1`] = `
+<div
+  aria-label="Snap"
+  class="css-view-g5y9jx"
+  style="flex-direction: row; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; overflow-x: hidden; overflow-y: hidden; min-height: 48px; background-color: rgba(27, 107, 84, 0.18);"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="width: 4px; background-color: rgba(62, 219, 165, 0.22);"
+  />
+  <div
+    class="css-view-g5y9jx"
+    style="flex: 1 1 0%; padding: 16px; gap: 4px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(138, 170, 152); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; text-transform: uppercase; letter-spacing: 2px;"
+    >
+      Snap
+    </div>
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(221, 232, 226); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px;"
+    >
+      body
+    </div>
+  </div>
+</div>
+`;

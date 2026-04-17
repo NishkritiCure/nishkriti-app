@@ -6,13 +6,13 @@ export type CardElevation = 'flat' | 'raised' | 'elevated'
 export type CardSurface = 'card' | 'card2' | 'card3'
 
 export interface CardProps extends ViewProps {
-  readonly surface?: CardSurface
-  readonly elevation?: CardElevation
-  readonly padding?: number
+  readonly surface?: CardSurface | undefined
+  readonly elevation?: CardElevation | undefined
+  readonly padding?: number | undefined
   readonly onPress?: PressableProps['onPress']
-  readonly accessibilityLabel?: string
-  readonly accessibilityHint?: string
-  readonly testID?: string
+  readonly accessibilityLabel?: string | undefined
+  readonly accessibilityHint?: string | undefined
+  readonly testID?: string | undefined
 }
 
 export function Card({

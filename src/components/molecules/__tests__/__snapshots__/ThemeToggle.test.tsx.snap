@@ -1,0 +1,56 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ThemeToggle > matches snapshot 1`] = `
+<div
+  aria-label="Appearance"
+  class="css-view-g5y9jx"
+  role="radiogroup"
+  style="flex-direction: row; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; align-self: flex-start; padding: 2px; border-top-color: rgba(62, 219, 165, 0.09); border-right-color: rgba(62, 219, 165, 0.09); border-bottom-color: rgba(62, 219, 165, 0.09); border-left-color: rgba(62, 219, 165, 0.09);"
+>
+  <div
+    aria-label="Light"
+    class="css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73"
+    role="radio"
+    style="min-height: 40px; min-width: 64px; padding-right: 12px; padding-left: 12px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0);"
+    tabindex="0"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(138, 170, 152); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;"
+    >
+      Light
+    </div>
+  </div>
+  <div
+    aria-label="Auto"
+    class="css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73"
+    role="radio"
+    style="min-height: 40px; min-width: 64px; padding-right: 12px; padding-left: 12px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0);"
+    tabindex="0"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(138, 170, 152); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;"
+    >
+      Auto
+    </div>
+  </div>
+  <div
+    aria-label="Dark"
+    class="css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73"
+    role="radio"
+    style="min-height: 40px; min-width: 64px; padding-right: 12px; padding-left: 12px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; align-items: center; justify-content: center; background-color: rgb(27, 107, 84);"
+    tabindex="0"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(221, 232, 226); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;"
+    >
+      Dark
+    </div>
+  </div>
+</div>
+`;

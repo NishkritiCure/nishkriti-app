@@ -1,0 +1,139 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`WizardStepper > matches light + dark snapshots > dark 1`] = `
+<div
+  aria-label="Step 1 of 3"
+  class="css-view-g5y9jx"
+  role="progressbar"
+  style="flex-direction: row; align-items: center; gap: 4px;"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; align-items: center; gap: 4px;"
+  >
+    <div
+      class="css-view-g5y9jx"
+      style="width: 28px; height: 28px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; align-items: center; justify-content: center; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; background-color: rgb(62, 219, 165); border-top-color: rgb(62, 219, 165); border-right-color: rgb(62, 219, 165); border-bottom-color: rgb(62, 219, 165); border-left-color: rgb(62, 219, 165);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(221, 232, 226); font-family: DMMono_400Regular; font-size: 10px; line-height: 14px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase;"
+      >
+        1
+      </div>
+    </div>
+    <div
+      class="css-view-g5y9jx"
+      style="width: 20px; height: 2px; background-color: rgba(62, 219, 165, 0.09);"
+    />
+  </div>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; align-items: center; gap: 4px;"
+  >
+    <div
+      class="css-view-g5y9jx"
+      style="width: 28px; height: 28px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; align-items: center; justify-content: center; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; background-color: rgba(62, 219, 165, 0.18); border-top-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); border-left-color: rgba(0, 0, 0, 0);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(221, 232, 226); font-family: DMMono_400Regular; font-size: 10px; line-height: 14px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase;"
+      >
+        2
+      </div>
+    </div>
+    <div
+      class="css-view-g5y9jx"
+      style="width: 20px; height: 2px; background-color: rgba(62, 219, 165, 0.09);"
+    />
+  </div>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; align-items: center; gap: 4px;"
+  >
+    <div
+      class="css-view-g5y9jx"
+      style="width: 28px; height: 28px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; align-items: center; justify-content: center; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; background-color: rgba(62, 219, 165, 0.18); border-top-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); border-left-color: rgba(0, 0, 0, 0);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(221, 232, 226); font-family: DMMono_400Regular; font-size: 10px; line-height: 14px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase;"
+      >
+        3
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`WizardStepper > matches light + dark snapshots > light 1`] = `
+<div
+  aria-label="Step 1 of 3"
+  class="css-view-g5y9jx"
+  role="progressbar"
+  style="flex-direction: row; align-items: center; gap: 4px;"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; align-items: center; gap: 4px;"
+  >
+    <div
+      class="css-view-g5y9jx"
+      style="width: 28px; height: 28px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; align-items: center; justify-content: center; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; background-color: rgb(62, 219, 165); border-top-color: rgb(62, 219, 165); border-right-color: rgb(62, 219, 165); border-bottom-color: rgb(62, 219, 165); border-left-color: rgb(62, 219, 165);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(221, 232, 226); font-family: DMMono_400Regular; font-size: 10px; line-height: 14px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase;"
+      >
+        1
+      </div>
+    </div>
+    <div
+      class="css-view-g5y9jx"
+      style="width: 20px; height: 2px; background-color: rgba(62, 219, 165, 0.09);"
+    />
+  </div>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; align-items: center; gap: 4px;"
+  >
+    <div
+      class="css-view-g5y9jx"
+      style="width: 28px; height: 28px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; align-items: center; justify-content: center; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; background-color: rgba(62, 219, 165, 0.18); border-top-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); border-left-color: rgba(0, 0, 0, 0);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(221, 232, 226); font-family: DMMono_400Regular; font-size: 10px; line-height: 14px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase;"
+      >
+        2
+      </div>
+    </div>
+    <div
+      class="css-view-g5y9jx"
+      style="width: 20px; height: 2px; background-color: rgba(62, 219, 165, 0.09);"
+    />
+  </div>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; align-items: center; gap: 4px;"
+  >
+    <div
+      class="css-view-g5y9jx"
+      style="width: 28px; height: 28px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; align-items: center; justify-content: center; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; background-color: rgba(62, 219, 165, 0.18); border-top-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); border-left-color: rgba(0, 0, 0, 0);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(221, 232, 226); font-family: DMMono_400Regular; font-size: 10px; line-height: 14px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase;"
+      >
+        3
+      </div>
+    </div>
+  </div>
+</div>
+`;

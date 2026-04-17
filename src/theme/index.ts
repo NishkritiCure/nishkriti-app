@@ -12,6 +12,9 @@ export { radius, type RadiusKey } from './radius'
 export { shadows, type ShadowKey } from './shadows'
 export { motion, type DurationKey, type EasingKey } from './motion'
 export { ThemeProvider, useTheme, type Theme } from './ThemeContext'
+// Re-export ThemeMode so components can reference the union without
+// crossing the component → store barrier.
+export { type ThemeMode } from '@/stores/useThemeStore'
 export { createStyles, type NamedStyles } from './createStyles'
 export {
   LOGO_GRADIENT,
