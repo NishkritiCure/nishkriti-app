@@ -1,4 +1,5 @@
 import { env } from '@/config/env'
+import type { EngineErrorCode } from '@/engine/types'
 
 export class NishkritiError extends Error {
   constructor(
@@ -50,8 +51,11 @@ export class RLSError extends NishkritiError {
 }
 
 export class EngineError extends NishkritiError {
-  constructor(message: string) {
-    super(message, 'ENGINE')
+  constructor(
+    message: string,
+    public readonly engineCode: EngineErrorCode
+  ) {
+    super(message, engineCode)
     this.name = 'EngineError'
   }
 }
