@@ -63,9 +63,13 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm expo export --platform all --output-dir .build-check
         env:
-          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
-          EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
-          EXPO_PUBLIC_API_BASE_URL: ${{ secrets.EXPO_PUBLIC_API_BASE_URL }}
+          # Values only need to resolve app.config.ts for the export bundle.
+          # Real values come from EAS secrets at production build time, not CI.
+          # Falling back to placeholders keeps PR CI green without requiring
+          # repo-level secrets to be configured on every fork/branch.
+          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL || 'https://ci-placeholder.supabase.co' }}
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'ci_placeholder_anon_key' }}
+          EXPO_PUBLIC_API_BASE_URL: ${{ secrets.EXPO_PUBLIC_API_BASE_URL || 'https://ci-placeholder.nishkriti.local' }}
 
   maestro:
     runs-on: macos-14
