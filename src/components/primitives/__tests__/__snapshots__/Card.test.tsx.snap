@@ -1,0 +1,33 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Card > matches light + dark snapshots > dark 1`] = `
+<div
+  aria-label="snap"
+  class="css-view-g5y9jx"
+  style="border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; padding: 16px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-color: rgba(62, 219, 165, 0.09); border-right-color: rgba(62, 219, 165, 0.09); border-bottom-color: rgba(62, 219, 165, 0.09); border-left-color: rgba(62, 219, 165, 0.09); background-color: rgb(23, 40, 32);"
+>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(221, 232, 226); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px;"
+  >
+    Snap
+  </div>
+</div>
+`;
+
+exports[`Card > matches light + dark snapshots > light 1`] = `
+<div
+  aria-label="snap"
+  class="css-view-g5y9jx"
+  style="border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; padding: 16px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-color: rgba(62, 219, 165, 0.09); border-right-color: rgba(62, 219, 165, 0.09); border-bottom-color: rgba(62, 219, 165, 0.09); border-left-color: rgba(62, 219, 165, 0.09); background-color: rgb(23, 40, 32);"
+>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(221, 232, 226); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px;"
+  >
+    Snap
+  </div>
+</div>
+`;

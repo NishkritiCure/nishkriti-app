@@ -1,0 +1,55 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Checkbox > matches light + dark snapshots > dark 1`] = `
+<div
+  aria-label="Snap"
+  class="css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73"
+  role="checkbox"
+  style="flex-direction: row; align-items: center; gap: 12px; min-height: 44px;"
+  tabindex="0"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="width: 22px; height: 22px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; align-items: center; justify-content: center; background-color: rgb(62, 219, 165); border-top-color: rgb(62, 219, 165); border-right-color: rgb(62, 219, 165); border-bottom-color: rgb(62, 219, 165); border-left-color: rgb(62, 219, 165);"
+  >
+    <div
+      class="css-view-g5y9jx"
+      style="width: 12px; height: 6px; border-left-width: 2px; border-bottom-width: 2px; border-top-color: rgb(7, 15, 12); border-right-color: rgb(7, 15, 12); border-bottom-color: rgb(7, 15, 12); border-left-color: rgb(7, 15, 12); transform: rotate(-45deg); margin-top: -2px;"
+    />
+  </div>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(221, 232, 226); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px; flex: 1 1 0%;"
+  >
+    Snap
+  </div>
+</div>
+`;
+
+exports[`Checkbox > matches light + dark snapshots > light 1`] = `
+<div
+  aria-label="Snap"
+  class="css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73"
+  role="checkbox"
+  style="flex-direction: row; align-items: center; gap: 12px; min-height: 44px;"
+  tabindex="0"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="width: 22px; height: 22px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; align-items: center; justify-content: center; background-color: rgb(62, 219, 165); border-top-color: rgb(62, 219, 165); border-right-color: rgb(62, 219, 165); border-bottom-color: rgb(62, 219, 165); border-left-color: rgb(62, 219, 165);"
+  >
+    <div
+      class="css-view-g5y9jx"
+      style="width: 12px; height: 6px; border-left-width: 2px; border-bottom-width: 2px; border-top-color: rgb(7, 15, 12); border-right-color: rgb(7, 15, 12); border-bottom-color: rgb(7, 15, 12); border-left-color: rgb(7, 15, 12); transform: rotate(-45deg); margin-top: -2px;"
+    />
+  </div>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(221, 232, 226); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px; flex: 1 1 0%;"
+  >
+    Snap
+  </div>
+</div>
+`;

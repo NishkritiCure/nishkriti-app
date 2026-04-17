@@ -1,0 +1,49 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Button > matches light + dark snapshots > dark 1`] = `
+<button
+  aria-label="Snap"
+  class="css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73"
+  role="button"
+  style="border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; padding-right: 20px; padding-left: 20px; align-items: center; justify-content: center; height: 48px; background-color: rgb(62, 219, 165); border-top-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); border-left-color: rgba(0, 0, 0, 0); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; opacity: 1; align-self: flex-start;"
+  tabindex="0"
+  type="button"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; align-items: center; gap: 8px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(7, 15, 12); line-height: 26px; font-family: DMSans_600SemiBold; font-weight: 600; letter-spacing: 0.3px; font-size: 16px;"
+    >
+      Snap
+    </div>
+  </div>
+</button>
+`;
+
+exports[`Button > matches light + dark snapshots > light 1`] = `
+<button
+  aria-label="Snap"
+  class="css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73"
+  role="button"
+  style="border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; padding-right: 20px; padding-left: 20px; align-items: center; justify-content: center; height: 48px; background-color: rgb(62, 219, 165); border-top-color: rgba(0, 0, 0, 0); border-right-color: rgba(0, 0, 0, 0); border-bottom-color: rgba(0, 0, 0, 0); border-left-color: rgba(0, 0, 0, 0); border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; opacity: 1; align-self: flex-start;"
+  tabindex="0"
+  type="button"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; align-items: center; gap: 8px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(7, 15, 12); line-height: 26px; font-family: DMSans_600SemiBold; font-weight: 600; letter-spacing: 0.3px; font-size: 16px;"
+    >
+      Snap
+    </div>
+  </div>
+</button>
+`;

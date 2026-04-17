@@ -1,0 +1,33 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`PriorityBadge > matches light + dark snapshots per level > dark-medium 1`] = `
+<div
+  aria-label="Priority: Medium"
+  class="css-view-g5y9jx"
+  style="flex-direction: row; align-items: center; gap: 4px; padding: 4px 8px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; align-self: flex-start; background-color: rgba(74, 144, 184, 0.15); border-top-color: rgba(74, 144, 184, 0.22); border-right-color: rgba(74, 144, 184, 0.22); border-bottom-color: rgba(74, 144, 184, 0.22); border-left-color: rgba(74, 144, 184, 0.22);"
+>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(86, 155, 192); font-family: DMMono_400Regular; font-size: 10px; line-height: 14px; font-weight: 400; text-transform: uppercase; letter-spacing: 0.8px;"
+  >
+    Medium
+  </div>
+</div>
+`;
+
+exports[`PriorityBadge > matches light + dark snapshots per level > light-medium 1`] = `
+<div
+  aria-label="Priority: Medium"
+  class="css-view-g5y9jx"
+  style="flex-direction: row; align-items: center; gap: 4px; padding: 4px 8px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; align-self: flex-start; background-color: rgba(74, 144, 184, 0.15); border-top-color: rgba(74, 144, 184, 0.22); border-right-color: rgba(74, 144, 184, 0.22); border-bottom-color: rgba(74, 144, 184, 0.22); border-left-color: rgba(74, 144, 184, 0.22);"
+>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(86, 155, 192); font-family: DMMono_400Regular; font-size: 10px; line-height: 14px; font-weight: 400; text-transform: uppercase; letter-spacing: 0.8px;"
+  >
+    Medium
+  </div>
+</div>
+`;
