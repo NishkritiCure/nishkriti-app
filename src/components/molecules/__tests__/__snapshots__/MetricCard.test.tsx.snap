@@ -1,0 +1,81 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`MetricCard > matches light + dark snapshots > dark 1`] = `
+<div
+  aria-label="Snap: 100 x"
+  class="css-view-g5y9jx"
+  style="border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; padding: 16px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-color: rgba(62, 219, 165, 0.09); border-right-color: rgba(62, 219, 165, 0.09); border-bottom-color: rgba(62, 219, 165, 0.09); border-left-color: rgba(62, 219, 165, 0.09); background-color: rgb(23, 40, 32);"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="gap: 4px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;"
+    >
+      Snap
+    </div>
+    <div
+      class="css-view-g5y9jx"
+      style="flex-direction: row; align-items: baseline; gap: 4px;"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(232, 184, 75); font-family: Lora_400Regular_Italic; font-size: 30px; line-height: 38px; font-weight: 400; letter-spacing: 0px;"
+      >
+        100
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(138, 170, 152); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px;"
+      >
+        x
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MetricCard > matches light + dark snapshots > light 1`] = `
+<div
+  aria-label="Snap: 100 x"
+  class="css-view-g5y9jx"
+  style="border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; padding: 16px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-color: rgba(62, 219, 165, 0.09); border-right-color: rgba(62, 219, 165, 0.09); border-bottom-color: rgba(62, 219, 165, 0.09); border-left-color: rgba(62, 219, 165, 0.09); background-color: rgb(23, 40, 32);"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="gap: 4px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;"
+    >
+      Snap
+    </div>
+    <div
+      class="css-view-g5y9jx"
+      style="flex-direction: row; align-items: baseline; gap: 4px;"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(232, 184, 75); font-family: Lora_400Regular_Italic; font-size: 30px; line-height: 38px; font-weight: 400; letter-spacing: 0px;"
+      >
+        100
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(138, 170, 152); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px;"
+      >
+        x
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,49 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ErrorState > matches light + dark snapshots > dark 1`] = `
+<div
+  aria-label="Snap. Please try again in a moment."
+  class="css-view-g5y9jx"
+  role="alert"
+  style="align-items: center; justify-content: center; gap: 12px; padding: 32px;"
+>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(217, 123, 114); font-family: Lora_500Medium; font-size: 20px; line-height: 28px; font-weight: 500; letter-spacing: 0px; text-align: center;"
+  >
+    Snap
+  </div>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(138, 170, 152); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px; text-align: center;"
+  >
+    Please try again in a moment.
+  </div>
+</div>
+`;
+
+exports[`ErrorState > matches light + dark snapshots > light 1`] = `
+<div
+  aria-label="Snap. Please try again in a moment."
+  class="css-view-g5y9jx"
+  role="alert"
+  style="align-items: center; justify-content: center; gap: 12px; padding: 32px;"
+>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(217, 123, 114); font-family: Lora_500Medium; font-size: 20px; line-height: 28px; font-weight: 500; letter-spacing: 0px; text-align: center;"
+  >
+    Snap
+  </div>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(138, 170, 152); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px; text-align: center;"
+  >
+    Please try again in a moment.
+  </div>
+</div>
+`;

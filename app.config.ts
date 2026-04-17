@@ -54,13 +54,26 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   web: {
     favicon: './assets/favicon.png',
   },
+  // Note: `expo-font` is intentionally NOT a config plugin here — we load
+  // fonts at runtime via @expo-google-fonts/* + useFonts() in src/entry.
+  // Adding it as a plugin without a `fonts` array triggers a manifest-time
+  // TypeError ("path argument must be of type string").
   plugins: ['expo-secure-store', 'expo-notifications', 'expo-image-picker', 'expo-document-picker'],
   extra: {
     supabaseUrl: requireEnv('EXPO_PUBLIC_SUPABASE_URL'),
     supabaseAnonKey: requireEnv('EXPO_PUBLIC_SUPABASE_ANON_KEY'),
     apiBaseUrl: requireEnv('EXPO_PUBLIC_API_BASE_URL'),
-    sentryDsn: process.env.EXPO_PUBLIC_SENTRY_DSN ?? null,
     appVersion: process.env.APP_VERSION ?? '0.1.0',
-    eas: { projectId: process.env.EAS_PROJECT_ID ?? null },
+    // Expo's config schema normalises `null` on object-typed fields
+    // (`extra.eas`, `extra.sentryDsn`) into `{}`. When Expo Go on the
+    // simulator then tries to `path.resolve()` one of those empties, the
+    // manifest load blows up with `"path" argument must be of type string.
+    // Received an instance of Object`. Emit `undefined` via conditional
+    // spread so the keys drop out of the JSON entirely when env vars are
+    // unset.
+    ...(process.env.EXPO_PUBLIC_SENTRY_DSN
+      ? { sentryDsn: process.env.EXPO_PUBLIC_SENTRY_DSN }
+      : {}),
+    ...(process.env.EAS_PROJECT_ID ? { eas: { projectId: process.env.EAS_PROJECT_ID } } : {}),
   },
 })

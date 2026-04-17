@@ -1,0 +1,133 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`MessageBubble > matches received snapshot > received-dark 1`] = `
+<div
+  aria-label="Received: hello. now."
+  class="css-view-g5y9jx"
+  style="max-width: 85%; gap: 4px; align-self: flex-start;"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; padding: 8px 12px; min-height: 44px; justify-content: center; background-color: rgb(23, 40, 32); border-top-color: rgba(62, 219, 165, 0.09); border-right-color: rgba(62, 219, 165, 0.09); border-bottom-color: rgba(62, 219, 165, 0.09); border-left-color: rgba(62, 219, 165, 0.09);"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(221, 232, 226); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px;"
+    >
+      hello
+    </div>
+  </div>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; gap: 8px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 10px; line-height: 14px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase;"
+    >
+      now
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MessageBubble > matches received snapshot > received-light 1`] = `
+<div
+  aria-label="Received: hello. now."
+  class="css-view-g5y9jx"
+  style="max-width: 85%; gap: 4px; align-self: flex-start;"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; padding: 8px 12px; min-height: 44px; justify-content: center; background-color: rgb(23, 40, 32); border-top-color: rgba(62, 219, 165, 0.09); border-right-color: rgba(62, 219, 165, 0.09); border-bottom-color: rgba(62, 219, 165, 0.09); border-left-color: rgba(62, 219, 165, 0.09);"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(221, 232, 226); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px;"
+    >
+      hello
+    </div>
+  </div>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; gap: 8px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 10px; line-height: 14px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase;"
+    >
+      now
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MessageBubble > matches sent + received snapshots > sent-dark 1`] = `
+<div
+  aria-label="Sent: Snap. now."
+  class="css-view-g5y9jx"
+  style="max-width: 85%; gap: 4px; align-self: flex-end;"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; padding: 8px 12px; min-height: 44px; justify-content: center; background-color: rgba(62, 219, 165, 0.1); border-top-color: rgba(62, 219, 165, 0.22); border-right-color: rgba(62, 219, 165, 0.22); border-bottom-color: rgba(62, 219, 165, 0.22); border-left-color: rgba(62, 219, 165, 0.22);"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(221, 232, 226); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px;"
+    >
+      Snap
+    </div>
+  </div>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; gap: 8px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 10px; line-height: 14px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase;"
+    >
+      now
+    </div>
+  </div>
+</div>
+`;
+
+exports[`MessageBubble > matches sent + received snapshots > sent-light 1`] = `
+<div
+  aria-label="Sent: Snap. now."
+  class="css-view-g5y9jx"
+  style="max-width: 85%; gap: 4px; align-self: flex-end;"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="border-top-left-radius: 18px; border-top-right-radius: 18px; border-bottom-right-radius: 18px; border-bottom-left-radius: 18px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; padding: 8px 12px; min-height: 44px; justify-content: center; background-color: rgba(62, 219, 165, 0.1); border-top-color: rgba(62, 219, 165, 0.22); border-right-color: rgba(62, 219, 165, 0.22); border-bottom-color: rgba(62, 219, 165, 0.22); border-left-color: rgba(62, 219, 165, 0.22);"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(221, 232, 226); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px;"
+    >
+      Snap
+    </div>
+  </div>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; gap: 8px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 10px; line-height: 14px; font-weight: 400; letter-spacing: 2px; text-transform: uppercase;"
+    >
+      now
+    </div>
+  </div>
+</div>
+`;

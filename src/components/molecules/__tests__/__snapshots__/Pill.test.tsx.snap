@@ -1,0 +1,33 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Pill > matches light + dark snapshots > dark 1`] = `
+<div
+  aria-label="SNAP"
+  class="css-view-g5y9jx"
+  style="flex-direction: row; align-items: center; justify-content: center; padding-right: 12px; padding-left: 12px; min-height: 44px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; align-self: flex-start; background-color: rgba(232, 184, 75, 0.1); border-top-color: rgba(232, 184, 75, 0.22); border-right-color: rgba(232, 184, 75, 0.22); border-bottom-color: rgba(232, 184, 75, 0.22); border-left-color: rgba(232, 184, 75, 0.22);"
+>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(232, 184, 75); font-family: DMMono_400Regular; font-size: 10px; line-height: 14px; font-weight: 400; text-transform: uppercase; letter-spacing: 0.8px;"
+  >
+    SNAP
+  </div>
+</div>
+`;
+
+exports[`Pill > matches light + dark snapshots > light 1`] = `
+<div
+  aria-label="SNAP"
+  class="css-view-g5y9jx"
+  style="flex-direction: row; align-items: center; justify-content: center; padding-right: 12px; padding-left: 12px; min-height: 44px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; align-self: flex-start; background-color: rgba(232, 184, 75, 0.1); border-top-color: rgba(232, 184, 75, 0.22); border-right-color: rgba(232, 184, 75, 0.22); border-bottom-color: rgba(232, 184, 75, 0.22); border-left-color: rgba(232, 184, 75, 0.22);"
+>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(232, 184, 75); font-family: DMMono_400Regular; font-size: 10px; line-height: 14px; font-weight: 400; text-transform: uppercase; letter-spacing: 0.8px;"
+  >
+    SNAP
+  </div>
+</div>
+`;

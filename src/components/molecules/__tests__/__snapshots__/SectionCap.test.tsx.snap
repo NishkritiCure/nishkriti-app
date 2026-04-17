@@ -1,0 +1,51 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SectionCap > matches light + dark snapshots > dark 1`] = `
+<h1
+  aria-label="Snap"
+  class="css-view-g5y9jx"
+  role="heading"
+  style="flex-direction: row; align-items: center; gap: 12px; padding-top: 8px; padding-bottom: 8px;"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="flex: 1 1 0%; height: 1px; background-color: rgba(62, 219, 165, 0.18);"
+  />
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; text-transform: uppercase; letter-spacing: 3px;"
+  >
+    Snap
+  </div>
+  <div
+    class="css-view-g5y9jx"
+    style="flex: 1 1 0%; height: 1px; background-color: rgba(62, 219, 165, 0.18);"
+  />
+</h1>
+`;
+
+exports[`SectionCap > matches light + dark snapshots > light 1`] = `
+<h1
+  aria-label="Snap"
+  class="css-view-g5y9jx"
+  role="heading"
+  style="flex-direction: row; align-items: center; gap: 12px; padding-top: 8px; padding-bottom: 8px;"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="flex: 1 1 0%; height: 1px; background-color: rgba(62, 219, 165, 0.18);"
+  />
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; text-transform: uppercase; letter-spacing: 3px;"
+  >
+    Snap
+  </div>
+  <div
+    class="css-view-g5y9jx"
+    style="flex: 1 1 0%; height: 1px; background-color: rgba(62, 219, 165, 0.18);"
+  />
+</h1>
+`;

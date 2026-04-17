@@ -1,0 +1,19 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Skeleton > matches light + dark snapshots > dark 1`] = `
+<div
+  aria-label="Loading"
+  class="css-view-g5y9jx"
+  role="progressbar"
+  style="background-color: rgb(29, 53, 48); width: 120px; height: 20px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 0.4;"
+/>
+`;
+
+exports[`Skeleton > matches light + dark snapshots > light 1`] = `
+<div
+  aria-label="Loading"
+  class="css-view-g5y9jx"
+  role="progressbar"
+  style="background-color: rgb(29, 53, 48); width: 120px; height: 20px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 0.4;"
+/>
+`;

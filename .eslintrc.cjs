@@ -1,4 +1,52 @@
 /** @type {import('eslint').Linter.Config} */
+const SUPABASE_JS_BAN = {
+  name: '@supabase/supabase-js',
+  message:
+    'Import the configured client from @/services/supabase. Direct imports outside the service layer are forbidden.',
+}
+
+const FETCH_BAN = {
+  selector: "CallExpression[callee.name='fetch']",
+  message: 'Use @/services/apiClient instead of direct fetch outside src/services/apiClient.ts.',
+}
+
+const SERVICE_ROLE_BAN = {
+  selector: 'Literal[value=/SUPABASE_SERVICE_ROLE/i]',
+  message: 'SUPABASE_SERVICE_ROLE must never appear in the app repo. Backend-only.',
+}
+
+// Matches 3-, 4-, 6-, or 8-digit hex colour literals. Components must
+// go through useTheme() and palette tokens — see EB-C §4.1 + §7.
+const COLOR_LITERAL_BAN = {
+  selector: 'Literal[value=/^#[0-9a-fA-F]{3}([0-9a-fA-F]([0-9a-fA-F]{2}([0-9a-fA-F]{2})?)?)?$/]',
+  message:
+    'Hex colour literals live in src/theme/colors.ts. Use useTheme() and reference palette tokens (theme.palette.*).',
+}
+
+const COMPONENT_LAYER_BANS = {
+  patterns: [
+    {
+      group: ['@/engine', '@/engine/*'],
+      message:
+        'Components are pure views — they receive hydrated shapes via props. Engine types are wire shapes. See EB-C §4.2 "What NOT to do".',
+    },
+    {
+      group: ['@/services', '@/services/*'],
+      message: 'Components are pure views — no service-layer imports. Data arrives through props.',
+    },
+    {
+      group: ['@/queries', '@/queries/*'],
+      message:
+        'Components are pure views — no TanStack Query hooks. Screens own data fetching and pass props.',
+    },
+    {
+      group: ['@/stores', '@/stores/*'],
+      message:
+        'Components are pure views — no Zustand store reads. Pass state through props from the composing screen.',
+    },
+  ],
+}
+
 module.exports = {
   root: true,
   env: {
@@ -30,31 +78,14 @@ module.exports = {
     ],
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
-    'no-console': ['warn', { allow: ['warn', 'error'] }],
-    'no-restricted-imports': [
-      'error',
-      {
-        paths: [
-          {
-            name: '@supabase/supabase-js',
-            message:
-              'Import the configured client from @/services/supabase. Direct imports outside the service layer are forbidden.',
-          },
-        ],
-      },
-    ],
-    'no-restricted-syntax': [
-      'error',
-      {
-        selector: "CallExpression[callee.name='fetch']",
-        message:
-          'Use @/services/apiClient instead of direct fetch outside src/services/apiClient.ts.',
-      },
-      {
-        selector: 'Literal[value=/SUPABASE_SERVICE_ROLE/i]',
-        message: 'SUPABASE_SERVICE_ROLE must never appear in the app repo. Backend-only.',
-      },
-    ],
+    // Medical-app invariant: no console output from app code. PHI can
+    // land in props at runtime; any `console.*` call in a render path
+    // would leak it to Logcat on Android. Services that need structured
+    // logging go through `@/services/errorService.ts` — that file gets
+    // the narrow override below. (Security review PR #3 tightening.)
+    'no-console': 'error',
+    'no-restricted-imports': ['error', { paths: [SUPABASE_JS_BAN] }],
+    'no-restricted-syntax': ['error', FETCH_BAN, SERVICE_ROLE_BAN, COLOR_LITERAL_BAN],
   },
   overrides: [
     {
@@ -76,13 +107,7 @@ module.exports = {
     {
       files: ['src/services/apiClient.ts'],
       rules: {
-        'no-restricted-syntax': [
-          'error',
-          {
-            selector: 'Literal[value=/SUPABASE_SERVICE_ROLE/i]',
-            message: 'SUPABASE_SERVICE_ROLE must never appear in the app repo. Backend-only.',
-          },
-        ],
+        'no-restricted-syntax': ['error', SERVICE_ROLE_BAN, COLOR_LITERAL_BAN],
       },
     },
     {
@@ -99,12 +124,46 @@ module.exports = {
                 name: '@react-native-async-storage/async-storage',
                 message: 'Auth state must live in expo-secure-store, not AsyncStorage.',
               },
-              {
-                name: '@supabase/supabase-js',
-                message:
-                  'Import the configured client from @/services/supabase. Direct imports outside the service layer are forbidden.',
-              },
+              SUPABASE_JS_BAN,
             ],
+          },
+        ],
+      },
+    },
+    {
+      // errorService is the structured-logging entry point; phase-g wires
+      // Sentry here and removes these console calls. Intentional exception.
+      files: ['src/services/errorService.ts'],
+      rules: {
+        'no-console': 'off',
+      },
+    },
+    {
+      // src/theme/** is the canonical home for hex colour literals.
+      // Keep the fetch + service-role bans; drop the colour-literal ban.
+      files: ['src/theme/**/*.{ts,tsx}'],
+      rules: {
+        'no-restricted-syntax': ['error', FETCH_BAN, SERVICE_ROLE_BAN],
+      },
+    },
+    {
+      // Test files need literal colours for assertions and fixture setup.
+      files: ['**/__tests__/**/*.{ts,tsx}', '**/*.test.{ts,tsx}'],
+      rules: {
+        'no-restricted-syntax': ['error', FETCH_BAN, SERVICE_ROLE_BAN],
+      },
+    },
+    {
+      // Components are pure view elements. No engine, service, query, or
+      // store imports — data arrives through props. Enforced by EB-C §4.2.
+      files: ['src/components/**/*.{ts,tsx}'],
+      excludedFiles: ['src/components/**/__tests__/**', 'src/components/**/*.test.{ts,tsx}'],
+      rules: {
+        'no-restricted-imports': [
+          'error',
+          {
+            paths: [SUPABASE_JS_BAN],
+            patterns: COMPONENT_LAYER_BANS.patterns,
           },
         ],
       },

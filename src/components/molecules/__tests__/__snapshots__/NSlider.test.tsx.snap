@@ -1,0 +1,87 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`NSlider > matches light + dark snapshots > dark 1`] = `
+<div
+  aria-label="snap"
+  class="css-view-g5y9jx"
+  role="slider"
+  style="gap: 8px;"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; justify-content: space-between; align-items: baseline; gap: 8px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;"
+    >
+      snap
+    </div>
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(168, 245, 213); font-family: Lora_500Medium; font-size: 20px; line-height: 28px; font-weight: 500; letter-spacing: 0px;"
+    >
+      5
+    </div>
+  </div>
+  <div
+    class="css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73"
+    style="height: 44px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; justify-content: center; overflow-x: hidden; overflow-y: hidden; background-color: rgb(29, 53, 48); border-top-color: rgba(62, 219, 165, 0.09); border-right-color: rgba(62, 219, 165, 0.09); border-bottom-color: rgba(62, 219, 165, 0.09); border-left-color: rgba(62, 219, 165, 0.09);"
+    tabindex="0"
+  >
+    <div
+      class="css-view-g5y9jx"
+      style="position: absolute; left: 0px; top: 0px; bottom: 0px; width: 0%; background-color: rgb(62, 219, 165);"
+    />
+    <div
+      class="css-view-g5y9jx"
+      style="position: absolute; width: 28px; height: 28px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; margin-left: -14px; top: 8px; left: 0%; background-color: rgb(62, 219, 165); border-top-color: rgb(7, 15, 12); border-right-color: rgb(7, 15, 12); border-bottom-color: rgb(7, 15, 12); border-left-color: rgb(7, 15, 12);"
+    />
+  </div>
+</div>
+`;
+
+exports[`NSlider > matches light + dark snapshots > light 1`] = `
+<div
+  aria-label="snap"
+  class="css-view-g5y9jx"
+  role="slider"
+  style="gap: 8px;"
+>
+  <div
+    class="css-view-g5y9jx"
+    style="flex-direction: row; justify-content: space-between; align-items: baseline; gap: 8px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(122, 153, 137); font-family: DMMono_400Regular; font-size: 12px; line-height: 18px; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase;"
+    >
+      snap
+    </div>
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+      style="color: rgb(168, 245, 213); font-family: Lora_500Medium; font-size: 20px; line-height: 28px; font-weight: 500; letter-spacing: 0px;"
+    >
+      5
+    </div>
+  </div>
+  <div
+    class="css-view-g5y9jx r-cursor-1loqt21 r-touchAction-1otgn73"
+    style="height: 44px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; justify-content: center; overflow-x: hidden; overflow-y: hidden; background-color: rgb(29, 53, 48); border-top-color: rgba(62, 219, 165, 0.09); border-right-color: rgba(62, 219, 165, 0.09); border-bottom-color: rgba(62, 219, 165, 0.09); border-left-color: rgba(62, 219, 165, 0.09);"
+    tabindex="0"
+  >
+    <div
+      class="css-view-g5y9jx"
+      style="position: absolute; left: 0px; top: 0px; bottom: 0px; width: 0%; background-color: rgb(62, 219, 165);"
+    />
+    <div
+      class="css-view-g5y9jx"
+      style="position: absolute; width: 28px; height: 28px; border-top-left-radius: 999px; border-top-right-radius: 999px; border-bottom-right-radius: 999px; border-bottom-left-radius: 999px; border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; margin-left: -14px; top: 8px; left: 0%; background-color: rgb(62, 219, 165); border-top-color: rgb(7, 15, 12); border-right-color: rgb(7, 15, 12); border-bottom-color: rgb(7, 15, 12); border-left-color: rgb(7, 15, 12);"
+    />
+  </div>
+</div>
+`;
