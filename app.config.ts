@@ -54,7 +54,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   web: {
     favicon: './assets/favicon.png',
   },
-  plugins: ['expo-secure-store', 'expo-notifications', 'expo-image-picker', 'expo-document-picker'],
+  plugins: [
+    'expo-secure-store',
+    'expo-notifications',
+    'expo-image-picker',
+    'expo-document-picker',
+    'expo-font',
+  ],
   extra: {
     supabaseUrl: requireEnv('EXPO_PUBLIC_SUPABASE_URL'),
     supabaseAnonKey: requireEnv('EXPO_PUBLIC_SUPABASE_ANON_KEY'),
