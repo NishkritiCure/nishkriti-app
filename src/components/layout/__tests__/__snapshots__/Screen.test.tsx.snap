@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Screen > matches light + dark snapshots > dark 1`] = `
+<div
+  class="css-view-g5y9jx"
+  style="flex: 1 1 0%; background-color: rgb(7, 15, 12);"
+>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(221, 232, 226); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px;"
+  >
+    Snap
+  </div>
+</div>
+`;
+
+exports[`Screen > matches light + dark snapshots > light 1`] = `
+<div
+  class="css-view-g5y9jx"
+  style="flex: 1 1 0%; background-color: rgb(7, 15, 12);"
+>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(221, 232, 226); font-family: DMSans_400Regular; font-size: 16px; line-height: 26px; font-weight: 400; letter-spacing: 0px;"
+  >
+    Snap
+  </div>
+</div>
+`;

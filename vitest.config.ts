@@ -19,6 +19,7 @@ export default defineConfig({
           'react-native',
           'react-native-svg',
           'react-native-reanimated',
+          'react-native-safe-area-context',
           '@testing-library/react-native',
         ],
       },
@@ -57,6 +58,13 @@ export default defineConfig({
       // native build uses react-native proper via babel-preset-expo. This
       // alias only applies to vitest's module graph.
       { find: /^react-native$/, replacement: 'react-native-web' },
+      {
+        find: 'react-native-safe-area-context',
+        replacement: path.resolve(
+          __dirname,
+          '__tests__/__mocks__/react-native-safe-area-context.tsx'
+        ),
+      },
       { find: '@', replacement: path.resolve(__dirname, 'src') },
     ],
   },

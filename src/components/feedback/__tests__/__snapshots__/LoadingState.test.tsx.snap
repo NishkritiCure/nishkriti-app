@@ -1,0 +1,51 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`LoadingState > matches snapshot 1`] = `
+<div
+  aria-label="Loading…"
+  class="css-view-g5y9jx"
+  role="progressbar"
+  style="align-items: center; justify-content: center; gap: 12px; padding: 32px;"
+>
+  <div
+    aria-valuemax="1"
+    aria-valuemin="0"
+    class="css-view-g5y9jx r-alignItems-1awozwy r-justifyContent-1777fci"
+    role="progressbar"
+  >
+    <div
+      class="css-view-g5y9jx r-height-z80fyv r-width-19wmn03 r-animationDuration-17bb2tj r-animationIterationCount-1muvv40 r-animationKeyframes-1yef0xd r-animationTimingFunction-1ldzwu0"
+    >
+      <svg
+        height="100%"
+        viewBox="0 0 32 32"
+        width="100%"
+      >
+        <circle
+          cx="16"
+          cy="16"
+          fill="none"
+          r="14"
+          stroke-width="4"
+          style="stroke: rgb(5, 117, 71); opacity: 0.2;"
+        />
+        <circle
+          cx="16"
+          cy="16"
+          fill="none"
+          r="14"
+          stroke-width="4"
+          style="stroke: rgb(5, 117, 71); stroke-dasharray: 80; stroke-dashoffset: 60;"
+        />
+      </svg>
+    </div>
+  </div>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(74, 85, 104); font-family: DMSans_400Regular; font-size: 14px; line-height: 22px; font-weight: 400; letter-spacing: 0px;"
+  >
+    Loading…
+  </div>
+</div>
+`;

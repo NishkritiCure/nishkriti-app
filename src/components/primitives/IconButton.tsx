@@ -10,12 +10,12 @@ const SIZES: Record<IconButtonSize, number> = { sm: 36, md: 44, lg: 52 }
 export interface IconButtonProps extends Omit<PressableProps, 'style' | 'children'> {
   readonly icon: React.ReactNode
   readonly accessibilityLabel: string
-  readonly accessibilityHint?: string
-  readonly size?: IconButtonSize
-  readonly variant?: IconButtonVariant
-  readonly disabled?: boolean
-  readonly style?: ViewStyle
-  readonly testID?: string
+  readonly accessibilityHint?: string | undefined
+  readonly size?: IconButtonSize | undefined
+  readonly variant?: IconButtonVariant | undefined
+  readonly disabled?: boolean | undefined
+  readonly style?: ViewStyle | undefined
+  readonly testID?: string | undefined
 }
 
 export function IconButton({

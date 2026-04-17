@@ -7,10 +7,10 @@ import { Text } from './Text'
 export interface CheckboxProps {
   readonly checked: boolean
   readonly onChange: (next: boolean) => void
-  readonly label?: string
-  readonly disabled?: boolean
-  readonly accessibilityLabel?: string
-  readonly testID?: string
+  readonly label?: string | undefined
+  readonly disabled?: boolean | undefined
+  readonly accessibilityLabel?: string | undefined
+  readonly testID?: string | undefined
 }
 
 export function Checkbox({

@@ -1,0 +1,33 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`EmptyState > matches light + dark snapshots > dark 1`] = `
+<div
+  aria-label="Snap"
+  class="css-view-g5y9jx"
+  style="align-items: center; justify-content: center; gap: 12px; padding: 32px;"
+>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(221, 232, 226); font-family: Lora_500Medium; font-size: 20px; line-height: 28px; font-weight: 500; letter-spacing: 0px; text-align: center;"
+  >
+    Snap
+  </div>
+</div>
+`;
+
+exports[`EmptyState > matches light + dark snapshots > light 1`] = `
+<div
+  aria-label="Snap"
+  class="css-view-g5y9jx"
+  style="align-items: center; justify-content: center; gap: 12px; padding: 32px;"
+>
+  <div
+    class="css-text-146c3p1"
+    dir="auto"
+    style="color: rgb(221, 232, 226); font-family: Lora_500Medium; font-size: 20px; line-height: 28px; font-weight: 500; letter-spacing: 0px; text-align: center;"
+  >
+    Snap
+  </div>
+</div>
+`;
